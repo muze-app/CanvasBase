@@ -24,35 +24,37 @@ struct NodeRevData {
     
 }
 
-class InternalDirectSnapshot: MutableDAG {
+class InternalDirectSnapshot: DAG {
     
-    let key: CommitKey
-    weak var store: DAGStore?
+    weak var _store: DAGStore?
+    override var store: DAGStore { _store! }
     let predecessor: DAG?
-    let level: Int
+    let _level: Int
+    override var level: Int { _level }
     
-    var modLock: NSRecursiveLock? { return store?.lock }
+    var modLock: NSRecursiveLock? { return store.lock }
     
     static var i = 0
     static let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot>()
     
     init(predecessor: DAG? = nil, store: DAGStore, level: Int, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
-        self.store = store
-        self.level = level
-        self.key = key
+        self._store = store
+        self._level = level
+        
+        super.init(key)
         
         InternalDirectSnapshot.tempDict[InternalDirectSnapshot.i] = self
         InternalDirectSnapshot.i += 1
     }
     
     func with(key: CommitKey, level: Int) -> InternalDirectSnapshot {
-        let snapshot = InternalDirectSnapshot(predecessor: self, store: store!, level: level, key: key)
+        let snapshot = InternalDirectSnapshot(predecessor: self, store: store, level: level, key: key)
         snapshot.becomeImmutable()
         return snapshot
     }
     
-    func parent(at level: Int) -> DAG? {
+    override func parent(at level: Int) -> DAG? {
         if let pred = predecessor as? InternalDirectSnapshot {
             if pred.level == level {
                 return pred
@@ -81,9 +83,9 @@ class InternalDirectSnapshot: MutableDAG {
     
     var snapshotToModify: DAG { return self }
     
-    var depth: Int { return (predecessor?.depth ?? 0) + 1 }
+    override var depth: Int { return (predecessor?.depth ?? 0) + 1 }
     
-    var maxLevel: Int {
+    override var maxLevel: Int {
         guard let p = predecessor?.maxLevel else { return level }
         return max(p, level)
     }
@@ -112,7 +114,7 @@ class InternalDirectSnapshot: MutableDAG {
     
     // MARK: Types
     
-    func type(for key: NodeKey) -> DNodeType? {
+    override func type(for key: NodeKey) -> DNodeType? {
         return typeMap[key] ?? predecessor?.type(for: key)
     }
     
@@ -122,108 +124,9 @@ class InternalDirectSnapshot: MutableDAG {
         typeMap[key] = type
     }
     
-    // MARK: - Subgraphs
-    
-    var allSubgraphKeys: Set<SubgraphKey> {
-        let mine = Set(subgraphs.keys)
-        guard let pred = predecessor?.allSubgraphKeys else { return mine }
-//        guard let alt = alt?.allSubgraphKeys else { return pred + mine }
-        return pred + mine //+ alt
-    }
-    
-    func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
-        if level >= self.level, let subgraph = subgraphs[key] {
-            return subgraph
-        }
-        
-        return predecessor?.subgraphData(for: key, level: level)
-    }
-    
-    func updateSubgraph(_ key: SubgraphKey, _ block: (inout SubgraphData)->()) {
-        assert(isMutable)
-        
-        let old = subgraphData(for: key, level: level) ?? SubgraphData(key: key)
-        let alt = subgraphData(for: key, level: 99999) ?? SubgraphData(key: key)
-        var new = old
-        
-        block(&new)
-        
-        if new != old || old != alt {
-            subgraphs[key] = new
-        }
-    }
-    
-    func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
-        return subgraphData(for: subgraphKey, level: level)?.finalKey
-    }
-    
-    func metaKey(for subgraphKey: SubgraphKey) -> NodeKey? {
-        return subgraphData(for: subgraphKey, level: level)?.metaKey
-    }
-    
-    func setFinalKey(_ key: NodeKey?, for subgraphKey: SubgraphKey) {
-        updateSubgraph(subgraphKey) {
-            $0.finalKey = key
-        }
-        
-        assert(subgraphData(for: subgraphKey, level: level+0)!.finalKey == key)
-        assert(subgraphData(for: subgraphKey, level: level+1)!.finalKey == key)
-    }
-    
-    func setMetaKey(_ key: NodeKey?, for subgraphKey: SubgraphKey) {
-        updateSubgraph(subgraphKey) {
-            $0.metaKey = key
-        }
-    }
-    
-    // MARK: Payloads
-    
-    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? {
-        if level >= self.level, let pointer = payloadMap[key] {
-            return pointer
-        }
-        
-        return predecessor?.payloadAllocation(for: key, level: level)
-    }
-    
-    func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? {
-        if level >= self.level, let pointer = payloadMap[key]?.pointer {
-            return pointer
-        }
-        
-        return predecessor?.payloadPointer(for: key, level: level)
-    }
-    
-    func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-        guard let raw = payloadPointer(for: key, level: level) else { return nil }
-        let pointer = raw.assumingMemoryBound(to: T.self)
-        return pointer.pointee
-    }
-    
-    func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey) {
-        
-        assert(isMutable)
-//        print("\(address) setPayload \(payload) for \(key)")
-        
-        if self.payload(for: key, of: T.self) == payload { return }
-        
-        if let allocation = payloadMap[key] {
-            allocation.pointer.assumingMemoryBound(to: T.self).assign(repeating: payload, count: 1)
-            return
-        }
-        
-        if !payloadBuffers.exists { payloadBuffers = PayloadBufferSet() }
-        
-        guard let allocation = payloadBuffers!.new(payload) else {
-            fatalError("out of memory")
-        }
-        
-        payloadMap[key] = allocation
-    }
-    
     // MARK: Edges
     
-    func edgeMap(for key: NodeKey, level: Int) -> [Int:NodeKey]? {
+    override func edgeMap(for key: NodeKey, level: Int) -> [Int:NodeKey]? {
         if level >= self.level, let edgeMap = edgeMaps[key] {
             return edgeMap
         }
@@ -236,7 +139,7 @@ class InternalDirectSnapshot: MutableDAG {
         edgeMaps[key] = edgeMap
     }
     
-    func input(for parent: NodeKey, index: Int) -> NodeKey? {
+    override func input(for parent: NodeKey, index: Int) -> NodeKey? {
         return edgeMap(for: parent, level: level)?[index]
     }
     
@@ -263,12 +166,118 @@ class InternalDirectSnapshot: MutableDAG {
             setReverseEdges(reverse + parent, for: newChild)
         }
         
-        assert(input(for: parent, index: index) == child)
+        //        assert(input(for: parent, index: index) == child)
     }
+    
+    // MARK: - Subgraphs
+    
+//    var allSubgraphKeys: Set<SubgraphKey> {
+//        let mine = Set(subgraphs.keys)
+//        guard let pred = predecessor?.allSubgraphKeys else { return mine }
+////        guard let alt = alt?.allSubgraphKeys else { return pred + mine }
+//        return pred + mine //+ alt
+//    }
+//
+//    func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
+//        if level >= self.level, let subgraph = subgraphs[key] {
+//            return subgraph
+//        }
+//
+//        return predecessor?.subgraphData(for: key, level: level)
+//    }
+    
+    func updateSubgraph(_ key: SubgraphKey, _ block: (inout SubgraphData)->()) {
+        die
+//        assert(isMutable)
+//
+//        let old = subgraphData(for: key, level: level) ?? SubgraphData(key: key)
+//        let alt = subgraphData(for: key, level: 99999) ?? SubgraphData(key: key)
+//        var new = old
+//
+//        block(&new)
+//
+//        if new != old || old != alt {
+//            subgraphs[key] = new
+//        }
+    }
+    
+    override func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
+        die
+//        return subgraphData(for: subgraphKey, level: level)?.finalKey
+    }
+    
+    override func metaKey(for subgraphKey: SubgraphKey) -> NodeKey? {
+        die
+//        return subgraphData(for: subgraphKey, level: level)?.metaKey
+    }
+    
+    func setFinalKey(_ key: NodeKey?, for subgraphKey: SubgraphKey) {
+        updateSubgraph(subgraphKey) {
+            $0.finalKey = key
+        }
+        
+//        assert(subgraphData(for: subgraphKey, level: level+0)!.finalKey == key)
+//        assert(subgraphData(for: subgraphKey, level: level+1)!.finalKey == key)
+    }
+    
+    func setMetaKey(_ key: NodeKey?, for subgraphKey: SubgraphKey) {
+        updateSubgraph(subgraphKey) {
+            $0.metaKey = key
+        }
+    }
+    
+    // MARK: Payloads
+    
+    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? {
+        if level >= self.level, let pointer = payloadMap[key] {
+            return pointer
+        }
+        
+        die
+//        return predecessor?.payloadAllocation(for: key, level: level)
+    }
+    
+    func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? {
+        if level >= self.level, let pointer = payloadMap[key]?.pointer {
+            return pointer
+        }
+        
+        die
+//        return predecessor?.payloadPointer(for: key, level: level)
+    }
+    
+    override func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
+        guard let raw = payloadPointer(for: key, level: level) else { return nil }
+        let pointer = raw.assumingMemoryBound(to: T.self)
+        return pointer.pointee
+    }
+    
+    func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey) {
+        
+        assert(isMutable)
+//        print("\(address) setPayload \(payload) for \(key)")
+        
+        if self.payload(for: key, of: T.self) == payload { return }
+        
+        if let allocation = payloadMap[key] {
+            allocation.pointer.assumingMemoryBound(to: T.self).assign(repeating: payload, count: 1)
+            return
+        }
+        
+        if !payloadBuffers.exists { payloadBuffers = PayloadBufferSet() }
+        
+        guard let allocation = payloadBuffers!.new(payload) else {
+            fatalError("out of memory")
+        }
+        
+        payloadMap[key] = allocation
+    }
+    
+   
     
     // MARK: Reverse Edges
     
-    func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
+    override func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
         return reverseEdges[key] ?? predecessor?.reverseEdges(for: key)
     }
     
@@ -293,7 +302,8 @@ class InternalDirectSnapshot: MutableDAG {
     }
     
     func revData(for key: NodeKey) -> NodeRevData? {
-        return revData[key] ?? predecessor?.revData(for: key)
+        die
+//        return revData[key] ?? predecessor?.revData(for: key)
     }
     
     func setRevData(_ data: NodeRevData, for key: NodeKey) {
@@ -307,33 +317,35 @@ class InternalDirectSnapshot: MutableDAG {
     }
     
     func haveNodesChanged(_ nodes: Set<NodeKey>, sinceParent parent: SnapshotKey) -> Bool {
-        if key == parent { return false }
-        
-        let changes = nodesTouchedSincePredecessor
-        for node in nodes {
-            if changes.contains(node) {
-                return true
-            }
-        }
-        
-        let pred = predecessor!.snapshotToModify as! InternalDirectSnapshot
-        return pred.haveNodesChanged(nodes, sinceParent: parent)
+        die
+//        if key == parent { return false }
+//
+//        let changes = nodesTouchedSincePredecessor
+//        for node in nodes {
+//            if changes.contains(node) {
+//                return true
+//            }
+//        }
+//
+//        let pred = predecessor!.snapshotToModify as! InternalDirectSnapshot
+//        return pred.haveNodesChanged(nodes, sinceParent: parent)
     }
     
     func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
-        let mine = Set(payloadMap.values)
-        
-        let intersection = mine.intersection(allocations)
-        
-        if intersection.count > 0 {
-            return true
-        }
-        
-        if let predecessor = predecessor {
-            return predecessor.contains(allocations: allocations)
-        }
-        
-        return false
+        die
+//        let mine = Set(payloadMap.values)
+//
+//        let intersection = mine.intersection(allocations)
+//
+//        if intersection.count > 0 {
+//            return true
+//        }
+//
+//        if let predecessor = predecessor {
+//            return predecessor.contains(allocations: allocations)
+//        }
+//
+//        return false
     }
     
 //    func contains(textures: Set<MetalTexture>) -> Bool {

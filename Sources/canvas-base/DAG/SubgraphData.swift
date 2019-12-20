@@ -24,6 +24,8 @@ struct SubgraphData: Equatable, Hashable {
 
 class Subgraph {
     
+    var die: Never { fatalError() }
+    
     let key: SubgraphKey
     let graph: DAG
     var mutableGraph: MutableDAG { return graph as! MutableDAG }
@@ -34,7 +36,7 @@ class Subgraph {
     }
     
     var finalKey: NodeKey? {
-        get { return graph.finalKey(for: key) }
+        get { die /*return graph.finalKey(for: key)*/ }
         set { mutableGraph.setFinalKey(newValue, for: key) }
     }
     

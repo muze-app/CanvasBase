@@ -60,8 +60,9 @@ class Node: Hashable, CustomDebugStringConvertible {
         let rev = source.reverseEdges(for: key) ?? Bag<NodeKey>()
         graph.setReverseEdges(rev, for: newKey)
         
-        let data = source.revData(for: key) ?? NodeRevData()
-        graph.setRevData(data, for: key)
+        #warning("fix me")
+//        let data = source.revData(for: key) ?? NodeRevData()
+//        graph.setRevData(data, for: key)
         
         return newKey
     }

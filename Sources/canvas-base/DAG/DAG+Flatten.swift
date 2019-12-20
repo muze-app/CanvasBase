@@ -15,7 +15,7 @@ extension DAG {
         
         for level in 0...maxLevel {
             let newKey = usingFreshKeys ? CommitKey() : key
-            let snapshot = InternalDirectSnapshot(predecessor: pred, store: store!, level: level, key: newKey)
+            let snapshot = InternalDirectSnapshot(predecessor: pred, store: store, level: level, key: newKey)
             
             let this = self.modify(level: level) { _ in }
             
@@ -62,7 +62,7 @@ extension DAG {
         var pred = parent
         
         for level in 0...max(maxLevel, parent.maxLevel) {
-            let snapshot = InternalDirectSnapshot(predecessor: pred, store: store!, level: level, key: key)
+            let snapshot = InternalDirectSnapshot(predecessor: pred, store: store, level: level, key: key)
             
             let this = self.modify(level: level) { _ in }
             let parent = parent.modify(level: level) { _ in }
