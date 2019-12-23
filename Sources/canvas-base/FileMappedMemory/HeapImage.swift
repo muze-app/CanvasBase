@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import muze_prelude
 
 enum ContextError: Error {
     case badParams

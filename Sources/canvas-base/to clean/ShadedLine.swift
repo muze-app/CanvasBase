@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import muze_prelude
 
 struct ShadedLine {
     
@@ -34,8 +35,8 @@ struct ShadedLine {
     }
     
     var transform: CGAffineTransform {
-        let translation = CGAffineTransform(translationX: -point.x, y: -point.y)
-        let rotation = CGAffineTransform(rotationAngle: -angle)
+//        let translation = CGAffineTransform(translationX: -point.x, y: -point.y)
+//        let rotation = CGAffineTransform(rotationAngle: -angle)
         
         fatalError()
 //        return translation * rotation

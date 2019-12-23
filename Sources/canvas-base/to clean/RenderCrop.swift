@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import muze_prelude
 
 public struct RenderCrop: Equatable {
     

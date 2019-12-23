@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import muze_prelude
 
 public typealias BasicExtent = RenderCrop
 
@@ -99,15 +100,15 @@ public enum RenderExtent: Equatable {
     
     func transformed(by transform: AffineTransform) -> RenderExtent {
         switch self {
-        case .nothing: return .nothing
-        case .infinite: return .infinite
+            case .nothing: return .nothing
+            case .infinite: return .infinite
             
-        case .basic(let e):
-            fatalError()
-//            return .basic(e.transformed(by: transform))
+            case .basic:
+                fatalError()
+    //            return .basic(e.transformed(by: transform))
             
-        case .union(let e):
-            return .union(e.transformed(by: transform))
+            case .union(let e):
+                return .union(e.transformed(by: transform))
         }
     }
     
@@ -268,18 +269,18 @@ extension BasicExtentSet {
 }
 
 // like a render extent, but for users
-struct UserExtent {
+public struct UserExtent {
     
-    let level: Level
-    let extent: RenderExtent
+    public let level: Level
+    public let extent: RenderExtent
     
-    static let nothing: UserExtent = .brush & .nothing
+    public static let nothing: UserExtent = .brush & .nothing
     
-    enum Level: Comparable, Equatable {
+    public enum Level: Comparable, Equatable {
         
         case photo, brush
         
-        static func < (lhs: UserExtent.Level, rhs: UserExtent.Level) -> Bool {
+        public static func < (lhs: UserExtent.Level, rhs: UserExtent.Level) -> Bool {
             return (lhs == .brush) && (rhs == .photo)
         }
     
@@ -308,6 +309,6 @@ struct UserExtent {
     
 }
 
-func & (l: UserExtent.Level, e: RenderExtent) -> UserExtent {
+public func & (l: UserExtent.Level, e: RenderExtent) -> UserExtent {
     return UserExtent(level: l, extent: e)
 }

@@ -7,24 +7,25 @@
 //
 
 import Foundation
+import muze_prelude
 
 class FileMappedHeapManager {
     
     static let shared = FileMappedHeapManager()
     
     let main = FileMappedHeapSet(heapSize: 16 * 1024 * 1024)
-    let nano = FileMappedHeapSet(heapSize: FileMappedHeapSet.pageSize, chunkSize: 256)
-    let node = FileMappedHeapSet(heapSize: FileMappedHeapSet.pageSize * 4, chunkSize: 64)
+    let nano = FileMappedHeapSet(heapSize: HeapLayout.pageSize, chunkSize: 256)
+//    let node = FileMappedHeapSet(heapSize: FileMappedHeapSet.pageSize * 4, chunkSize: 64)
     
     enum Set {
-        case main, nano, node
+        case main, nano//, node
     }
     
     func set(for set: Set) -> FileMappedHeapSet {
         switch set {
             case .main: return main
             case .nano: return nano
-            case .node: return node
+//            case .node: return node
         }
     }
     

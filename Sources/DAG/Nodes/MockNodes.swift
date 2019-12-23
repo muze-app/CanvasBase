@@ -1,0 +1,45 @@
+//
+//  MockNodes.swift
+//  canvas-base
+//
+//  Created by Greg Fajen on 12/20/19.
+//
+
+import Foundation
+
+
+public enum MockNodeCollection: NodeCollection {
+    
+    case image, blend, filter
+    
+    public func node(for key: NodeKey, graph: DAGBase<MockNodeCollection>) -> GenericNode<MockNodeCollection> {
+        switch self {
+            case .image: return MockImageNode(key, graph: graph)
+            case .blend: return MockBlendNode(key, graph: graph)
+            case .filter: return MockFilterNode(key, graph: graph)
+        }
+    }
+    
+}
+
+
+public class MockImageNode: GeneratorNode<MockNodeCollection, MockNodePayload> {
+    
+}
+
+public class MockBlendNode: PayloadNode<MockNodeCollection, MockNodePayload> {
+    
+}
+
+public class MockFilterNode: INode<MockNodeCollection, MockNodePayload> {
+    
+}
+
+public struct MockNodePayload: NodePayload, ExpressibleByIntegerLiteral {
+    
+    let int: Int
+    
+    public init(_ value: Int) { int = value }
+    public init(integerLiteral value: Int) { int = value }
+    
+}
