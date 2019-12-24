@@ -9,7 +9,7 @@
 import UIKit
 import MuzePrelude
 
-protocol Drawable: class, MemoryManageeLeaf {
+public protocol Drawable: class, MemoryManageeLeaf {
 
     var width: Int { get }
     var height: Int { get }
@@ -40,14 +40,14 @@ extension Drawable {
         return fullscreenPool.acquire()
     }
     
-    var memorySize: MemorySize {
+    public var memorySize: MemorySize {
         return MemorySize(width * height * 4)
     }
     
-    func releaseToPool() {
+    public func releaseToPool() {
         pool?.release(self)
     }
-    
+    public   
     func stealFromPool() {
         pool?.forget(self)
     }

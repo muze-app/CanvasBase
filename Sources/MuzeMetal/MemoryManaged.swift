@@ -53,9 +53,9 @@ public struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, Cu
     
 }
 
-typealias MemoryHash = [Int:MemorySize]
+public typealias MemoryHash = [Int:MemorySize]
 
-protocol MemoryManageeLeaf: MemoryManagee {
+public protocol MemoryManageeLeaf: MemoryManagee {
     
     var memorySize: MemorySize { get }
     
@@ -63,13 +63,13 @@ protocol MemoryManageeLeaf: MemoryManagee {
     
 }
 
-protocol MemoryManagee {
+public protocol MemoryManagee {
     
     var memoryHash: MemoryHash { get }
     
 }
 
-extension MemoryManageeLeaf {
+public extension MemoryManageeLeaf {
     
     var memoryHash: MemoryHash {
         return [hashValue:memorySize]
@@ -77,7 +77,7 @@ extension MemoryManageeLeaf {
     
 }
 
-extension Dictionary where Key == Int, Value == MemorySize {
+public extension Dictionary where Key == Int, Value == MemorySize {
     
     static func + (lhs: MemoryHash, rhs: MemoryHash) -> MemoryHash {
         return lhs.merging(rhs) { (a, b) -> MemorySize in
@@ -135,7 +135,7 @@ extension Dictionary where Key == Int, Value == MemorySize {
 
 extension Array: MemoryManagee where Element: MemoryManagee {
     
-    var memoryHash: MemoryHash {
+    public var memoryHash: MemoryHash {
         return reduce([:]) { $0 + $1 }
     }
     

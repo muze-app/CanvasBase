@@ -46,7 +46,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
 //        texture = MetalTexture(_texture, heap: MetalHeapManager.shared.dynamicHeap)
     }
     
-    required convenience init(width: Int, height: Int) {
+    public required convenience init(width: Int, height: Int) {
         self.init(width: width, height: height, pixelFormat: .bgra8Unorm)
     }
     
@@ -59,30 +59,30 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
         self.init(width: w, height: h, pixelFormat: pixelFormat)
     }
     
-    static var fullscreenPool: DrawablePool<MetalOffscreenDrawable> { return DrawablePool<MetalOffscreenDrawable>() }
+    public static var fullscreenPool: DrawablePool<MetalOffscreenDrawable> { return DrawablePool<MetalOffscreenDrawable>() }
     
-    var width: Int {
+    public var width: Int {
         return _texture.width
     }
     
-    var height: Int {
+    public var height: Int {
         return _texture.height
     }
     
-    var size: CGSize {
+    public var size: CGSize {
         return CGSize(width: width, height: height)
     }
     
     public var needsClear = true
     
-    func clear() {
+    public func clear() {
         needsClear = true
     }
     
     // MARK: Blitting and Drawing
     
     // will still clear if needsClear is set
-    func blit<T: MetalDrawable>(_ source: T, clear: Bool = true) {
+    public func blit<T: MetalDrawable>(_ source: T, clear: Bool = true) {
         let clearColor = clear ? UIColor.clear : nil
         
         let vertices = MetalPipeline.defaultVertexBuffer
@@ -154,6 +154,6 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
     
     public let hashValue: Int = Int(arc4random())
     
-    weak var pool: DrawablePool<MetalOffscreenDrawable>?
+    public weak var pool: DrawablePool<MetalOffscreenDrawable>?
     
 }

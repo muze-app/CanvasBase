@@ -24,25 +24,25 @@ public protocol SimpleMetalDrawable: class {
     
 }
 
-extension SimpleMetalDrawable {
+public extension SimpleMetalDrawable {
     
     var size: CGSize { return _texture.size }
     
 }
 
-protocol MetalDrawable: Drawable, SimpleMetalDrawable {
+public protocol MetalDrawable: Drawable, SimpleMetalDrawable {
     
     func blit<T: MetalDrawable>(_ source: T, clear: Bool)
     
 }
 
-extension MetalDrawable {
+public extension MetalDrawable {
     
     func blit<T: MetalDrawable>(_ source: T) {
         blit(source, clear: true)
     }
     
-    public var renderPassDescriptor: MTLRenderPassDescriptor? {
+    var renderPassDescriptor: MTLRenderPassDescriptor? {
         return nil
     }
     

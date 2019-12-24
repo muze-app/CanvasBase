@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Pool<T: AnyObject & MemoryManagee>: MemoryManagerObserver {
+public class Pool<T: AnyObject & MemoryManagee>: MemoryManagerObserver {
     
     private let queue = DispatchQueue(label: "DrawablePool.\(String(describing: T.self)).Queue")
     private var items = [T]()
@@ -106,7 +106,7 @@ class Pool<T: AnyObject & MemoryManagee>: MemoryManagerObserver {
     
 }
 
-class DrawablePool<T: Drawable>: Pool<T> {
+public class DrawablePool<T: Drawable>: Pool<T> {
     
     static var defaultInitializer: () -> T {
         return { T() }

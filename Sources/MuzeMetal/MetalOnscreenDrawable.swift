@@ -11,28 +11,28 @@ import Metal
 import MuzePrelude
 
 @available(*, deprecated)
-final class MetalOnscreenDrawable: MetalDrawable {
+public final class MetalOnscreenDrawable: MetalDrawable {
     
-    let width: Int
-    let height: Int
-    var size: CGSize {
+    public let width: Int
+    public let height: Int
+    public var size: CGSize {
         return CGSize(width: width, height: height)
     }
     
-    required init(width: Int, height: Int) {
+    public required init(width: Int, height: Int) {
         self.width = width
         self.height = height
         
         setupMetalLayer()
     }
     
-    static var fullscreenPool = DrawablePool<MetalOnscreenDrawable>()
+    public static var fullscreenPool = DrawablePool<MetalOnscreenDrawable>()
     
     // MARK: Drawable Protocol
     
-    var needsClear = true
+    public var needsClear = true
     
-    func clear() {
+    public func clear() {
         needsClear = true
     }
     
@@ -44,15 +44,15 @@ final class MetalOnscreenDrawable: MetalDrawable {
     
     #else
     
-    var _texture: MTLTexture {
+    public var _texture: MTLTexture {
         return currentDrawable.texture
     }
     
-    var drawable: CAMetalDrawable? {
+    public var drawable: CAMetalDrawable? {
         return currentDrawable
     }
     
-    var pixelFormat: MTLPixelFormat {
+    public var pixelFormat: MTLPixelFormat {
         return .bgra8Unorm
     }
     
@@ -90,19 +90,19 @@ final class MetalOnscreenDrawable: MetalDrawable {
     // MARK: Blitting
     
     // will still clear if needsClear is set
-    func blit<T: MetalDrawable>(_ source: T, clear: Bool) {
+    public func blit<T: MetalDrawable>(_ source: T, clear: Bool) {
         blit(source, clear: clear, present: true)
     }
     
     // will still clear if needsClear is set
-    func blit<T: MetalDrawable>(_ source: T, clear: Bool, present: Bool) {
+    public func blit<T: MetalDrawable>(_ source: T, clear: Bool, present: Bool) {
         if source.needsClear { return }
         
         blit(source._texture, clear: clear, present: present)
     }
     
     @available(*, deprecated)
-    func blit(_ texture: MTLTexture, clear: Bool, present: Bool) {
+    public func blit(_ texture: MTLTexture, clear: Bool, present: Bool) {
         let clearColor = clear ? UIColor.clear : nil
         
         let pass = MetalPass(pipeline: .blitPipeline,
@@ -125,12 +125,12 @@ final class MetalOnscreenDrawable: MetalDrawable {
     }
     
     @available(*, deprecated)
-    func draw(_ texture: MTLTexture,
-              vertexBuffer: MetalBuffer = MetalPipeline.defaultVertexBuffer,
-              transform: CGAffineTransform,
-              alpha: Float = 1,
-              clear: Bool = true,
-              present: Bool = true) {
+    public func draw(_ texture: MTLTexture,
+                     vertexBuffer: MetalBuffer = MetalPipeline.defaultVertexBuffer,
+                     transform: CGAffineTransform,
+                     alpha: Float = 1,
+                     clear: Bool = true,
+                     present: Bool = true) {
         
         let clearColor = clear ? UIColor.clear : nil
         assert(vertexBuffer.length == 48)
@@ -162,8 +162,8 @@ final class MetalOnscreenDrawable: MetalDrawable {
 
     // MARK: Other
     
-    let hashValue: Int = Int(arc4random())
+    public let hashValue: Int = Int(arc4random())
     
-    weak var pool: DrawablePool<MetalOnscreenDrawable>?
+    public weak var pool: DrawablePool<MetalOnscreenDrawable>?
     
 }
