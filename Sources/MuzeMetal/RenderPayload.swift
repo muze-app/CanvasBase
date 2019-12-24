@@ -112,7 +112,7 @@ extension CGColorSpace {
     
 }
 
-extension UIColor {
+public extension UIColor {
     
     func converted(to space: CGColorSpace, intent: CGColorRenderingIntent) -> UIColor {
         let cg = cgColor.converted(to: space, intent: intent, options: nil)!
@@ -272,7 +272,7 @@ extension RenderColor {
     
 }
 
-extension UIColor {
+public extension UIColor {
     
     convenience init(_ color: RenderColor2) {
         self.init(cgColor: color.ui.cgColor)

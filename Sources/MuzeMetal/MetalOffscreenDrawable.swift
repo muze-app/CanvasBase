@@ -11,24 +11,24 @@ import Metal
 import MuzePrelude
 
 @available(*, deprecated)
-final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
+public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
 
     #if !targetEnvironment(simulator)
-    var drawable: CAMetalDrawable? {
+    public var drawable: CAMetalDrawable? {
         return nil
     }
     #endif
     
-    static func == (lhs: MetalOffscreenDrawable, rhs: MetalOffscreenDrawable) -> Bool {
+    public static func == (lhs: MetalOffscreenDrawable, rhs: MetalOffscreenDrawable) -> Bool {
         return lhs === rhs
     }
     
-    var pixelFormat: MTLPixelFormat {
+    public var pixelFormat: MTLPixelFormat {
         return .bgra8Unorm
     }
     
-    var _texture: MTLTexture { return texture._texture }
-    let texture: MetalTexture
+    public var _texture: MTLTexture { return texture._texture }
+    public let texture: MetalTexture
     static let device: MTLDevice = MTLCreateSystemDefaultDevice()!
     var device: MTLDevice {
         return MetalOffscreenDrawable.device
@@ -73,7 +73,7 @@ final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
         return CGSize(width: width, height: height)
     }
     
-    var needsClear = true
+    public var needsClear = true
     
     func clear() {
         needsClear = true
@@ -152,7 +152,7 @@ final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
     
     // MARK: Other
     
-    let hashValue: Int = Int(arc4random())
+    public let hashValue: Int = Int(arc4random())
     
     weak var pool: DrawablePool<MetalOffscreenDrawable>?
     
@@ -218,7 +218,7 @@ extension CGPoint {
     
 }
 
-extension UIColor {
+public extension UIColor {
     
     var alpha: CGFloat {
         var alpha: CGFloat = 1

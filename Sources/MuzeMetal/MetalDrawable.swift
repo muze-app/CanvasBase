@@ -42,7 +42,7 @@ extension MetalDrawable {
         blit(source, clear: true)
     }
     
-    var renderPassDescriptor: MTLRenderPassDescriptor? {
+    public var renderPassDescriptor: MTLRenderPassDescriptor? {
         return nil
     }
     

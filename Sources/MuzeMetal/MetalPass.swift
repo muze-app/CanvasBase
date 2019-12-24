@@ -28,14 +28,14 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     public var identifier: String?
     
     public init(pipeline: MetalPipeline,
-         drawable: DrawableType,
-         primitive: MTLPrimitiveType = .triangleStrip,
-         vertexCount: Int = 4,
-         clearColor: UIColor? = nil,
-         vertexBuffers: [MetalBuffer],
-         fragmentBuffers: [MetalBuffer] = [],
-         fragmentTextures: [MTLTexture] = [],
-         completion: CompletionType? = {}) {
+                drawable: DrawableType,
+                primitive: MTLPrimitiveType = .triangleStrip,
+                vertexCount: Int = 4,
+                clearColor: UIColor? = nil,
+                vertexBuffers: [MetalBuffer],
+                fragmentBuffers: [MetalBuffer] = [],
+                fragmentTextures: [MTLTexture] = [],
+                completion: CompletionType? = {}) {
         self.pipeline = pipeline
         self.drawable = drawable
         self.primitive = primitive
@@ -176,7 +176,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     
 }
 
-extension MTLClearColor {
+public extension MTLClearColor {
     
     init(_ color: UIColor) {
         var r: CGFloat = 1
