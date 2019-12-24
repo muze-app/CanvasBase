@@ -4,31 +4,34 @@ import PackageDescription
 
 let package = Package(
     
-    name: "canvas-base",
+    name: "CanvasBase",
+    platforms: [.iOS(.v12)],
     
     products: [
-        .library( name: "canvas-base",
-                  targets: ["canvas-base"]),
+        .library( name: "CanvasBase",
+                  targets: ["CanvasBase"])
     ],
     
     dependencies: [],
     
     targets: [
-        .target(name: "muze-prelude",
+        .target(name: "MuzePrelude",
+                dependencies: []),
+        
+        .target(name: "MuzeMetal",
                 dependencies: []),
         
         .target(name: "DAG",
-                dependencies: ["muze-prelude"]),
+                dependencies: ["MuzePrelude"]),
         
         .target(name: "CanvasDAG",
-                dependencies: ["DAG"]),
+                dependencies: ["DAG", "MuzeMetal"]),
         
-        .target( name: "canvas-base",
+        .target( name: "CanvasBase",
                  dependencies: ["CanvasDAG"]),
         
-        .testTarget( name: "canvas-baseTests",
-                     dependencies: ["canvas-base"]),
+        .testTarget( name: "CanvasBaseTests",
+                     dependencies: ["CanvasBase"])
     ]
     
 )
-

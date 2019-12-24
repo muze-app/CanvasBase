@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 
 public typealias NodeKey = Key<GenericNode<MockNodeCollection>>
 
@@ -106,7 +106,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return sortedEdges.map { graph.node(for: $0.1) }
     }
     
-    final public var inputCount: Int { edgeMap.count }
+    public final var inputCount: Int { edgeMap.count }
 
     // MARK: - Logging
     
@@ -141,11 +141,11 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         fatalError()
     }
     
-    final public func hash(into hasher: inout Hasher) {
+    public final func hash(into hasher: inout Hasher) {
         hash(into: &hasher, includeKeys: true)
     }
     
-    final func equal(to other: GenericNode, ignoringKey: Bool = false) -> Bool {
+    public final func equal(to other: GenericNode, ignoringKey: Bool = false) -> Bool {
         if ignoringKey || equalKey(to: other),
             equalPayload(to: other),
             equalInputs(to: other, ignoringKey: ignoringKey) {
@@ -155,11 +155,11 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         }
     }
     
-    final func equalKey(to other: GenericNode) -> Bool {
+    public final func equalKey(to other: GenericNode) -> Bool {
         return key == other.key
     }
     
-    final func equalInputs(to other: GenericNode, ignoringKey: Bool) -> Bool {
+    public final func equalInputs(to other: GenericNode, ignoringKey: Bool) -> Bool {
         let ai = inputs
         let bi = other.inputs
         

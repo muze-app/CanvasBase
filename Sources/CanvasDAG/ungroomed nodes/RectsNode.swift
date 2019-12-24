@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import muze_prelude
+import MuzePrelude
 
 //struct RectNodePair: Equatable, Hashable {
 //

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 
 public class DAGBase<Collection: NodeCollection> {
     
@@ -38,7 +38,6 @@ public class DAGBase<Collection: NodeCollection> {
     public func subgraphData(for key: SubgraphKey) -> SubgraphData? {
         subgraphData(for: key, level: level)
     }
-    
     
     public func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
         die
@@ -75,7 +74,6 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     // MARK: - Payloads
-
 
 //    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? { }
     public func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? { die }
@@ -148,7 +146,6 @@ public class DAGBase<Collection: NodeCollection> {
     
 //}
 
-
 //protocol MutableDAG: DAG {
 //
 //    func setType(_ type: DNodeType, for key: NodeKey)
@@ -170,22 +167,13 @@ public class DAGBase<Collection: NodeCollection> {
 //        let pointer = raw.assumingMemoryBound(to: T.self)
 //        return pointer.pointee
 //    }
-    
-  
-    
-  
-    
-   
-    
-
-    
+     
     func  alias(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
         return modify(as: self.key, level: level, block)
     }
     
     func optimizing(subgraph: SubgraphKey, throughCacheNodes: Bool = false) -> Snapshot {
-        
-        return modify { graph in
+        return modify { _ in
 //            let subgraph = graph.subgraph(for: subgraph)
 //            subgraph.finalNode = subgraph.finalNode?.optimize(throughCacheNodes: throughCacheNodes)
         }
@@ -240,4 +228,3 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
 }
-

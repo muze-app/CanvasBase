@@ -33,8 +33,8 @@ import UIKit
 //
 //}
 
-extension RenderExtent {
-    
-    static let screen = RenderExtent.basic(.init(rect: UIScreen.main.nativeBounds))
-    
-}
+//extension RenderExtent {
+//
+//    static let screen = RenderExtent.basic(.init(rect: UIScreen.main.nativeBounds))
+//
+//}

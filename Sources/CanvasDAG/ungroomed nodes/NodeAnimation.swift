@@ -13,10 +13,10 @@ class NodeAnimationBase {
     
     let key: NodeKey
     let start, end: Date
-    let f: (Float)->Float
+    let f: (Float) -> Float
     var keepAround = false
     
-    init(_ key: NodeKey, _ duration: TimeInterval, _ f: @escaping (Float)->Float) {
+    init(_ key: NodeKey, _ duration: TimeInterval, _ f: @escaping (Float) -> Float) {
         self.key = key
         self.start = Date()
         self.end = Date() + duration

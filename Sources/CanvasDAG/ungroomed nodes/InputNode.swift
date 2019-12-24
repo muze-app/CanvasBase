@@ -263,14 +263,13 @@ enum One { case one } // Not as silly as it might first appear...
 //
 //}
 
-
 extension Dictionary {
 
-    init(_ keys: Set<Key>, _ map: (Key)->Value) {
+    init(_ keys: Set<Key>, _ map: (Key) -> Value) {
         self.init(uniqueKeysWithValues: keys.map { ($0, map($0)) })
     }
 
-    init(_ keys: [Key], _ map: (Key)->Value) {
+    init(_ keys: [Key], _ map: (Key) -> Value) {
         self.init(Set(keys), map)
     }
 

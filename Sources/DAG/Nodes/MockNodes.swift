@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum MockNodeCollection: NodeCollection {
     
     case image, blend, filter
@@ -21,7 +20,6 @@ public enum MockNodeCollection: NodeCollection {
     }
     
 }
-
 
 public class MockImageNode: GeneratorNode<MockNodeCollection, MockNodePayload> {
     

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 
 public struct NodeRevData {
     

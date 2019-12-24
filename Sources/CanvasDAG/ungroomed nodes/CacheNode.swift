@@ -17,7 +17,6 @@ extension NodeKey: NodePayload {
     
 }
 
-
 //final class CacheNode: INode<NodeKey> {
 //
 ////    var cachedPayload: RenderPayload? = nil

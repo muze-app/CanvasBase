@@ -52,7 +52,6 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     case blurPreview
     
-    
     case color, string
     
     public func node(for key: NodeKey, graph: Graph) -> Node {

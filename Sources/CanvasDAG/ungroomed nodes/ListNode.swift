@@ -10,9 +10,7 @@ import Foundation
 import DAG
 
 extension Array: NodePayload where Element: NodePayload {
-    
-    
-    
+      
 }
 
 //class ListNode<PayloadElement: NodePayload>: PNode<[PayloadElement]> {
@@ -172,4 +170,3 @@ extension Array: NodePayload where Element: NodePayload {
 //    }
 //    
 //}
-

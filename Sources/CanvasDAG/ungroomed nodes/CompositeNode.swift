@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 //final class CompositeNode: ListNode<Float> {
 //
 //    init(_ key: NodeKey = NodeKey(), graph: DAG, payload: PayloadType? = nil) {

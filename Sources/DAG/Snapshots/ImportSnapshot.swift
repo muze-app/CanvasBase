@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 
 class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     
@@ -59,7 +59,7 @@ class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
             ??    imported.payloadPointer(for: key, level: imported.level)
     }
     
-    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation?  {
+    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? {
         die
 //        return predecessor.payloadAllocation(for: key, level: level)
 //            ??    imported.payloadAllocation(for: key, level: imported.level)

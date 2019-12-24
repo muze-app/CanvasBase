@@ -1,0 +1,53 @@
+excluded:
+- Pods
+
+disabled_rules:
+- colon
+- force_cast
+- force_try
+- trailing_whitespace
+- identifier_name
+- void_return
+- multiple_closures_with_trailing_closure
+- closing_brace
+- large_tuple
+- legacy_hashing
+- comma
+- type_name
+
+opt_in_rules:
+- modifier_order
+
+shorthand_operator: warning
+
+line_length:
+  warning: 200
+  error: 540
+
+type_body_length:
+#  warning: 300
+  error: 650
+  
+function_body_length:
+  error: 120
+
+file_length:
+  warning: 850
+  error: 2000
+  
+large_tuple:
+#  warning: 6
+  error: 8
+  
+cyclomatic_complexity:
+#  warning: 10
+  error: 30
+  ignores_case_statements: true
+
+#colon:
+#  flexible_right_spacing: true
+#  apply_to_dictionaries: false
+
+switch_case_alignment:
+  indented_cases: true
+

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 
 public typealias MutableDAG = InternalDirectSnapshot
 

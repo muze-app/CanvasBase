@@ -131,7 +131,6 @@ import UIKit
 //}
 //
 
-
 //extension RenderColor2: NodePayload { }
 //
 //final class SolidColorNode: GNode<RenderColor2> {

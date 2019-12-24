@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import muze_prelude
+import MuzePrelude
 import DAG
 
 extension AffineTransform: NodePayload {

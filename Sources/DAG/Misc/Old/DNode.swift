@@ -10,7 +10,6 @@ import Foundation
 
 class Nothing { }
 
-
 public class INode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {
     
     var input: GenericNode<Collection>? {
@@ -32,11 +31,7 @@ public class INode<Collection: NodeCollection, PayloadType: NodePayload>: Payloa
     
 }
 
-
-
 open class GeneratorNode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {
-    
-    
     
 }
 

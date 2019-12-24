@@ -87,7 +87,6 @@ class ImageNode: GeneratorNode<ImagePayload> {
     
 }
 
-
 public struct ImagePayload: NodePayload {
     
 //    var image: Image

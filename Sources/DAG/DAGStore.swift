@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import muze_prelude
+import MuzePrelude
 
 public class DAGStore<Collection: NodeCollection> {
     
@@ -147,8 +147,8 @@ public class DAGStore<Collection: NodeCollection> {
     func release(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
         sync {
             switch mode {
-            case .externalReference: externalRetainedCommitsBag.remove(key)
-            case .internalReference: internalRetainedCommitsBag.remove(key)
+                case .externalReference: externalRetainedCommitsBag.remove(key)
+                case .internalReference: internalRetainedCommitsBag.remove(key)
             }
             
             if !retainedCommitsSet.contains(key) {
@@ -280,7 +280,7 @@ public class DAGStore<Collection: NodeCollection> {
 //                }
 //            }
 //
-//            massert(originalImage.exists)
+//            assert(originalImage.exists)
 //        }
 //
 //        autoreleasepool {
@@ -295,9 +295,9 @@ public class DAGStore<Collection: NodeCollection> {
 //
 //        print("undo count: \(canvas.undoManager.undoCount)")
 //        print("image count: \(InternalImage.instances.values.count)")
-//        massert(!originalImage.exists)
+//        assert(!originalImage.exists)
 //
-//        massert(store.latest.allSubgraphKeys.count == 2)
+//        assert(store.latest.allSubgraphKeys.count == 2)
 //
 //        store.latest.subgraph(for: layer.subgraphKey).finalNode!.log()
 //
@@ -333,7 +333,7 @@ public class DAGStore<Collection: NodeCollection> {
 //
 //            let final = subgraph.finalNode as! TransformNode
 //            let color = final.input as! SolidColorNode
-//            massert(color.color == .red)
+//            assert(color.color == .red)
 //        }
 //
 //        print("a0:")
@@ -379,7 +379,7 @@ public class DAGStore<Collection: NodeCollection> {
 //            blend.destination = color
 //            transform.input = blend
 //
-//            massert(blend.inputs.count == 2)
+//            assert(blend.inputs.count == 2)
 //
 //            subgraphOne = Subgraph(key: subgraphKey, graph: graph)
 //            subgraphOne.finalNode = transform
@@ -445,7 +445,7 @@ public class DAGStore<Collection: NodeCollection> {
 //            blend.destination = color
 //            transform.input = blend
 //
-//            massert(blend.inputs.count == 2)
+//            assert(blend.inputs.count == 2)
 //
 //            subgraphOne = Subgraph(key: subgraphKey, graph: graph)
 //            subgraphOne.finalNode = transform
@@ -570,7 +570,7 @@ public class DAGStore<Collection: NodeCollection> {
 //            blend.destination = color
 //            transform.input = blend
 //
-//            massert(blend.inputs.count == 2)
+//            assert(blend.inputs.count == 2)
 //
 //            subgraphOne = Subgraph(key: subgraphKey, graph: graph)
 //            subgraphOne.finalNode = transform
