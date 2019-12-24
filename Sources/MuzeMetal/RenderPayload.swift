@@ -62,7 +62,7 @@ public indirect enum RenderPayload {
     
 }
 
-extension RenderPayload {
+public extension RenderPayload {
     
     var isPass: Bool {
         switch self {

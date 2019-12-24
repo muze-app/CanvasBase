@@ -35,7 +35,7 @@ func & (l: (AffineTransform, CGSize), r: AffineTransform) -> CropSandwich {
     return CropSandwich(preCropTransform: l.0, cropSize: l.1, postCropTransform: r)
 }
 
-struct CropSandwich: Equatable {
+public struct CropSandwich: Equatable {
 
     var postCropTransform: AffineTransform
     var cropSize: CGSize { didSet {

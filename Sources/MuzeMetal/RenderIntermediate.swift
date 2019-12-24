@@ -12,11 +12,11 @@ import MuzePrelude
 
 public class RenderIntermediate: RenderNodeOld {
     
-    let options: RenderOptions
-    var extent: RenderExtent
+    public let options: RenderOptions
+    public var extent: RenderExtent
     
     private var _pixelFormat: MTLPixelFormat
-    var pixelFormat: MTLPixelFormat {
+    public var pixelFormat: MTLPixelFormat {
         get { return _pixelFormat }
         set {
             _pixelFormat = newValue
@@ -24,26 +24,26 @@ public class RenderIntermediate: RenderNodeOld {
         }
     }
     
-    var canAlias: Bool {
+    public var canAlias: Bool {
         get { return output.canAlias }
         set { output.canAlias = newValue }
     }
     
-    var isCache: Bool = false
+    public var isCache: Bool = false
     
     private var _output: RenderSurface?
-    var output: RenderSurface {
+    public var output: RenderSurface {
         if let output = _output { return output }
         
         _output = RenderSurface(size: renderSize, pixelFormat: pixelFormat, identifier: identifier)
         return _output!
     }
     
-    var basicExtent: BasicExtent {
+    public var basicExtent: BasicExtent {
         return extent.basic ?? optionsExtent
     }
     
-    var optionsExtent: BasicExtent {
+    public var optionsExtent: BasicExtent {
         switch options.mode {
             case .normalized(let size):
                 return BasicExtent(size: size, transform: .identity)
@@ -52,7 +52,7 @@ public class RenderIntermediate: RenderNodeOld {
         }
     }
     
-    var croppable: CropSandwich {
+    public var croppable: CropSandwich {
         let extent = basicExtent
         
         let croppable = CropSandwich(preCropTransform: extent.transform.inverse,
@@ -74,19 +74,19 @@ public class RenderIntermediate: RenderNodeOld {
         return croppable.resized(to: size)
     }
     
-    var preCropTransform: AffineTransform {
+    public var preCropTransform: AffineTransform {
         return croppable.preCropTransform
     }
     
-    var renderSize: CGSize {
+    public var renderSize: CGSize {
         return croppable.cropSize
     }
     
-    var postCropTransform: AffineTransform {
+    public var postCropTransform: AffineTransform {
         return croppable.postCropTransform
     }
     
-    init(identifier: String, options: RenderOptions, extent: RenderExtent, pixelFormat: MTLPixelFormat = .rgba16Float) {
+    public init(identifier: String, options: RenderOptions, extent: RenderExtent, pixelFormat: MTLPixelFormat = .rgba16Float) {
         self.options = options
         self.extent = extent
         self._pixelFormat = pixelFormat
@@ -94,22 +94,22 @@ public class RenderIntermediate: RenderNodeOld {
         super.init(identifier: identifier)
     }
     
-    var texture: MetalTexture? {
+    public var texture: MetalTexture? {
         return output.texture
     }
     
-    func add(pass: RenderPassDescriptor) {
+    public func add(pass: RenderPassDescriptor) {
         _passes.append(pass)
         pass.target = output
         
         pass.transform(by: preCropTransform)
     }
     
-    static func << (lhs: RenderIntermediate, rhs: RenderPassDescriptor) {
+    public static func << (lhs: RenderIntermediate, rhs: RenderPassDescriptor) {
         lhs.add(pass: rhs)
     }
     
-    var payload: RenderPayload {
+    public var payload: RenderPayload {
         return .cropAndTransform(.intermediate(self), renderSize, postCropTransform)
     }
     

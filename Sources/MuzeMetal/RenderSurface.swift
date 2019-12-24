@@ -10,7 +10,7 @@ import UIKit
 import Metal
 import MuzePrelude
 
-class RenderSurface: AutoHash, MetalPassTarget {
+public class RenderSurface: AutoHash, MetalPassTarget {
     
     var size: CGSize
     var pixelFormat: MTLPixelFormat {

@@ -15,7 +15,7 @@ protocol MetalPassTarget: class {
     
 }
 
-class RenderPassDescriptor: AutoHash {
+public class RenderPassDescriptor: AutoHash {
     
     var identifier: String
     let pipeline: MetalPipeline
