@@ -29,7 +29,8 @@ public protocol Drawable: class, MemoryManageeLeaf {
 
 extension Drawable {
     
-    init(size: CGSize = UIScreen.main.bounds.size, scale: CGFloat = UIScreen.main.nativeScale) {
+    public init(size: CGSize = UIScreen.main.bounds.size,
+                scale: CGFloat = UIScreen.main.nativeScale) {
         let s = size * scale
         let w = Int(round(s.width))
         let h = Int(round(s.height))

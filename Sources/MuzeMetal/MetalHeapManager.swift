@@ -11,7 +11,7 @@ import Metal
 import MetalKit
 import MuzePrelude
 
-enum HeapType {
+public enum HeapType {
     case longTerm
     case render
 }
@@ -38,7 +38,7 @@ public class MetalHeapManager {
     }()
     #endif
     
-    func makeTexture(for descriptor: MTLTextureDescriptor, type: HeapType) -> MetalTexture? {
+    public func makeTexture(for descriptor: MTLTextureDescriptor, type: HeapType) -> MetalTexture? {
 //        dispatchPrecondition(condition: .notOnQueue(.main))
         
         let t = series(for: type).makeTexture(for: descriptor)
@@ -46,14 +46,14 @@ public class MetalHeapManager {
         return t
     }
     
-    func makeDescriptor(with size: CGSize, _ pixelFormat: MTLPixelFormat) -> MTLTextureDescriptor {
+    public func makeDescriptor(with size: CGSize, _ pixelFormat: MTLPixelFormat) -> MTLTextureDescriptor {
         return MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat,
                                                         width: Int(size.width),
                                                         height: Int(size.height),
                                                         mipmapped: false)
     }
     
-    func makeTexture(_ size: CGSize, _ pixelFormat: MTLPixelFormat, type: HeapType) -> MetalTexture? {
+    public func makeTexture(_ size: CGSize, _ pixelFormat: MTLPixelFormat, type: HeapType) -> MetalTexture? {
         let descriptor = makeDescriptor(with: size, pixelFormat)
         descriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
         

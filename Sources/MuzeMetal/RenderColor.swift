@@ -89,7 +89,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
     }
     
     // currently assumes we're only using color spaces with sRGB 'gamma' curve
-    var ui: UIColor {
+    public var ui: UIColor {
         guard let space = colorSpace.cg else {
             return self.converted(to: .p3).ui
         }
@@ -100,22 +100,22 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         return UIColor(cgColor: cg!)
     }
     
-    func converted(to space: ColorSpace) -> RenderColor2 {
+    public func converted(to space: ColorSpace) -> RenderColor2 {
         if self.colorSpace == space { return self }
         let m = colorSpace.matrix(to: space)
         return RenderColor2(m * rgb, a: a, colorSpace: space)
     }
     
-    func assigning(space: ColorSpace) -> RenderColor2 {
+    public func assigning(space: ColorSpace) -> RenderColor2 {
         return RenderColor2(rgb, a: a, colorSpace: space)
     }
     
-    var rgb: DVec3 {
+    public var rgb: DVec3 {
         typealias D = Double
         return [D(r), D(g), D(b)]
     }
     
-    var floats: [Float] {
+    public var floats: [Float] {
         return [r,g,b,a]
     }
     

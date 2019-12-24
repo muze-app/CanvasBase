@@ -19,7 +19,7 @@ private let releaseCallback: CGDataProviderReleaseDataCallback = { _, _, _ in
 
 // warning: retain this object, NOT CGImages or UIImages created from it
 // when this object is release, it will free the underlying memory, and any CGImages trying to use it will crash
-class HeapImage {
+public class HeapImage {
     
     let address: UnsafeMutableRawPointer
     let width: Int
