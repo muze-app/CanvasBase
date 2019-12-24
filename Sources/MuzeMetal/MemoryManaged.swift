@@ -12,24 +12,24 @@ public struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, Cu
     
     public let size: Int
     
-    init(_ size: Int) { self.size = size }
-    init<T: BinaryInteger>(_ size: T) { self.size = Int(size) }
-    init<F: BinaryFloatingPoint>(_ size: F) { self.size = Int(size) }
+    public init(_ size: Int) { self.size = size }
+    public init<T: BinaryInteger>(_ size: T) { self.size = Int(size) }
+    public init<F: BinaryFloatingPoint>(_ size: F) { self.size = Int(size) }
     public init(integerLiteral value: Int) { self.size = value }
     
-    static func + (lhs: MemorySize, rhs: MemorySize) -> MemorySize {
+    public static func + (lhs: MemorySize, rhs: MemorySize) -> MemorySize {
         return MemorySize(lhs.size + rhs.size)
     }
     
-    static func - (l: MemorySize, r: MemorySize) -> MemorySize {
+    public static func - (l: MemorySize, r: MemorySize) -> MemorySize {
         return MemorySize(l.size - r.size)
     }
     
-    static func / (lhs: MemorySize, rhs: MemorySize) -> MemorySize {
+    public static func / (lhs: MemorySize, rhs: MemorySize) -> MemorySize {
         return MemorySize(lhs.size / rhs.size)
     }
     
-    static func * (lhs: MemorySize, rhs: Float) -> MemorySize {
+    public static func * (lhs: MemorySize, rhs: Float) -> MemorySize {
         return MemorySize(Float(lhs.size) * rhs)
     }
     

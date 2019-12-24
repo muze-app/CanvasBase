@@ -12,10 +12,10 @@ import MetalKit
 
 public class MetalFunction {
     
-    let name: String
+    public let name: String
     let function: MTLFunction
     
-    init(name: String) {
+    public init(name: String) {
         self.name = name
         
         guard let function = MetalDevice.library.makeFunction(name: name) else {

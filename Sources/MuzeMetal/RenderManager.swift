@@ -9,7 +9,7 @@
 import UIKit
 import Metal
 
-class RenderManager {
+public class RenderManager {
 
     static let shared = RenderManager()
 //    static var activeRenders = [String]()
