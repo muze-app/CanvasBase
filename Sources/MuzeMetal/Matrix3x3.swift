@@ -12,7 +12,7 @@ infix operator •: MultiplicationPrecedence
 infix operator ~ : ComparisonPrecedence
 infix operator × : MultiplicationPrecedence
 
-func ~ (l: Double, r: Double!) -> Bool {
+public func ~ (l: Double, r: Double!) -> Bool {
     let d = abs(l-r)
     let q = max(min(abs(l), abs(r)), 1)
     let e = d/q
@@ -20,17 +20,17 @@ func ~ (l: Double, r: Double!) -> Bool {
     return r
 }
 
-func ~ (l: Vec3<Double>, r: Vec3<Double>) -> Bool {
+public func ~ (l: Vec3<Double>, r: Vec3<Double>) -> Bool {
     return l.a ~ r.a && l.b ~ r.b && l.c ~ r.c
 }
 
-func ~ (l: Matrix3x3<Double>, r: Matrix3x3<Double>) -> Bool {
+public func ~ (l: Matrix3x3<Double>, r: Matrix3x3<Double>) -> Bool {
     return l[0] ~ r[0] && l[1] ~ r[1] && l[2] ~ r[2]
 }
 
 public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable {
     
-    var a, b, c: N
+    public var a, b, c: N
     
     public init(arrayLiteral elements: N...) {
         a = elements[0]
@@ -38,25 +38,25 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         c = elements[2]
     }
     
-    init(_ elements: [N]) {
+    public init(_ elements: [N]) {
         a = elements[0]
         b = elements[1]
         c = elements[2]
     }
     
-    func set(_ a: inout N, _ b: inout N, _ c: inout N) {
+    public func set(_ a: inout N, _ b: inout N, _ c: inout N) {
         a = self.a
         b = self.b
         c = self.c
     }
     
-    var tuple: (N, N, N) {
+    public var tuple: (N, N, N) {
         return (a, b, c)
     }
     
-    var components: [N] { return [a, b, c] }
+    public var components: [N] { return [a, b, c] }
     
-    subscript(index: Int) -> N {
+    public subscript(index: Int) -> N {
         get {
             switch index {
                 case 0: return a
@@ -75,7 +75,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         }
     }
     
-    static func + (l: Vec3<N>, r: N) -> Vec3<N> {
+    public static func + (l: Vec3<N>, r: N) -> Vec3<N> {
         var copy = l
         copy.a = r + l.a
         copy.b = r + l.b
@@ -83,7 +83,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func + (l: Vec3<N>, r: Vec3<N>) -> Vec3<N> {
+    public static func + (l: Vec3<N>, r: Vec3<N>) -> Vec3<N> {
         var copy = l
         copy.a = r.a + l.a
         copy.b = r.b + l.b
@@ -91,7 +91,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func - (l: Vec3<N>, r: N) -> Vec3<N> {
+    public static func - (l: Vec3<N>, r: N) -> Vec3<N> {
         var copy = l
         copy.a = l.a - r
         copy.b = l.b - r
@@ -99,7 +99,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func + (l: N, r: Vec3<N>) -> Vec3<N> {
+    public static func + (l: N, r: Vec3<N>) -> Vec3<N> {
         var copy = r
         copy.a = l + copy.a
         copy.b = l + copy.b
@@ -107,7 +107,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func - (l: N, r: Vec3<N>) -> Vec3<N> {
+    public static func - (l: N, r: Vec3<N>) -> Vec3<N> {
         var copy = r
         copy.a = l - copy.a
         copy.b = l - copy.b
@@ -115,7 +115,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func * (l: N, r: Vec3<N>) -> Vec3<N> {
+    public static func * (l: N, r: Vec3<N>) -> Vec3<N> {
         var copy = r
         copy.a = l * copy.a
         copy.b = l * copy.b
@@ -123,7 +123,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func * (l: Vec3<N>, r: Vec3<N>) -> Vec3<N> {
+    public static func * (l: Vec3<N>, r: Vec3<N>) -> Vec3<N> {
         var copy = r
         copy.a = l.a * r.a
         copy.b = l.b * r.b
@@ -131,14 +131,14 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    static func • (l: Vec3<N>, r: Vec3<N>) -> N {
+    public static func • (l: Vec3<N>, r: Vec3<N>) -> N {
         let a = l.a * r.a
         let b = l.b * r.b
         let c = l.c * r.c
         return a + b + c
     }
     
-    static func / (l: N, r: Vec3<N>) -> Vec3<N> {
+    public static func / (l: N, r: Vec3<N>) -> Vec3<N> {
         var copy = r
         copy.a = l / copy.a
         copy.b = l / copy.b
@@ -146,7 +146,7 @@ public struct Vec3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hashable 
         return copy
     }
     
-    func map(_ map: (N) -> N) -> Vec3<N> {
+    public func map(_ map: (N) -> N) -> Vec3<N> {
         let xs = [a, b, c].map(map)
         return Vec3(xs)
     }
@@ -157,11 +157,11 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
     
     // a,b,c = rows
     // 1,2,3 = cols
-    var a1, a2, a3: N
-    var b1, b2, b3: N
-    var c1, c2, c3: N
+    public var a1, a2, a3: N
+    public var b1, b2, b3: N
+    public var c1, c2, c3: N
     
-    init(diagonal d: N = 1) {
+    public init(diagonal d: N = 1) {
         a1 = d
         b2 = d
         c3 = d
@@ -174,7 +174,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         c2 = 0
     }
     
-    init(diagonal d: [N]) {
+    public init(diagonal d: [N]) {
         a1 = d[0]
         b2 = d[1]
         c3 = d[2]
@@ -187,7 +187,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         c2 = 0
     }
     
-    init(diagonal d: Vec3<N>) {
+    public init(diagonal d: Vec3<N>) {
         self = .init(diagonal: [d.a, d.b, d.c])
     }
     
@@ -197,7 +197,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         (c1, c2, c3) = elements[2].tuple
     }
     
-    func col(_ index: Int) -> Vec3<N> {
+    public func col(_ index: Int) -> Vec3<N> {
         switch index {
             case 0: return [a1, b1, c1]
             case 1: return [a2, b2, c2]
@@ -206,7 +206,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         }
     }
     
-    func row(_ index: Int) -> Vec3<N> {
+    public func row(_ index: Int) -> Vec3<N> {
         switch index {
             case 0: return [a1, a2, a3]
             case 1: return [b1, b2, b3]
@@ -215,7 +215,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         }
     }
     
-    subscript(index: Int) -> Vec3<N> {
+    public subscript(index: Int) -> Vec3<N> {
         get { return col(index) }
         set {
             switch index {
@@ -252,7 +252,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         return result
     }
     
-    static func * (l: Matrix3x3<N>, r: Matrix3x3<N>) -> Matrix3x3<N> {
+   public static func * (l: Matrix3x3<N>, r: Matrix3x3<N>) -> Matrix3x3<N> {
         return newMultM(l, r)
     }
     
@@ -275,7 +275,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         return Vec3<N>(xs)
     }
     
-    static func * (l: Matrix3x3<N>, r: Vec3<N>) -> Vec3<N> {
+    public static func * (l: Matrix3x3<N>, r: Vec3<N>) -> Vec3<N> {
         return newMultV(l, r)
     }
     
@@ -283,7 +283,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         return c1.0 * c2.1 - c2.0 * c1.1
     }
     
-    var determinant: N {
+    public var determinant: N {
         let _c1 = (b1, c1)
         let _c2 = (b2, c2)
         let _c3 = (b3, c3)
@@ -295,7 +295,7 @@ public struct Matrix3x3<N: BinaryFloatingPoint>: ExpressibleByArrayLiteral, Hash
         return r1 - r2 + r3
     }
     
-    var inverse: Matrix3x3<N> {
+    public var inverse: Matrix3x3<N> {
         var result = Matrix3x3<N>()
         let id = 1.0 / determinant
         
@@ -388,7 +388,7 @@ public extension DMatrix3x3 {
 
 public typealias DVec3 = Vec3<Double>
 
-extension DVec3 {
+public extension DVec3 {
     
     // in XYZ
     static let illuminantE: DVec3 = [1,1,1]
