@@ -17,12 +17,12 @@ public class MetalTexture: Equatable {
     public private(set) var isAliasable = false
     public var isInUseByRenderer = false
     
-    var identifier: String? {
+    public var identifier: String? {
         get { return _texture.label}
         set { _texture.label = newValue }
     }
     
-    var colorSpace: RenderOptions.ColorSpace? = nil {
+    public var colorSpace: RenderOptions.ColorSpace? = nil {
         didSet {
             if let old = oldValue {
                 if let new = colorSpace {
@@ -36,9 +36,9 @@ public class MetalTexture: Equatable {
         }
     }
     
-    var timeStamp: TimeInterval?
+    public var timeStamp: TimeInterval?
     
-    var isLinear: Bool {
+    public var isLinear: Bool {
         return RenderOptions.PixelFormat(rawValue: pixelFormat)!.isLinear
     }
     
@@ -62,7 +62,7 @@ public class MetalTexture: Equatable {
     
     var bytesNeeded: Int = 0
     
-    var uiImage: UIImage {
+    public var uiImage: UIImage {
         return _texture.uiImage
     }
     
@@ -70,11 +70,11 @@ public class MetalTexture: Equatable {
         return lhs === rhs
     }
     
-    var pixelFormat: MTLPixelFormat {
+    public var pixelFormat: MTLPixelFormat {
         return _texture.pixelFormat
     }
     
-    var size: CGSize {
+    public var size: CGSize {
         return _texture.size
     }
     
