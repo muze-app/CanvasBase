@@ -16,9 +16,9 @@ enum HeapType {
     case render
 }
 
-class MetalHeapManager {
+public class MetalHeapManager {
     
-    static let shared = MetalHeapManager()
+    public static let shared = MetalHeapManager()
     
     let renderHeaps = MetalHeapSeries(type: .render)
     let staticHeaps = MetalHeapSeries(type: .longTerm)
@@ -68,11 +68,12 @@ class MetalHeapManager {
     
     let queue = DispatchQueue(label: "Heaps", qos: .userInteractive, attributes: [], autoreleaseFrequency: .workItem)
     
-    enum GarbageCollectionStrategy {
+    public enum GarbageCollectionStrategy {
         case aggressive
     }
     
-    func collectGarbage(_ stragegy: GarbageCollectionStrategy, after interval: TimeInterval) {
+    public func collectGarbage(_ stragegy: GarbageCollectionStrategy,
+                               after interval: TimeInterval) {
         #if !targetEnvironment(simulator)
         staticHeaps.queue.asyncAfter(deadline: .now() + interval) {
 //            print("BEFORE")
@@ -116,11 +117,11 @@ class MetalHeapManager {
         #endif
     }
     
-    var usedSize: MemorySize {
+    public var usedSize: MemorySize {
         return MemorySize(renderHeaps.usedSize + staticHeaps.usedSize)
     }
     
-    var allocatedSize: MemorySize {
+    public var allocatedSize: MemorySize {
         return MemorySize(renderHeaps.allocatedSize + staticHeaps.usedSize)
     }
     
