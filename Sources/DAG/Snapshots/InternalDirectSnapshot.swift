@@ -25,12 +25,10 @@ public struct NodeRevData {
     
 }
 
-fileprivate let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot<MockNodeCollection>>()
-fileprivate var i = 0
+private let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot<MockNodeCollection>>()
+private var i = 0
 
 public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
-    
-    
     
     weak var _store: DAGStore<Collection>?
     override public var store: DAGStore<Collection> { _store! }
@@ -39,7 +37,6 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     override var level: Int { _level }
     
     var modLock: NSRecursiveLock? { return store.lock }
-    
     
     init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, level: Int, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
@@ -176,7 +173,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return pred + mine //+ alt
     }
 
-    public override func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
+    override public func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
         if level >= self.level, let subgraph = subgraphs[key] {
             return subgraph
         }
@@ -268,8 +265,6 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         
         payloadMap[key] = allocation
     }
-    
-   
     
     // MARK: Reverse Edges
     

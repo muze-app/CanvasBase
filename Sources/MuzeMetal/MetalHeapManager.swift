@@ -171,7 +171,7 @@ extension MetalHeap: CustomDebugStringConvertible {
         return "\(unsafe)"
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         return "Heap(\(pointerString))"
     }
     

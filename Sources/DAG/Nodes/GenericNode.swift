@@ -203,7 +203,6 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         block(self)
     }
     
-    
     func contains(_ key: NodeKey) -> Bool {
         if self.key == key { return true }
         
@@ -242,7 +241,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return inputs.flatMap { $0.nodes(thatDoNotContain: keys) }
     }
     
-    func first(where predicate: (GenericNode)->Bool) -> GenericNode? {
+    func first(where predicate: (GenericNode) -> Bool) -> GenericNode? {
         if predicate(self) { return self }
         
         for input in inputs {
@@ -254,7 +253,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return nil
     }
     
-    func all(where predicate: (GenericNode)->Bool) -> [GenericNode] {
+    func all(where predicate: (GenericNode) -> Bool) -> [GenericNode] {
         var all = inputs.flatMap { $0.all(where: predicate) }
         
         if predicate(self) { all.append(self) }
@@ -506,8 +505,6 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
 //
 //}
 
-
-
 //@available(*, deprecated)
 //class PayloadNode<PayloadType: NodePayload>: Node {
 //
@@ -535,4 +532,3 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
 //    }
 //
 //}
-

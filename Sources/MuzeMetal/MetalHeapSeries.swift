@@ -109,15 +109,15 @@ class MetalHeapSeries: MetalAllocator {
                     //                print("moving \(heap) to defrag")
                     fullHeaps.append(heap)
                 } else {
-                    for texture in heap.textures.sortedBySize {
+                    for texture in heap.textures.sortedBySize where !texture.isAliasable && !texture.isInUseByRenderer {
 //                        print("    moving texture of size \(texture.memorySize)")
-                        if !texture.isAliasable, !texture.isInUseByRenderer {
+//                        if !texture.isAliasable, !texture.isInUseByRenderer {
                             if !defragmentedHeaps._move(texture: texture) {
                                 // should be rare, but could happen if a texture is too large to fit into defragged heaps
                                 // for now, we'll just pretend it doesn't happen, since we'll still be mostly defragged
                                 //                    continue
                             }
-                        }
+//                        }
                     }
                     
                     defragmentedHeaps.append(heap)
@@ -140,12 +140,12 @@ class MetalHeapSeries: MetalAllocator {
         for heapSeries in series {
             for heap in heapSeries.heaps {
                 autoreleasepool {
-                    for texture in heap.textures.sortedBySize {
-                        if !texture.isAliasable, !texture.isInUseByRenderer {
+                    for texture in heap.textures.sortedBySize where !texture.isAliasable && !texture.isInUseByRenderer {
+//                        if !texture.isAliasable, !texture.isInUseByRenderer {
                             if !defragmentedHeaps._move(texture: texture) {
                                 // here we should consider allocating some more heaps
                             }
-                        }
+//                        }
                     }
                 }
                 

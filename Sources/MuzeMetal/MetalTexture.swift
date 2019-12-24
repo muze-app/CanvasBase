@@ -12,10 +12,10 @@ import MuzePrelude
 
 public class MetalTexture: Equatable {
     
-    var _texture: MTLTexture
-    weak var heap: MetalHeap?
-    var isAliasable = false
-    var isInUseByRenderer = false
+    public var _texture: MTLTexture
+    public weak var heap: MetalHeap?
+    public private(set) var isAliasable = false
+    public var isInUseByRenderer = false
     
     var identifier: String? {
         get { return _texture.label}

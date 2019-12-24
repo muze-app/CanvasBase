@@ -24,7 +24,7 @@ class MetalEncoder {
         
         var isClear: Bool {
             switch self {
-                case .clear(_): return true
+                case .clear: return true
                 default: return false
             }
         }

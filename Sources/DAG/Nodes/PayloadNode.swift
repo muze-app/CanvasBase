@@ -124,7 +124,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         //        return data.userExtent!
     }*/
     
-    final override public var contentHash: Int {
+    override public final var contentHash: Int {
         return calculatedContentHash
         //        var data = dag.revData(for: key) ?? NodeRevData()
         //        if let h = data.hash { return h }
@@ -141,7 +141,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         return hasher.finalize()
     }
     
-    final override public func hash(into hasher: inout Hasher, includeKeys: Bool) {
+    override public final func hash(into hasher: inout Hasher, includeKeys: Bool) {
         if includeKeys {
             hasher.combine(key)
         }

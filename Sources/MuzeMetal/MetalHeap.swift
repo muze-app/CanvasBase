@@ -10,7 +10,7 @@ import UIKit
 import Metal
 import MuzePrelude
 
-class MetalHeap: MetalAllocator {
+public class MetalHeap: MetalAllocator {
     
     let heap: MTLHeap
     let heapDescriptor: MTLHeapDescriptor
