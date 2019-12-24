@@ -11,7 +11,7 @@ import Metal
 
 public class RenderNodeOld: AutoHash {
     
-    let identifier: String
+    public let identifier: String
     
     init(identifier: String, pixelFormat: MTLPixelFormat = .bgra8Unorm) {
         self.identifier = identifier
@@ -31,8 +31,8 @@ public class RenderNodeOld: AutoHash {
 //    var _dependencies: [RenderPayload] = []
     var _passes: [RenderPassDescriptor] = []
     
-    var passes: [RenderPassDescriptor] { return _passes }
-    var dependencies: [RenderPayload] { return passes.flatMap { $0.inputs } }
+    public var passes: [RenderPassDescriptor] { return _passes }
+    public var dependencies: [RenderPayload] { return passes.flatMap { $0.inputs } }
     
 //    var _outputCanBeReused: Bool = true
 //    var outputCanBeReused: Bool {

@@ -134,7 +134,7 @@ extension CVImageBuffer {
     }
     
     @available(*, deprecated)
-    var texture: MTLTexture {
+    public var texture: MTLTexture {
         #if targetEnvironment(simulator)
         fatalError()
         #else

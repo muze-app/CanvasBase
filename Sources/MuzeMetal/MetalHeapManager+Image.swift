@@ -11,7 +11,7 @@ import Metal
 import MetalKit
 import MuzePrelude
 
-extension MTLSize {
+public extension MTLSize {
     
     init(_ size: CGSize) {
         self = MTLSize(width: Int(size.width), height: Int(size.height), depth: 1)
@@ -19,7 +19,7 @@ extension MTLSize {
     
 }
 
-extension MetalHeapManager {
+public extension MetalHeapManager {
     
     func makeTexture<T>(size fSize: CGSize, pixelFormat: MTLPixelFormat = .rgba32Float, data: UnsafePointer<T>, bytesPerRow: Int) -> MetalTexture? {
         let size = fSize.rounded
@@ -110,7 +110,7 @@ extension MetalHeapManager {
     
 }
 
-extension CVImageBuffer {
+public extension CVImageBuffer {
     
     var isRAW: Bool {
         switch pixelFormat {
@@ -124,7 +124,7 @@ extension CVImageBuffer {
     
 }
 
-extension MetalTexture {
+public extension MetalTexture {
     
     func halved() -> MetalTexture {
         let w = width/2
@@ -223,7 +223,7 @@ extension ImageOrientation {
     
 }
 
-extension CGSize {
+public extension CGSize {
     
     func after(_ orientation: ImageOrientation) -> CGSize {
         if orientation.isLeftOrRight {

@@ -131,7 +131,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         return RenderColor2([y,y,y], a: alpha, colorSpace: colorSpace)
     }
     
-    static func displayP3<N: BinaryFloatingPoint>(red: N, green: N, blue: N, alpha: N = 1) -> RenderColor2 {
+    public static func displayP3<N: BinaryFloatingPoint>(red: N, green: N, blue: N, alpha: N = 1) -> RenderColor2 {
         return RenderColor2([red,green,blue], a: alpha, colorSpace: .p3)
     }
     public var length: Int { 16 }
