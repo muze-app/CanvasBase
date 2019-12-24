@@ -17,7 +17,7 @@ public class RenderContext {
 //    lazy var graph1 = FirstGraph()
 //    lazy var graph2 = FinalGraph()
     
-    init() { }
+    public init() { }
     
 //    func wrap(node: Node, for colorSpace: RenderOptions.ColorSpace, sRGB: Bool) -> Node {
 //        if colorSpace == .cam16, sRGB == false { return node }

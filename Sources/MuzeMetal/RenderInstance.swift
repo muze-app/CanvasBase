@@ -301,18 +301,18 @@ extension RenderPayload {
     
 }
 
-enum Either<L,R> {
+public enum Either<L,R> {
     case l(L)
     case r(R)
     
-    var l: L? {
+    public var l: L? {
         switch self {
             case .l(let l): return l
             case .r: return nil
         }
     }
     
-    var r: R? {
+    public var r: R? {
         switch self {
             case .l: return nil
             case .r(let r): return r
@@ -321,11 +321,11 @@ enum Either<L,R> {
     
 }
 
-typealias TextureAndTransform = (MetalTexture,AffineTransform)
-typealias IntermediateAndTransform = (IntermediateOrTexture,AffineTransform)
-typealias IntermediateOrTexture = Either<RenderIntermediate,MetalTexture>
+public typealias TextureAndTransform = (MetalTexture,AffineTransform)
+public typealias IntermediateAndTransform = (IntermediateOrTexture,AffineTransform)
+public typealias IntermediateOrTexture = Either<RenderIntermediate,MetalTexture>
 
-extension IntermediateOrTexture {
+public extension IntermediateOrTexture {
     
     var size: CGSize {
         switch self {

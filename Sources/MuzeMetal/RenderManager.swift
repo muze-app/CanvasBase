@@ -11,7 +11,7 @@ import Metal
 
 public class RenderManager {
 
-    static let shared = RenderManager()
+    public static let shared = RenderManager()
 //    static var activeRenders = [String]()
     
     let payloadQueue = DispatchQueue(label: "RenderManagerPayloads")
@@ -22,8 +22,8 @@ public class RenderManager {
                               autoreleaseFrequency: .workItem,
                               target: nil)
     
-    typealias ResultType = TextureAndTransform
-    typealias CompletionType = (ResultType)->()
+    public typealias ResultType = TextureAndTransform
+    public typealias CompletionType = (ResultType)->()
     
 //    var instances = [RenderInstance]()
     
@@ -40,9 +40,9 @@ public class RenderManager {
 //        }
 //    }
     
-    func render(_ payload: RenderPayload,
-                _ options: RenderOptions,
-                _ completion: @escaping CompletionType) {
+    public func render(_ payload: RenderPayload,
+                       _ options: RenderOptions,
+                       _ completion: @escaping CompletionType) {
         queue.async {
             let instance = RenderInstance()
 //            self.instances.append(instance)
