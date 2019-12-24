@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension FragmentFunction {
+public extension FragmentFunction {
     
     static let invert     = FragmentFunction(name: "invert_fragment")
     static let exposure   = FragmentFunction(name: "exposure_fragment")
@@ -20,7 +20,7 @@ extension FragmentFunction {
     
 }
 
-extension MetalPipeline {
+public extension MetalPipeline {
     
     static let invertPipeline     = MetalPipeline(vertex: .basic, fragment: .invert)
     static let exposurePipeline   = MetalPipeline(vertex: .basic, fragment: .exposure)

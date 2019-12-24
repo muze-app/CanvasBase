@@ -10,23 +10,23 @@ import UIKit
 import Metal
 import MuzePrelude
 
-class MetalPipeline: CustomDebugStringConvertible {
+public class MetalPipeline: CustomDebugStringConvertible {
     
     let vertex: VertexFunction
     let fragment: FragmentFunction
     let blending: MetalBlendingMode
     
     var states = ThreadSafeDict<MTLPixelFormat,MTLRenderPipelineState>()
-        
-        //[MTLPixelFormat:MTLRenderPipelineState]()
     
-    var debugDescription: String {
+    //[MTLPixelFormat:MTLRenderPipelineState]()
+    
+    public var debugDescription: String {
         return "MetalPipeline (\(vertex.name),\(fragment.name))"
     }
     
-    init(vertex: VertexFunction,
-         fragment: FragmentFunction,
-         blending: MetalBlendingMode = .normal) {
+    public init(vertex: VertexFunction,
+                fragment: FragmentFunction,
+                blending: MetalBlendingMode = .normal) {
         self.vertex = vertex
         self.fragment = fragment
         self.blending = blending
@@ -48,6 +48,10 @@ class MetalPipeline: CustomDebugStringConvertible {
         states[pixelFormat] = state
         return state
     }
+    
+}
+
+public extension MetalPipeline {
     
     @available(*, deprecated)
     static let blitPipeline = MetalPipeline(vertex: .basic, fragment: .blit)
@@ -86,15 +90,15 @@ class MetalPipeline: CustomDebugStringConvertible {
     // MARK: Default Vertex Buffer
     
     private static let defaultVertexData: [Float] = [-1, -1, 0,
-                                                      1, -1, 0,
+                                                     1, -1, 0,
                                                      -1,  1, 0,
-                                                      1,  1, 0]
+                                                     1,  1, 0]
     
     static let defaultVertexBuffer: MetalBuffer = defaultVertexData.asData
     
 }
 
-enum MetalBlendingMode {
+public enum MetalBlendingMode {
     
     case normal
     
@@ -110,7 +114,7 @@ enum MetalBlendingMode {
                 colorAttachment.sourceAlphaBlendFactor = .one
                 colorAttachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
                 colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
-                
+            
             case .combineMasks:
                 colorAttachment.isBlendingEnabled = true
                 colorAttachment.rgbBlendOperation = .add

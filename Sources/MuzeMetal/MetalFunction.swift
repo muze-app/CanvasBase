@@ -10,7 +10,7 @@ import UIKit
 import Metal
 import MetalKit
 
-class MetalFunction {
+public class MetalFunction {
     
     let name: String
     let function: MTLFunction
@@ -27,14 +27,16 @@ class MetalFunction {
     
 }
 
-class VertexFunction: MetalFunction {
+public class VertexFunction: MetalFunction {
     
-    static let basic = VertexFunction(name: "basic_vertex")
-    static let brush = VertexFunction(name: "brush_vertex")
+    public static let basic = VertexFunction(name: "basic_vertex")
+    public static let brush = VertexFunction(name: "brush_vertex")
     
 }
 
-class FragmentFunction: MetalFunction {
+public class FragmentFunction: MetalFunction { }
+    
+public extension FragmentFunction {
     
     static let draw             = FragmentFunction(name: "draw_fragment")
     static let draw2            = FragmentFunction(name: "draw_fragment2")
