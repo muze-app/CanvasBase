@@ -9,10 +9,24 @@
 import UIKit
 import Metal
 
+import MuzePrelude
+import MuzeMetal
+import DAG
+import CanvasDAG
+
+public typealias Graph = DAGBase<CanvasNodeCollection>
+public typealias Node = GenericNode<CanvasNodeCollection> & RenderableNode
+
+public protocol RenderableNode {
+    
+    func renderPayload(for options: RenderOptions) -> RenderPayload?
+    
+}
+
 //typealias FirstGraph = NodeGraph
 //typealias FinalGraph = NodeGraph
 
-public class RenderContext {
+open class RenderContext {
     
 //    lazy var graph1 = FirstGraph()
 //    lazy var graph2 = FinalGraph()
@@ -29,9 +43,7 @@ public class RenderContext {
 //        return matrixNode
 //    }
     
-    /*
-    
-    func render(graph: DAG,
+    func render(graph: Graph,
                 subgraph: SubgraphKey,
                 canvasSize: CGSize,
                 time: TimeInterval,
@@ -56,16 +68,16 @@ public class RenderContext {
 
 //        let optimized = graph.optimized(throughCacheNodes: false)
         
-        var finalNode: DNode?
+        var finalNode: Node?
         _ = graph.modify { graph in
-            finalNode = graph.finalNode(for: subgraph) //?.optimize(throughCacheNodes: false)
+            finalNode = graph.finalNode(for: subgraph) as? Node //?.optimize(throughCacheNodes: false)
         }
         
         let payload = finalNode?.renderPayload(for: options) ?? clearPayload
 
         let manager = RenderManager.shared
         manager.render(payload, options) { (result) in
-            graph.store?.cacheStore.finalize()
+//            graph.store.cacheStore.finalize()
 //            self.graph1.finalizeCaches(keeping: [])
 //            self.graph2.finalizeCaches(keeping: keysToCache)
 
@@ -79,11 +91,11 @@ public class RenderContext {
         }
     }
     
-    func render(intermediateNode node: InternalDirectSnapshot,
-                   time: TimeInterval = 0,
-                   format: RenderOptions.PixelFormat = .float16,
-                   colorSpace: RenderOptions.ColorSpace = .working,
-                   completion: @escaping CompletionType) {
+    func render(intermediateNode node: Graph,
+                time: TimeInterval = 0,
+                format: RenderOptions.PixelFormat = .float16,
+                colorSpace: RenderOptions.ColorSpace = .working,
+                completion: @escaping CompletionType) {
         
         fatalError()
         
@@ -106,12 +118,12 @@ public class RenderContext {
 //            completion(result)
 //        }
     }
-    */
     
     typealias CompletionType = RenderManager.CompletionType
     
     var clearPayload: RenderPayload {
-        return .texture(MetalSolidColorTexture(.clear).texture)
+        fatalError()
+//        return .texture(MetalSolidColorTexture(.clear).texture)
     }
     
 //    func update(with node: Node, setRoot: Bool, optimize: Bool) -> Node {
@@ -158,18 +170,4 @@ public class RenderContext {
 //        animations = animations.filter { !$0.isCompleted || $0.keepAround }
     }
    
-}
-
-extension RenderOptions.PixelFormat {
-    
-    var isLinear: Bool {
-        switch self {
-            case .extended: return true
-            case .float16: return true
-            case .float32: return true
-            case .sixteen: return false
-            case .sRGB: return true
-        }
-    }
-    
 }

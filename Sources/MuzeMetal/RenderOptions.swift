@@ -79,3 +79,17 @@ public struct RenderOptions {
     }
     
 }
+
+extension RenderOptions.PixelFormat {
+    
+    var isLinear: Bool {
+        switch self {
+            case .extended: return true
+            case .float16: return true
+            case .float32: return true
+            case .sixteen: return false
+            case .sRGB: return true
+        }
+    }
+    
+}
