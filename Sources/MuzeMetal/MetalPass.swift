@@ -259,7 +259,7 @@ extension Array {
 //    print("saved to \(url)")
 //}
 
-extension String {
+public extension String {
     
     var standardizingPath: String {
         return (self as NSString).standardizingPath

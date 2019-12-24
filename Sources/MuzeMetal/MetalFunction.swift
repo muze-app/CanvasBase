@@ -63,9 +63,9 @@ public extension FragmentFunction {
     
 }
 
-class MetalDevice {
+public class MetalDevice {
     
-    static let device: MTLDevice = MTLCreateSystemDefaultDevice()!
+    public static let device: MTLDevice = MTLCreateSystemDefaultDevice()!
     static let library: MTLLibrary = device.makeDefaultLibrary()!
     static let commandQueue: MTLCommandQueue = device.makeCommandQueue()!
  

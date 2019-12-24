@@ -12,7 +12,7 @@ import Metal
 //typealias FirstGraph = NodeGraph
 //typealias FinalGraph = NodeGraph
 
-class RenderContext {
+public class RenderContext {
     
 //    lazy var graph1 = FirstGraph()
 //    lazy var graph2 = FinalGraph()
