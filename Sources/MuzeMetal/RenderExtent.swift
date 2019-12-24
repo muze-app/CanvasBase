@@ -110,7 +110,7 @@ public enum RenderExtent: Equatable {
     
 }
 
-extension BasicExtent {
+public extension BasicExtent {
     
     func contains(_ point: CGPoint) -> Bool {
         for line in shadedLines {
@@ -136,13 +136,13 @@ extension BasicExtent {
 
 public struct BasicExtentSet: Sequence, Equatable {
     
-    var extents: [BasicExtent]
+    public var extents: [BasicExtent]
     
-    init() {
+    public init() {
         extents = []
     }
     
-    init(_ extents: [BasicExtent]) {
+    public init(_ extents: [BasicExtent]) {
         var set = BasicExtentSet()
         
         for extent in extents {
@@ -156,7 +156,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         self.extents = extents
     }
     
-    func contains(_ point: CGPoint) -> Bool {
+    public func contains(_ point: CGPoint) -> Bool {
         for e in self {
             if e.contains(point) {
                 return true
@@ -166,7 +166,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         return false
     }
     
-    func contains(_ extent: BasicExtent) -> Bool {
+    public func contains(_ extent: BasicExtent) -> Bool {
         for e in self {
             if e.contains(extent) {
                 return true
@@ -176,7 +176,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         return false
     }
     
-    func union(with extent: BasicExtent) -> BasicExtentSet {
+    public func union(with extent: BasicExtent) -> BasicExtentSet {
         let extents = self.filter { !extent.contains($0) }
         
         for e in extents {
@@ -188,7 +188,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         return BasicExtentSet(unchecked: extents + [extent])
     }
     
-    func union(with extents: [BasicExtent]) -> BasicExtentSet {
+    public func union(with extents: [BasicExtent]) -> BasicExtentSet {
         var copy = self
         
         for extent in extents {
@@ -198,7 +198,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         return copy
     }
     
-    func union(with extents: BasicExtentSet) -> BasicExtentSet {
+    public func union(with extents: BasicExtentSet) -> BasicExtentSet {
         return union(with: extents.extents)
     }
     
@@ -206,7 +206,7 @@ public struct BasicExtentSet: Sequence, Equatable {
         return extents.makeIterator()
     }
     
-    var renderExtent: RenderExtent {
+    public var renderExtent: RenderExtent {
         if extents.count == 0 {
             return .nothing
         } else if extents.count == 1 {
@@ -216,14 +216,14 @@ public struct BasicExtentSet: Sequence, Equatable {
         }
     }
     
-    func transformed(by transform: AffineTransform) -> BasicExtentSet {
+    public func transformed(by transform: AffineTransform) -> BasicExtentSet {
         let transformed = extents.map { $0.transformed(by: transform) }
         return BasicExtentSet(unchecked: transformed)
     }
     
 }
 
-extension RenderExtent {
+public extension RenderExtent {
     
     var basic: BasicExtent? {
         switch self {
@@ -236,13 +236,13 @@ extension RenderExtent {
     
 }
 
-extension BasicExtent {
+public extension BasicExtent {
     
     static let zero = BasicExtent(size: .zero, transform: .identity)
     
 }
 
-extension BasicExtentSet {
+public extension BasicExtentSet {
     
     var basic: BasicExtent? {
         if extents.count == 0 {
@@ -263,29 +263,29 @@ extension BasicExtentSet {
 }
 
 // like a render extent, but for users
-struct UserExtent {
+public struct UserExtent {
     
-    let level: Level
-    let extent: RenderExtent
+    public let level: Level
+    public let extent: RenderExtent
     
-    static let nothing: UserExtent = .brush & .nothing
+    public static let nothing: UserExtent = .brush & .nothing
     
-    enum Level: Comparable, Equatable {
+    public enum Level: Comparable, Equatable {
         
         case photo, brush
         
-        static func < (lhs: UserExtent.Level, rhs: UserExtent.Level) -> Bool {
+        public static func < (lhs: UserExtent.Level, rhs: UserExtent.Level) -> Bool {
             return (lhs == .brush) && (rhs == .photo)
         }
         
     }
     
-    init(level: Level, extent: RenderExtent) {
+    public init(level: Level, extent: RenderExtent) {
         self.level = level
         self.extent = extent
     }
     
-    func union(with other: UserExtent) -> UserExtent {
+    public func union(with other: UserExtent) -> UserExtent {
         if other.level == self.level {
             return level & (extent.union(with: other.extent))
         }
@@ -293,16 +293,14 @@ struct UserExtent {
         return (other.level < self.level) ? self : other
     }
     
-    var basic: BasicExtent? {
+    public var basic: BasicExtent? {
         return extent.basic
     }
     
-    func transformed(by transform: AffineTransform) -> UserExtent {
+    public func transformed(by transform: AffineTransform) -> UserExtent {
         return level & extent.transformed(by: transform)
     }
     
 }
 
-func & (l: UserExtent.Level, e: RenderExtent) -> UserExtent {
-    return UserExtent(level: l, extent: e)
-}
+public func & (l: UserExtent.Level, e: RenderExtent) -> UserExtent { .init(level: l, extent: e) }
