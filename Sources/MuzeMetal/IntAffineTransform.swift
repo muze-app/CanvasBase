@@ -70,8 +70,8 @@ extension IntAffineTransform: MetalBuffer {
 
 extension Int16: MetalBuffer {
     
-    var length: Int { return 2 }
-    var asData: Data { /*return Data(from: self)*/ fatalError() }
+    public var length: Int { 2 }
+    public var asData: Data { /*return Data(from: self)*/ fatalError() }
     
 }
 

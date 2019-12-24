@@ -333,11 +333,11 @@ public struct RenderCrop: Equatable {
 
 extension RenderCrop: MetalBuffer {
     
-    var length: Int {
+    public var length: Int {
         return 128
     }
     
-    var asData: Data {
+    public var asData: Data {
         return asPaddedFloats.asData
     }
     

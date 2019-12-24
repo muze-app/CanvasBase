@@ -134,9 +134,9 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
     static func displayP3<N: BinaryFloatingPoint>(red: N, green: N, blue: N, alpha: N = 1) -> RenderColor2 {
         return RenderColor2([red,green,blue], a: alpha, colorSpace: .p3)
     }
-    var length: Int { return 16 }
+    public var length: Int { 16 }
     
-    var asData: Data {
+    public var asData: Data {
         guard colorSpace == .working else {
             return converted(to: .working).asData
         }
