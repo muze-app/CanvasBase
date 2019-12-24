@@ -55,9 +55,9 @@ public func & (size: CGSize, transform: CGAffineTransform) -> SizeAndTransform {
     return SizeAndTransform(size: size, transform: AffineTransform(transform))
 }
 
-//func & (rect: CGRect, transform: AffineTransform) -> SizeAndTransform {
-//    return SizeAndTransform(rect: rect, transform: transform)
-//}
+public func & (rect: CGRect, transform: AffineTransform) -> SizeAndTransform {
+    return SizeAndTransform(rect: rect, transform: transform)
+}
 
 public extension SizeAndTransform {
     

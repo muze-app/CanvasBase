@@ -21,7 +21,7 @@ public indirect enum RenderPayload {
     case transforming(RenderPayload, AffineTransform)
     case cropAndTransform(RenderPayload, CGSize, AffineTransform)
     
-    var texture: MetalTexture? {
+    public var texture: MetalTexture? {
         switch self {
             case .texture(let texture): return texture
             case .intermediate(let i): return i.texture
@@ -34,7 +34,7 @@ public indirect enum RenderPayload {
         }
     }
     
-    func transformed(by transform: AffineTransform) -> RenderPayload {
+    public func transformed(by transform: AffineTransform) -> RenderPayload {
         if transform ~= .identity { return self }
         
         switch self {
@@ -49,7 +49,7 @@ public indirect enum RenderPayload {
         }
     }
     
-    var intermediate: RenderIntermediate? {
+    public var intermediate: RenderIntermediate? {
         switch self {
             case .colorMatrix(let p, _): return p.intermediate
             case .alpha(let p, _): return p.intermediate

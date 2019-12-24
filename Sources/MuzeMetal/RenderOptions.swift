@@ -11,12 +11,12 @@ import Metal
 
 public struct RenderOptions {
     
-    let identifier: String
-    let mode: Mode
-    let outputFormat: PixelFormat
-    let time: TimeInterval
+    public let identifier: String
+    public let mode: Mode
+    public let outputFormat: PixelFormat
+    public let time: TimeInterval
     
-    init(_ identifier: String, mode: Mode, format: PixelFormat, time: TimeInterval) {
+    public init(_ identifier: String, mode: Mode, format: PixelFormat, time: TimeInterval) {
         self.identifier = identifier
         self.mode = mode
         self.outputFormat = format
@@ -26,7 +26,7 @@ public struct RenderOptions {
 //        }
     }
     
-    init(_ identifier: String, size: CGSize, format: PixelFormat, time: TimeInterval) {
+    public init(_ identifier: String, size: CGSize, format: PixelFormat, time: TimeInterval) {
         self.identifier = identifier
         self.mode = .normalized(size)
         self.outputFormat = format
@@ -36,7 +36,7 @@ public struct RenderOptions {
         //}
     }
     
-    var size: CGSize? {
+    public var size: CGSize? {
         switch mode {
             case .normalized(let s): return s
             default: return nil
@@ -48,10 +48,10 @@ public struct RenderOptions {
         public static let working = srgb
     }
     
-    enum PixelFormat {
+    public enum PixelFormat {
         case sRGB, float16, extended, sixteen, float32
         
-        var rawValue: MTLPixelFormat {
+        public var rawValue: MTLPixelFormat {
             switch self {
                 case .sRGB: return .bgra8Unorm_srgb
                 case .float16: return .rgba16Float
@@ -61,7 +61,7 @@ public struct RenderOptions {
             }
         }
         
-        init?(rawValue: MTLPixelFormat) {
+        public init?(rawValue: MTLPixelFormat) {
             switch rawValue {
                 case .bgra8Unorm_srgb: self = .sRGB
                 case .rgba16Unorm: self = .sixteen
@@ -73,7 +73,7 @@ public struct RenderOptions {
         }
     }
     
-    enum Mode {
+    public enum Mode {
         case normalized(CGSize)
         case usingExtent
     }
