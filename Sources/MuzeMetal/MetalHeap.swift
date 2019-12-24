@@ -157,7 +157,7 @@ extension MTLTextureDescriptor {
     
 }
 
-extension MTLPixelFormat {
+public extension MTLPixelFormat {
     
     var bytesPerPixel: Int {
         switch self {

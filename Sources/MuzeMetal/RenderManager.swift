@@ -71,7 +71,7 @@ public class RenderManager {
     
 }
 
-extension MTLTexture {
+public extension MTLTexture {
     
     var hashValue: Int {
         let unsafe = Unmanaged.passUnretained(self).toOpaque()

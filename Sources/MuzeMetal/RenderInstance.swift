@@ -214,7 +214,7 @@ class RenderInstance {
     
 }
 
-extension MTLTexture {
+public extension MTLTexture {
     
     var firstPixelIsWhite: Bool {
         let bytesPerRow = width * 4

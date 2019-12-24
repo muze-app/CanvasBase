@@ -54,7 +54,7 @@ extension MetalSolidColorTexture: Equatable {
     
 }
 
-extension MTLTexture {
+public extension MTLTexture {
     
     var bytesPerSample: Int {
         return pixelFormat.bytesPerPixel

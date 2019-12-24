@@ -10,7 +10,7 @@ import UIKit
 import Metal
 import MetalKit
 
-extension MTLTexture {
+public extension MTLTexture {
     
     var drawingContext: DrawingContext {
         let sixteen: Bool

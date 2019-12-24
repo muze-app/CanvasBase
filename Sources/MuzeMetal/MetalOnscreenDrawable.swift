@@ -71,9 +71,9 @@ public final class MetalOnscreenDrawable: MetalDrawable {
     // MARK: Metal Layer
     
     #if targetEnvironment(simulator)
-    let metalLayer: CALayer = CALayer()
+    public let metalLayer: CALayer = CALayer()
     #else
-    let metalLayer: CAMetalLayer = CAMetalLayer()
+    public let metalLayer: CAMetalLayer = CAMetalLayer()
     #endif
     
     func setupMetalLayer() {
