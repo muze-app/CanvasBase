@@ -18,7 +18,7 @@ public enum RenderExtent: Equatable {
     case basic(BasicExtent)
     case union(BasicExtentSet)
     
-    func contains(_ extent: RenderExtent) -> Bool {
+    public func contains(_ extent: RenderExtent) -> Bool {
         switch (self, extent) {
             case (_, .nothing): return true
             case (.nothing, _): return false
@@ -59,7 +59,7 @@ public enum RenderExtent: Equatable {
         }
     }
     
-    func union(with extent: RenderExtent) -> RenderExtent {
+    public func union(with extent: RenderExtent) -> RenderExtent {
         switch (self, extent) {
             case (.nothing, let e): return e
             case (let e, .nothing): return e
@@ -81,7 +81,7 @@ public enum RenderExtent: Equatable {
         }
     }
     
-    var simplified: RenderExtent {
+    public var simplified: RenderExtent {
         switch self {
             case .union(let u):
                 switch u.extents.count {
@@ -95,7 +95,7 @@ public enum RenderExtent: Equatable {
         }
     }
     
-    func transformed(by transform: AffineTransform) -> RenderExtent {
+    public func transformed(by transform: AffineTransform) -> RenderExtent {
         switch self {
             case .nothing: return .nothing
             case .infinite: return .infinite
