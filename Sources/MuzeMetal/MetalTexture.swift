@@ -86,7 +86,7 @@ public class MetalTexture: Equatable {
         return _texture.memorySize
     }
     
-    var texture: MetalTexture {
+    public var texture: MetalTexture {
         return self
     }
     
@@ -95,7 +95,7 @@ public class MetalTexture: Equatable {
         return "\(unsafe)"
     }
     
-    var needsClear: Bool = true
+    public var needsClear: Bool = true
     
     func blit(to texture: MetalTexture) {
         let source = self._texture
@@ -153,12 +153,12 @@ extension MetalTexture: SimpleMetalDrawable {
     #if targetEnvironment(simulator)
     
     #else
-    var drawable: CAMetalDrawable? {
+    public var drawable: CAMetalDrawable? {
         return nil
     }
     #endif
     
-    var renderPassDescriptor: MTLRenderPassDescriptor? {
+    public var renderPassDescriptor: MTLRenderPassDescriptor? {
         return nil
     }
 

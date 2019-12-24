@@ -9,7 +9,7 @@
 import UIKit
 import Metal
 
-class MetalPass<DrawableType: SimpleMetalDrawable> {
+public class MetalPass<DrawableType: SimpleMetalDrawable> {
     
     let pipeline: MetalPipeline
     let drawable: DrawableType

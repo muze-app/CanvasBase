@@ -9,7 +9,7 @@
 import UIKit
 import Metal
 
-protocol SimpleMetalDrawable: class {
+public protocol SimpleMetalDrawable: class {
     
     var _texture: MTLTexture { get }
     var texture: MetalTexture { get }

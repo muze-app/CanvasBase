@@ -46,11 +46,11 @@ public class RenderPassDescriptor: AutoHash {
         return extent.corners.flatMap { [Float(-$0.x), Float($0.y), 0] }
     }
     
-    init(identifier: String,
-         pipeline: MetalPipeline,
-         fragmentBuffers: [MetalBuffer] = [],
-         inputs: [RenderPayload] = [],
-         clearColor: UIColor? = nil) {
+    public init(identifier: String,
+                pipeline: MetalPipeline,
+                fragmentBuffers: [MetalBuffer] = [],
+                inputs: [RenderPayload] = [],
+                clearColor: UIColor? = nil) {
         self.identifier = identifier
         self.pipeline = pipeline
         self.fragmentBuffers = fragmentBuffers
@@ -58,11 +58,11 @@ public class RenderPassDescriptor: AutoHash {
         self.clearColor = clearColor
     }
     
-    init(identifier: String,
-         pipeline: MetalPipeline,
-         fragmentBuffers: [MetalBuffer] = [],
-         input: RenderPayload,
-         clearColor: UIColor? = nil) {
+    public init(identifier: String,
+                pipeline: MetalPipeline,
+                fragmentBuffers: [MetalBuffer] = [],
+                input: RenderPayload,
+                clearColor: UIColor? = nil) {
         self.identifier = identifier
         self.pipeline = pipeline
         self.fragmentBuffers = fragmentBuffers
@@ -71,10 +71,10 @@ public class RenderPassDescriptor: AutoHash {
     }
     
     var timeStamp: TimeInterval? {
-         return (inputs.map { $0.timeStamp }).compact.first
+        return (inputs.map { $0.timeStamp }).compact.first
     }
     
-    func transform(by transform: AffineTransform) {
+    public func transform(by transform: AffineTransform) {
         inputs = inputs.map { $0.transformed(by: transform) }
         fragmentBuffers = fragmentBuffers.map { $0.transformed(by: transform) }
     }
@@ -109,14 +109,14 @@ public class RenderPassDescriptor: AutoHash {
         }
         
         let pass = MetalPass(pipeline: pipeline,
-                         drawable: drawable,
-                         primitive: primitive,
-                         vertexCount: vertexCount,
-                         clearColor: clearColor,
-                         vertexBuffers: [vertexBuffer(for: drawable.size)],
-                         fragmentBuffers: fragmentBuffers,
-                         fragmentTextures: textures,
-                         completion: completion)
+                             drawable: drawable,
+                             primitive: primitive,
+                             vertexCount: vertexCount,
+                             clearColor: clearColor,
+                             vertexBuffers: [vertexBuffer(for: drawable.size)],
+                             fragmentBuffers: fragmentBuffers,
+                             fragmentTextures: textures,
+                             completion: completion)
         
         pass.identifier = identifier
         return pass
@@ -129,7 +129,7 @@ public class RenderPassDescriptor: AutoHash {
 }
 
 struct RenderDrawParams: MetalBuffer {
-   
+    
     var length: Int { return 72 }
     var asData: Data { /*return Data(from: self)*/ fatalError() }
     
@@ -225,22 +225,22 @@ extension RenderPayload {
         switch self {
             case .texture(let texture):
                 return (texture, 1, .identity, .identity, [])
-                
+            
             case .intermediate(let node):
                 return (node.output.texture!, 1, .identity, .identity, [])
-                
+            
             case .alpha(let payload, let alpha):
                 let (texture, oldAlpha, oldTransform, matrix, crops) = payload.getStuff
                 return (texture, alpha * oldAlpha, oldTransform, matrix, crops)
-                
+            
             case .colorMatrix(let payload, let matrix):
                 let (texture, alpha, transform, oldMatrix, crops) = payload.getStuff
                 return (texture, alpha, transform, oldMatrix * matrix, crops)
-                
+            
             case .transforming(let payload, let transform):
                 let (texture, alpha, oldTransform, matrix, crops) = payload.getStuff
                 return (texture, alpha, oldTransform * transform, matrix, crops.map { $0.applying(transform) })
-                
+            
             case .cropAndTransform(let payload, let cropSize, let transform):
                 var (texture, alpha, oldTransform, matrix, crops) = payload.getStuff
                 crops = crops.map { $0.applying(transform) }
@@ -254,19 +254,19 @@ extension RenderPayload {
         switch self {
             case .texture:
                 return .identity
-                
+            
             case .intermediate:
                 return  .identity
-                
+            
             case .alpha(let payload, _):
                 return payload.getTransform
-                
+            
             case .colorMatrix(let payload, _):
                 return payload.getTransform
-                
+            
             case .transforming(let payload, let transform):
                 return payload.getTransform * transform
-                
+            
             case .cropAndTransform(let payload, _, let transform):
                 return payload.getTransform * transform
         }
@@ -284,40 +284,40 @@ extension ShadedLine {
 
 public struct RenderCrop: Equatable {
     
-    init(size: CGSize, transform: AffineTransform = .identity) {
+    public init(size: CGSize, transform: AffineTransform = .identity) {
         self.size = size
         self.transform = transform
     }
     
-    init(rect: CGRect, transform: AffineTransform = .identity) {
+    public init(rect: CGRect, transform: AffineTransform = .identity) {
         let translate = AffineTransform.translating(x: rect.origin.x, y: rect.origin.y)
         self.init(size: rect.size, transform: translate * transform)
     }
     
-    var size: CGSize
-    var transform: AffineTransform
+    public var size: CGSize
+    public var transform: AffineTransform
     
-    func applying(_ transform: AffineTransform) -> RenderCrop {
+    public func applying(_ transform: AffineTransform) -> RenderCrop {
         return RenderCrop(size: size, transform: self.transform * transform)
     }
     
-    var rect: CGRect {
+    public var rect: CGRect {
         return .zero & size
     }
     
-    var shadedLines: [ShadedLine] {
+    public var shadedLines: [ShadedLine] {
         return rect.shadedLines.map { $0.applying(transform) }
     }
     
-    var asPaddedFloats: [Float] {
+    public var asPaddedFloats: [Float] {
         return shadedLines.flatMap { $0.asPaddedFloats }
     }
     
-    var corners: [CGPoint] {
+    public var corners: [CGPoint] {
         return rect.corners.map { $0.applying(transform.cg) }
     }
     
-    func fullyContains(_ other: RenderCrop) -> Bool {
+    public func fullyContains(_ other: RenderCrop) -> Bool {
         for line in shadedLines {
             for corner in other.corners {
                 if !line.pointIsInShade(corner) {
@@ -343,7 +343,7 @@ extension RenderCrop: MetalBuffer {
     
 }
 
-class SpecialRenderPass: RenderPassDescriptor {
+public class SpecialRenderPass: RenderPassDescriptor {
     
     let kernel: MPSImageGaussianBlur
     
@@ -360,7 +360,7 @@ class SpecialRenderPass: RenderPassDescriptor {
     
 }
 
-class SpecialMetalPass: MetalPass<MetalTexture> {
+public class SpecialMetalPass: MetalPass<MetalTexture> {
     
     let kernel: MPSImageGaussianBlur
     
@@ -375,7 +375,7 @@ class SpecialMetalPass: MetalPass<MetalTexture> {
     override func canAddToEncoder(_ encoder: MetalEncoder) -> Bool {
         return encoder.isEmpty
     }
-
+    
     override func addToEncoder(_ encoder: MetalEncoder) {
         encoder.target = drawable._texture
         encoder.addInputFences([drawable.fence])
@@ -386,7 +386,7 @@ class SpecialMetalPass: MetalPass<MetalTexture> {
     
 }
 
-extension SizeAndTransform {
+public extension SizeAndTransform {
     
     init(_ crop: RenderCrop) {
         self = crop.size & crop.transform
