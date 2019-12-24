@@ -79,11 +79,11 @@ public class RenderPassDescriptor: AutoHash {
         fragmentBuffers = fragmentBuffers.map { $0.transformed(by: transform) }
     }
     
-    func metalPass(_ completion: @escaping ()->() = {}) -> MetalPass<MetalTexture> {
+    public func metalPass(_ completion: @escaping ()->() = {}) -> MetalPass<MetalTexture> {
         return metalPass(target.texture!, completion)
     }
     
-    func metalPass<T>(_ drawable: T, _ completion: @escaping ()->() = {}) -> MetalPass<T> where T: SimpleMetalDrawable {
+    public func metalPass<T>(_ drawable: T, _ completion: @escaping ()->() = {}) -> MetalPass<T> where T: SimpleMetalDrawable {
         var cropRects = [RenderCrop]()
         var params = [MetalBuffer]()
         var textures = [MTLTexture]()
@@ -347,13 +347,13 @@ public class SpecialRenderPass: RenderPassDescriptor {
     
     let kernel: MPSImageGaussianBlur
     
-    init(input: RenderPayload, kernel: MPSImageGaussianBlur) {
+    public init(input: RenderPayload, kernel: MPSImageGaussianBlur) {
         self.kernel = kernel
         
         super.init(identifier: "blur", pipeline: .drawPipeline2, input: input)
     }
     
-    override func metalPass<T>(_ drawable: T, _ completion: @escaping () -> () = {}) -> MetalPass<T> where T : SimpleMetalDrawable {
+    override public func metalPass<T>(_ drawable: T, _ completion: @escaping () -> () = {}) -> MetalPass<T> where T : SimpleMetalDrawable {
         let texture = inputs.first!.texture!
         return SpecialMetalPass(texture, drawable as! MetalTexture, kernel) as! MetalPass<T>
     }
@@ -364,7 +364,7 @@ public class SpecialMetalPass: MetalPass<MetalTexture> {
     
     let kernel: MPSImageGaussianBlur
     
-    init(_ input: MetalTexture, _ drawable: MetalTexture, _ kernel: MPSImageGaussianBlur) {
+    public init(_ input: MetalTexture, _ drawable: MetalTexture, _ kernel: MPSImageGaussianBlur) {
         self.kernel = kernel
         super.init(pipeline: .drawPipeline2,
                    drawable: drawable,

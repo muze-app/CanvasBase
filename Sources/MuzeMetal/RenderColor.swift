@@ -160,14 +160,14 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
     
 }
 
-extension RenderColor2.ColorSpace {
+public extension RenderColor2.ColorSpace {
     
 //    var matrixFromCAT16: DMatrix3x3 {
 //        return matrixToCAT16.inverse
 //    }
     
     typealias ColorSpacePair = Pair<RenderColor2.ColorSpace, RenderColor2.ColorSpace>
-    static var conversionMatrices = ThreadSafeDict<ColorSpacePair, DMatrix3x3>()
+    private static var conversionMatrices = ThreadSafeDict<ColorSpacePair, DMatrix3x3>()
     
     static func matrix(from source: RenderColor2.ColorSpace, to target: RenderColor2.ColorSpace) -> DMatrix3x3 {
         if source == target { return .identity }
@@ -191,7 +191,7 @@ extension RenderColor2.ColorSpace {
         return RenderColor2.ColorSpace.matrix(from: source, to: self)
     }
     
-    var matrixToXYZ: DMatrix3x3 {
+    internal var matrixToXYZ: DMatrix3x3 {
         switch self {
             case .srgb:
                 return [[0.4361, 0.3851, 0.1431],
@@ -218,7 +218,7 @@ extension RenderColor2.ColorSpace {
         }
     }
     
-    var matrixFromXYZ: DMatrix3x3 {
+    internal var matrixFromXYZ: DMatrix3x3 {
         return matrixToXYZ.inverse
     }
     

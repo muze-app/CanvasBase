@@ -55,7 +55,7 @@ public class MetalTexture: Equatable {
         return _fence!
     }
     
-    init(_ texture: MTLTexture, heap: MetalHeap? = nil) {
+    public init(_ texture: MTLTexture, heap: MetalHeap? = nil) {
         _texture = texture
         self.heap = heap
     }
