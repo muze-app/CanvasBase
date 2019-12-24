@@ -82,7 +82,7 @@ public class MetalTexture: Equatable {
 //        return _texture.memoryHash
 //    }
     
-    var memorySize: MemorySize {
+    public var memorySize: MemorySize {
         return _texture.memorySize
     }
     
@@ -90,7 +90,7 @@ public class MetalTexture: Equatable {
         return self
     }
     
-    var pointerString: String {
+    public var pointerString: String {
         let unsafe = Unmanaged.passUnretained(self).toOpaque()
         return "\(unsafe)"
     }
@@ -119,7 +119,7 @@ public class MetalTexture: Equatable {
         commandBuffer.waitUntilCompleted()
     }
     
-    func makeAliasable() {
+    public func makeAliasable() {
         assert(!isAliasable)
         isAliasable = true
         
@@ -131,7 +131,7 @@ public class MetalTexture: Equatable {
         return _texture.usage
     }
     
-    func clear() {
+    public func clear() {
         let desc = MTLRenderPassDescriptor()
         let attachment = desc.colorAttachments[0]!
         attachment.texture = texture._texture

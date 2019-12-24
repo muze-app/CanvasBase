@@ -12,8 +12,8 @@ import MuzePrelude
 
 public class RenderSurface: AutoHash, MetalPassTarget {
     
-    var size: CGSize
-    var pixelFormat: MTLPixelFormat {
+    public var size: CGSize
+    public var pixelFormat: MTLPixelFormat {
         didSet {
             assert(!_texture.exists)
 //            if !UIDevice.current.isX {
@@ -22,31 +22,31 @@ public class RenderSurface: AutoHash, MetalPassTarget {
         }
     }
     
-    var canAlias: Bool = true
+    public var canAlias: Bool = true
     
-    var identifier: String?
+    public var identifier: String?
     
-    var fence: MTLFence? {
+    public var fence: MTLFence? {
         return texture?.fence
     }
     
     var _texture: MetalTexture?
-    var texture: MetalTexture? { return _texture }
+    public var texture: MetalTexture? { return _texture }
     
-    init(size: CGSize, pixelFormat: MTLPixelFormat, identifier: String? = nil) {
+    public init(size: CGSize, pixelFormat: MTLPixelFormat, identifier: String? = nil) {
         self.size = size
         self.pixelFormat = pixelFormat
         self.identifier = identifier
     }
     
-    var needsToAllocateTexture: Bool { return !_texture.exists }
-    func allocateTextureIfNeeded() {
+    public var needsToAllocateTexture: Bool { return !_texture.exists }
+    public func allocateTextureIfNeeded() {
         guard needsToAllocateTexture else { return }
         _texture = MetalHeapManager.shared.makeTexture(size, pixelFormat, type: .render)!
         _texture?.identifier = identifier
     }
     
-    var timeStamp: TimeInterval? {
+    public var timeStamp: TimeInterval? {
         get { return _texture?.timeStamp }
         set { _texture?.timeStamp = newValue }
     }

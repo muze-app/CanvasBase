@@ -8,14 +8,14 @@
 
 import UIKit
 
-struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, CustomDebugStringConvertible {
+public struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, CustomDebugStringConvertible {
     
-    let size: Int
+    public let size: Int
     
     init(_ size: Int) { self.size = size }
     init<T: BinaryInteger>(_ size: T) { self.size = Int(size) }
     init<F: BinaryFloatingPoint>(_ size: F) { self.size = Int(size) }
-    init(integerLiteral value: Int) { self.size = value }
+    public init(integerLiteral value: Int) { self.size = value }
     
     static func + (lhs: MemorySize, rhs: MemorySize) -> MemorySize {
         return MemorySize(lhs.size + rhs.size)
@@ -33,11 +33,11 @@ struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, CustomDeb
         return MemorySize(Float(lhs.size) * rhs)
     }
     
-    static func < (lhs: MemorySize, rhs: MemorySize) -> Bool {
+    public static func < (lhs: MemorySize, rhs: MemorySize) -> Bool {
         return lhs.size < rhs.size
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         var s = Double(size)
         var units = ["bytes", "KB", "MB", "GB", "TB", "PB"]
         

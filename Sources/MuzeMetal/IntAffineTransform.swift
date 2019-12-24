@@ -9,13 +9,13 @@
 import UIKit
 import MuzePrelude
 
-typealias ImageOrientation = UIImage.Orientation
+public typealias ImageOrientation = UIImage.Orientation
 
-struct IntAffineTransform: CustomDebugStringConvertible {
+public struct IntAffineTransform: CustomDebugStringConvertible {
     
-    let a,b,c,d,x,y: Int16
+    public let a,b,c,d,x,y: Int16
     
-    init(_ a: Int16,_ b: Int16,_ c: Int16, _ d: Int16, _ x: Int16, _ y: Int16) {
+    public init(_ a: Int16,_ b: Int16,_ c: Int16, _ d: Int16, _ x: Int16, _ y: Int16) {
         self.a = a
         self.b = b
         self.c = c
@@ -24,7 +24,7 @@ struct IntAffineTransform: CustomDebugStringConvertible {
         self.y = y
     }
     
-    init(_ transform: CGAffineTransform) {
+    public init(_ transform: CGAffineTransform) {
         self.init(Int16(round(transform.a)),
                   Int16(round(transform.b)),
                   Int16(round(transform.c)),
@@ -33,11 +33,11 @@ struct IntAffineTransform: CustomDebugStringConvertible {
                   Int16(round(transform.ty)))
     }
     
-    init(_ transform: AffineTransform) {
+    public init(_ transform: AffineTransform) {
         self.init(transform.cg)
     }
     
-    static let identity = IntAffineTransform(1,0,0,1,0,0)
+    public static let identity = IntAffineTransform(1,0,0,1,0,0)
     
     var inverse: IntAffineTransform {
         return IntAffineTransform(cg.inverted())
@@ -52,7 +52,7 @@ struct IntAffineTransform: CustomDebugStringConvertible {
                                 ty: CGFloat(y))
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         return "\(array)"
     }
     
@@ -60,11 +60,11 @@ struct IntAffineTransform: CustomDebugStringConvertible {
 
 extension IntAffineTransform: MetalBuffer {
     
-    var length: Int { return 16 }
-    var asData: Data { return padded.asData }
+    public var length: Int { return 16 }
+    public var asData: Data { return padded.asData }
     
-    var array: [Int16] { return [a,b,c,d,x,y] }
-    var padded: [Int16] { return array + [0,0] }
+    public var array: [Int16] { return [a,b,c,d,x,y] }
+    public var padded: [Int16] { return array + [0,0] }
     
 }
 
@@ -75,7 +75,7 @@ extension Int16: MetalBuffer {
     
 }
 
-extension ImageOrientation {
+public extension ImageOrientation {
     
     static var all: [ImageOrientation] {
         return [.up, .upMirrored, .left, .leftMirrored, .right, .rightMirrored, .down, .downMirrored]

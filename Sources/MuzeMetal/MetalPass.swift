@@ -22,12 +22,12 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     let fragmentBuffers: [MetalBuffer]
     let fragmentTextures: [MTLTexture]
     
-    typealias CompletionType = ()->()
+    public typealias CompletionType = ()->()
     let completionBlock: CompletionType?
     
-    var identifier: String?
+    public var identifier: String?
     
-    init(pipeline: MetalPipeline,
+    public init(pipeline: MetalPipeline,
          drawable: DrawableType,
          primitive: MTLPrimitiveType = .triangleStrip,
          vertexCount: Int = 4,
@@ -83,7 +83,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     }
 
 //    @available(*, deprecated)
-    lazy var buffer: MTLCommandBuffer = self.generateBuffer()
+    public lazy var buffer: MTLCommandBuffer = self.generateBuffer()
     
 //    @available(*, deprecated)
     private func generateBuffer() -> MTLCommandBuffer {
@@ -162,7 +162,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     }
     
 //    @available(*, deprecated)
-    func present() {
+    public func present() {
 //        print("PRESENT!")
         #if !targetEnvironment(simulator)
         buffer.present(drawable.drawable!)
@@ -170,7 +170,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
     }
     
 //    @available(*, deprecated)
-    func commit() {
+    public func commit() {
         buffer.commit()
     }
     
