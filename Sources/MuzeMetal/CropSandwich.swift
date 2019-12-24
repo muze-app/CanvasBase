@@ -9,46 +9,46 @@
 import UIKit
 import MuzePrelude
 
-typealias AbstractCroppable = CropSandwich
+public typealias AbstractCroppable = CropSandwich
 
-func & (l: AffineTransform, r: SizeAndTransform) -> CropSandwich {
+public func & (l: AffineTransform, r: SizeAndTransform) -> CropSandwich {
     return CropSandwich(preCropTransform: l,
                         cropSize: r.size,
                         postCropTransform: r.transform)
 }
 
-func & (l: CGAffineTransform, r: SizeAndTransform) -> CropSandwich {
+public func & (l: CGAffineTransform, r: SizeAndTransform) -> CropSandwich {
     return CropSandwich(preCropTransform: AffineTransform(l),
                         cropSize: r.size,
                         postCropTransform: r.transform)
 }
 
-func & (l: AffineTransform, r: CGSize) -> (AffineTransform, CGSize) {
+public func & (l: AffineTransform, r: CGSize) -> (AffineTransform, CGSize) {
     return (l, r)
 }
 
-func & (l: CGAffineTransform, r: CGSize) -> (AffineTransform, CGSize) {
+public func & (l: CGAffineTransform, r: CGSize) -> (AffineTransform, CGSize) {
     return (AffineTransform(l), r)
 }
 
-func & (l: (AffineTransform, CGSize), r: AffineTransform) -> CropSandwich {
+public func & (l: (AffineTransform, CGSize), r: AffineTransform) -> CropSandwich {
     return CropSandwich(preCropTransform: l.0, cropSize: l.1, postCropTransform: r)
 }
 
 public struct CropSandwich: Equatable {
 
-    var postCropTransform: AffineTransform
-    var cropSize: CGSize { didSet {
+    public var postCropTransform: AffineTransform
+    public var cropSize: CGSize { didSet {
         assert(cropSize.width >= 0)
         assert(cropSize.height >= 0)
     } }
-    var preCropTransform: AffineTransform
-    var cropBounds: CGRect { return .zero & cropSize }
-    var combinedTransform: AffineTransform { return preCropTransform * postCropTransform }
+    public var preCropTransform: AffineTransform
+    public var cropBounds: CGRect { return .zero & cropSize }
+    public var combinedTransform: AffineTransform { return preCropTransform * postCropTransform }
     
-    init(preCropTransform: AffineTransform = .identity,
-         cropSize: CGSize,
-         postCropTransform: AffineTransform = .identity) {
+    public init(preCropTransform: AffineTransform = .identity,
+                cropSize: CGSize,
+                postCropTransform: AffineTransform = .identity) {
         self.preCropTransform = preCropTransform
         self.cropSize = cropSize
         self.postCropTransform = postCropTransform
@@ -56,7 +56,7 @@ public struct CropSandwich: Equatable {
         assert(cropSize.height >= 0)
     }
     
-    var transformable: SizeAndTransform {
+    public var transformable: SizeAndTransform {
         return cropSize & postCropTransform
     }
     

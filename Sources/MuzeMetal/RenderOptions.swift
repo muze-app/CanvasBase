@@ -45,7 +45,7 @@ public struct RenderOptions {
     
     public enum ColorSpace: Hashable {
         case cam16, p3, srgb, iPhoneXR
-        static let working = srgb
+        public static let working = srgb
     }
     
     enum PixelFormat {

@@ -14,8 +14,8 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
     
     public typealias ColorSpace = RenderOptions.ColorSpace
     
-    var r, g, b, a: Float
-    let colorSpace: ColorSpace
+    public var r, g, b, a: Float
+    public let colorSpace: ColorSpace
     
     static func linearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let s: N = channel < 0 ? -1 : 1
