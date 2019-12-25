@@ -294,22 +294,22 @@ struct AVTime: Comparable {
 //
 //}
 
-func <= (l: CMTime, r: TimeInterval) -> Bool {
+public func <= (l: CMTime, r: TimeInterval) -> Bool {
     let l = l.seconds
     return l <= r
 }
 
-func >= (l: CMTime, r: TimeInterval) -> Bool {
+public func >= (l: CMTime, r: TimeInterval) -> Bool {
     let l = l.seconds
     return l >= r
 }
 
-func < (l: CMTime, r: TimeInterval) -> Bool {
+public func < (l: CMTime, r: TimeInterval) -> Bool {
     let l = l.seconds
     return l < r
 }
 
-func > (l: CMTime, r: TimeInterval) -> Bool {
+public func > (l: CMTime, r: TimeInterval) -> Bool {
     let l = l.seconds
     return l > r
 }

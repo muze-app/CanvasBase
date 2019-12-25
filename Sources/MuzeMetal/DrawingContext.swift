@@ -118,15 +118,15 @@ public final class DrawingContext: Drawable {
         return CGSize(width: width, height: height)
     }
     
-    var bounds: CGRect {
+    public var bounds: CGRect {
         return CGRect(origin: CGPoint.zero, size: size)
     }
     
-    var cgImage: CGImage {
+    public var cgImage: CGImage {
         return context.makeImage()!
     }
     
-    var uiImage: UIImage {
+    public var uiImage: UIImage {
         return UIImage(cgImage: cgImage)
     }
     

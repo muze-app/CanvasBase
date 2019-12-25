@@ -43,7 +43,7 @@ open class RenderContext {
 //        return matrixNode
 //    }
     
-    func render(graph: Graph,
+    public func render(graph: Graph,
                 subgraph: SubgraphKey,
                 canvasSize: CGSize,
                 time: TimeInterval,
