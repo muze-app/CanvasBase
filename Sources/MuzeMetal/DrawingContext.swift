@@ -92,6 +92,14 @@ public final class DrawingContext: Drawable {
         public let g: UInt8
         public let b: UInt8
         public let a: UInt8
+        
+        public init(_ r: UInt8, _ g: UInt8, _ b: UInt8, _ a: UInt8) {
+            self.r = r
+            self.g = g
+            self.b = b
+            self.a = a
+        }
+        
     }
     
     public var data: UnsafeMutablePointer<UInt8> {

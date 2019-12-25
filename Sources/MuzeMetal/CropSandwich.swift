@@ -62,7 +62,7 @@ public struct CropSandwich: Equatable {
     
 }
 
-extension CropSandwich {
+public extension CropSandwich {
     
     var postCropScale: ScaleAtom {
         return postCropTransform.cg.decomposition.scale

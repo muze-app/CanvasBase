@@ -29,6 +29,11 @@ public struct TranslateAtom: TransformAtom {
     public var x: CGFloat
     public var y: CGFloat
     
+    public init(x: CGFloat, y: CGFloat) {
+        self.x = x
+        self.y = y
+    }
+    
     public static func decomposing(transform: CGAffineTransform) -> (TranslateAtom, CGAffineTransform) {
         let atom = TranslateAtom(x: transform.tx, y: transform.ty)
         let remainder = transform * atom.inverse
@@ -51,13 +56,12 @@ public struct RotateAtom: TransformAtom {
     
     public var angle: CGFloat
     public var angleInDegrees: CGFloat {
-        get {
-        return angle * 180 / .pi
-        }
-        
-        set {
-            angle = newValue / 180 * .pi
-        }
+        get { angle * 180 / .pi }
+        set { angle = newValue / 180 * .pi }
+    }
+    
+    public init(angle: CGFloat) {
+        self.angle = angle
     }
     
     public static func decomposing(transform: CGAffineTransform) -> (RotateAtom, CGAffineTransform) {
@@ -99,6 +103,11 @@ public struct ScaleAtom: TransformAtom {
     public var x: CGFloat
     public var y: CGFloat
     
+    public init(x: CGFloat, y: CGFloat) {
+        self.x = x
+        self.y = y
+    }
+    
     public static func decomposing(transform: CGAffineTransform) -> (ScaleAtom, CGAffineTransform) {
         assert(transform.tx ~= 0)
         assert(transform.ty ~= 0)
@@ -125,6 +134,10 @@ public struct ShearAtom: TransformAtom {
     
     public var shear: CGFloat
     
+    public init(_ shear: CGFloat) {
+        self.shear = shear
+    }
+    
     public static func decomposing(transform: CGAffineTransform) -> (ShearAtom, CGAffineTransform) {
         assert(transform.tx ~= 0)
         assert(transform.ty ~= 0)
@@ -132,7 +145,7 @@ public struct ShearAtom: TransformAtom {
         assert(transform.d  ~= 1)
         assert(transform.b  ~= 0)
        
-        let atom = ShearAtom(shear: transform.c)
+        let atom = ShearAtom(transform.c)
         let remainder = transform * atom.inverse
 //        let result = remainder * atom.transform
 //        assert( result ~= transform )
@@ -159,7 +172,7 @@ public struct TransformDecomposition: CustomStringConvertible {
     public var scale: ScaleAtom
     public var shear: ShearAtom
     
-    init(transform: CGAffineTransform) {
+    public init(transform: CGAffineTransform) {
         let (translation, untranslated) = TranslateAtom.decomposing(transform: transform)
         self.translation = translation
 //        TransformDecomposition.test(atom: translation, remainder: untranslated, result: transform)
@@ -179,7 +192,7 @@ public struct TransformDecomposition: CustomStringConvertible {
 //        assert(unsheared ~= .identity)
     }
     
-    init(_ translation: TranslateAtom, _ rotation: RotateAtom, _ scale: ScaleAtom, _ shear: ShearAtom) {
+    public init(_ translation: TranslateAtom, _ rotation: RotateAtom, _ scale: ScaleAtom, _ shear: ShearAtom) {
         self.translation = translation
         self.rotation = rotation
         self.scale = scale
