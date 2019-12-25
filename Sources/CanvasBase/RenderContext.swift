@@ -119,7 +119,7 @@ open class RenderContext {
 //        }
     }
     
-    typealias CompletionType = RenderManager.CompletionType
+    public typealias CompletionType = RenderManager.CompletionType
     
     var clearPayload: RenderPayload {
         fatalError()
