@@ -229,7 +229,7 @@ public extension MTLTexture {
      
 }
 
-extension RenderPayload {
+public extension RenderPayload {
     
     var fence: MTLFence? {
         switch self {
@@ -362,7 +362,7 @@ public extension IntermediateOrTexture {
     
 }
 
-extension RenderPayload {
+public extension RenderPayload {
     
     var extent: RenderExtent {
         switch self {
