@@ -330,6 +330,6 @@ extension CMTime: CustomDebugStringConvertible {
     
 }
 
-func + (l: CMTime, r: TimeInterval) -> TimeInterval {
+public func + (l: CMTime, r: TimeInterval) -> TimeInterval {
     return l.seconds + r
 }

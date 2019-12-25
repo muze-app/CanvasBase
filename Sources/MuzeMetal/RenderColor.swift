@@ -17,7 +17,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
     public var r, g, b, a: Float
     public let colorSpace: ColorSpace
     
-    static func linearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
+    public static func linearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let s: N = channel < 0 ? -1 : 1
         let u = abs(channel)
         if u <= 0.04045 {
@@ -27,7 +27,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         }
     }
     
-    static func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
+    public static func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let u = channel
         if u <= 0 { return 0 }
         if u >= 1 { return 1 }
@@ -39,7 +39,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         }
     }
     
-    static func linearize(sRGB vec: DVec3) -> DVec3 {
+    public static func linearize(sRGB vec: DVec3) -> DVec3 {
         var v = vec
         v.a = linearize(sRGB: v.a)
         v.b = linearize(sRGB: v.b)
@@ -47,7 +47,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         return v
     }
     
-    static func delinearize(sRGB vec: DVec3) -> DVec3 {
+    public static func delinearize(sRGB vec: DVec3) -> DVec3 {
         var v = vec
         v.a = delinearize(sRGB: v.a)
         v.b = delinearize(sRGB: v.b)

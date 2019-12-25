@@ -67,7 +67,7 @@ public class MetalDevice {
     
     public static let device: MTLDevice = MTLCreateSystemDefaultDevice()!
     static let library: MTLLibrary = device.makeDefaultLibrary()!
-    static let commandQueue: MTLCommandQueue = device.makeCommandQueue()!
+    public static let commandQueue: MTLCommandQueue = device.makeCommandQueue()!
  
     static func textureFrom(_ url: URL) -> MTLTexture {
         let loader = MTKTextureLoader(device: MetalDevice.device)

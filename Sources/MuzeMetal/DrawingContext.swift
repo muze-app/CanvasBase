@@ -94,7 +94,7 @@ public final class DrawingContext: Drawable {
         public let a: UInt8
     }
     
-    var data: UnsafeMutablePointer<UInt8> {
+    public var data: UnsafeMutablePointer<UInt8> {
         let raw = context.data!
         
         let bytes = raw.assumingMemoryBound(to: UInt8.self)
