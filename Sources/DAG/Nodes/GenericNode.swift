@@ -265,6 +265,18 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return all { $0 is U } as! [U]
     }
     
+    // MARK: Payloads and Extents
+    
+    open func renderPayload(for options: Collection.RenderOptionsType) -> Collection.RenderPayloadType? {
+        fatalError()
+    }
+    
+    open var renderExtent: Collection.RenderExtentType { calculatedRenderExtent }
+    open var calculatedRenderExtent: Collection.RenderExtentType { fatalError() }
+    
+    open var userExtent: Collection.UserExtentType { calculatedUserExtent }
+    open var calculatedUserExtent: Collection.UserExtentType { fatalError() }
+    
     // MARK: Other
     
     open var isIdentity: Bool { false }

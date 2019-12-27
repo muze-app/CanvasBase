@@ -11,4 +11,9 @@ public protocol NodeCollection: Hashable {
     
     func node(for key: NodeKey, graph: DAGBase<Self>) -> GenericNode<Self>
     
+    associatedtype RenderPayloadType
+    associatedtype RenderOptionsType
+    associatedtype RenderExtentType
+    associatedtype UserExtentType
+    
 }

@@ -19,6 +19,11 @@ public enum MockNodeCollection: NodeCollection {
         }
     }
     
+    public typealias RenderPayloadType = Void
+    public typealias RenderOptionsType = Void
+    public typealias RenderExtentType = Void
+    public typealias UserExtentType = Void
+    
 }
 
 public class MockImageNode: GeneratorNode<MockNodeCollection, MockNodePayload> {

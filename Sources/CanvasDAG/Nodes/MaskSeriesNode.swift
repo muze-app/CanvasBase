@@ -16,31 +16,31 @@ public final class MaskSeriesNode: ListNode<MaskMode> {
         super.init(key, graph: graph, payload: payload, nodeType: .maskSeries)
     }
 
-//    override var calculatedRenderExtent: RenderExtent {
-//        return inputs.reduce(.nothing) { $0.union(with: $1.renderExtent) }
-//    }
-//
-//    override var calculatedUserExtent: UserExtent {
-//        return inputs.reduce(.nothing) { $0.union(with: $1.userExtent) }
-//    }
-//
-//    override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        let intermediate = RenderIntermediate(identifier: "Mask Series",
-//                                              options: options,
-//                                              extent: renderExtent,
-//                                              pixelFormat: .r8Unorm)
-//
-//        for (mode, input) in pairs {
-//            guard let mask = input?.renderPayload(for: options) else { continue }
-//            intermediate << RenderPassDescriptor(identifier: "Mask Series Pass",
-//                                                 pipeline: pipeline(for: mode),
-//                                                 inputs: [mask])
-//        }
-//
-//        intermediate.passes.first?.clearColor = .white
-//
-//        return intermediate.payload
-//    }
+    override public var calculatedRenderExtent: RenderExtent {
+        return inputs.reduce(.nothing) { $0.union(with: $1.renderExtent) }
+    }
+
+    override public var calculatedUserExtent: UserExtent {
+        return inputs.reduce(.nothing) { $0.union(with: $1.userExtent) }
+    }
+
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        let intermediate = RenderIntermediate(identifier: "Mask Series",
+                                              options: options,
+                                              extent: renderExtent,
+                                              pixelFormat: .r8Unorm)
+
+        for (mode, input) in pairs {
+            guard let mask = input?.renderPayload(for: options) else { continue }
+            intermediate << RenderPassDescriptor(identifier: "Mask Series Pass",
+                                                 pipeline: pipeline(for: mode),
+                                                 inputs: [mask])
+        }
+
+        intermediate.passes.first?.clearColor = .white
+
+        return intermediate.payload
+    }
 
     func pipeline(for mode: MaskMode) -> MetalPipeline {
         switch mode {

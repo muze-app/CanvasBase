@@ -20,33 +20,25 @@ final class AlphaNode: InputNode<Float> {
         set { payload = newValue }
     }
     
-//    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard alpha > 0, let payload = input?.renderPayload(for: options) else { return nil }
-//        return .alpha(payload, alpha)
-//    }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        guard alpha > 0 else { return .nothing }
-//        return input?.renderExtent ?? .nothing
-//    }
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard alpha > 0, let payload = input?.renderPayload(for: options) else { return nil }
+        return .alpha(payload, alpha)
+    }
+
+    override var calculatedRenderExtent: RenderExtent {
+        guard alpha > 0 else { return .nothing }
+        return input?.renderExtent ?? .nothing
+    }
     
     override var isInvisible: Bool {
-        if payload > 0, !(input?.isInvisible ?? true) {
+        if alpha > 0, !(input?.isInvisible ?? true) {
             return false
         } else {
             return true
         }
     }
     
-    override var isIdentity: Bool {
-        return alpha == 1
-    }
-    
-//    override var possibleOptimizations: [OptFunc] {
-//        return [removeInvisibles, removeIdentity, alphaCoalesce]
-//    }
-    
-//    var alphaCoalesce: OptFunc { return { AlphaCoalesce($0) } }
+    override var isIdentity: Bool { alpha == 1 }
     
 }
 

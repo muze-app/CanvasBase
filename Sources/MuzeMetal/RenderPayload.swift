@@ -105,7 +105,7 @@ public extension RenderPayload {
     
 }
 
-extension CGColorSpace {
+public extension CGColorSpace {
     
     static let displayP3Space: CGColorSpace = CGColorSpace(name: CGColorSpace.displayP3)!
     static let sRGBSpace: CGColorSpace = CGColorSpace(name: CGColorSpace.sRGB)!

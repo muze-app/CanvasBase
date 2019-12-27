@@ -131,40 +131,7 @@
 //}
 //
 
-//extension RenderColor2: NodePayload { }
 //
-//final class SolidColorNode: GNode<RenderColor2> {
-//
-//    init(_ key: NodeKey = NodeKey(), graph: DAG, payload: RenderColor2? = nil) {
-//        super.init(key, graph: graph, payload: payload, nodeType: .solidColor)
-//    }
-//
-////    convenience init(_ uiColor: UIColor) {
-////        self.init(.init(uiColor))
-////    }
-////
-////    override var nodeType: NodeType { return .solidColor }
-//
-//    var color: RenderColor2 {
-//        get { return payload }
-//        set { payload = newValue }
-//    }
-//
-//    var colorTexture: MetalTexture { return MetalSolidColorTexture(color).texture }
-//
-//    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        return .texture(colorTexture)
-//    }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        return .infinite
-//    }
-//
-//    override var calculatedUserExtent: UserExtent {
-//        return .brush & .infinite
-//    }
-//
-//}
 
 //extension BasicExtent: NodePayload {
 //
@@ -175,37 +142,7 @@
 //    override var nodeType: NodeType { return .crop }
 //
 //}
-//
-//extension One: NodePayload {
-//
-//}
-//
-//final class WrapperNode: UnaryInputNode<One> {
-//
-//    init() {
-//        super.init(.one, NodeKey(0), nil)
-//    }
-//
-//    required init(_ payload: One, _ key: Key = Key(0), _ graph: NodeGraph? = nil) {
-//        super.init(.one, NodeKey(0), graph)
-//    }
-//
-//    override var nodeType: NodeType {
-//        // these nodes shouldn't be copied between graphs
-//        fatalError("this fatal error is intentional")
-//    }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        return input?.renderExtent ?? .nothing
-//    }
-//
-//
-//}
-//
-//extension MetalTexture: Hashable {
-//
-//    public func hash(into hasher: inout Hasher) {
-//        hasher.combine(pointerString)
-//    }
-//
-//}
+
+extension One: NodePayload {
+
+}

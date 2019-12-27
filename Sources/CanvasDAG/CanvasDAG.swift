@@ -7,6 +7,7 @@
 
 @_exported import MuzePrelude
 @_exported import DAG
+import MuzeMetal
 
 public typealias GeneratorNode<Payload: NodePayload> = DAG.GeneratorNode<CanvasNodeCollection, Payload>
 
@@ -20,6 +21,13 @@ public typealias CanvasGraph = DAGBase<CanvasNodeCollection>
 public typealias CanvasNode = GenericNode<CanvasNodeCollection>
 public typealias MutableCanvasGraph = MutableDAG<CanvasNodeCollection>
 
+public typealias RenderPayload = MuzeMetal.RenderPayload
+public typealias RenderOptions = MuzeMetal.RenderOptions
+public typealias RenderExtent  = MuzeMetal.RenderExtent
+public typealias UserExtent    = MuzeMetal.UserExtent
+public typealias RenderPassDescriptor = MuzeMetal.RenderPassDescriptor
+public typealias RenderIntermediate = MuzeMetal.RenderIntermediate
+
 //public protocol CanvasNode: GenericNode<CanvasNodeCollection> {
 //
 //    typealias Graph = DAGBase<CanvasNodeCollection>
@@ -31,6 +39,11 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     public typealias Graph = DAGBase<CanvasNodeCollection>
     public typealias Node = GenericNode<CanvasNodeCollection>
+    
+    public typealias RenderPayloadType = RenderPayload
+    public typealias RenderOptionsType = RenderOptions
+    public typealias RenderExtentType = RenderExtent
+    public typealias UserExtentType = UserExtent
     
     case canvasMeta
     case layerMeta
@@ -76,7 +89,7 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
             case .cache: return CacheNode(key, graph: graph)
 //            case .rects: return RectsNode(key, graph: graph)
 //            case .blurPreview: return BlurPreviewNode(key, graph: graph)
-//            case .solidColor: return SolidColorNode(key, graph: graph)
+            case .solidColor: return SolidColorNode(key, graph: graph)
 //            case .transform: return TransformNode(key, graph: graph)
 //            case .canvasMeta: return CanvasMetaNode(key, graph: graph)
 //            case .layerMeta: return LayerMetaNode(key, graph: graph)
@@ -85,10 +98,10 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
 //            case .effect: return EffectNode(key, graph: graph)
             case .mask: return MaskNode(key, graph: graph)
             
-//            case .colorMatrix: return ColorMatrixNode(key, graph: graph)
+            case .colorMatrix: return ColorMatrixNode(key, graph: graph)
             case .maskSeries: return MaskSeriesNode(key, graph: graph)
             
-//            case .checkerboard: return CheckerboardNode(key, graph: graph)
+            case .checkerboard: return CheckerboardNode(key, graph: graph)
             
             default: fatalError()
         }

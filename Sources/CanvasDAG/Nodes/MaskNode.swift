@@ -38,33 +38,33 @@ final class MaskNode: PayloadNode<MaskMode> {
         set { payload = newValue }
     }
 
-//    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard let input = self.input?.renderPayload(for: options) else { return nil }
-//        guard let mask  =  self.mask?.renderPayload(for: options) else { return input }
-//
-//        let masked = RenderIntermediate(identifier: "Mask", options: options, extent: renderExtent)
-//        masked << RenderPassDescriptor(identifier: "Mask",
-//            pipeline: pipeline,
-//            inputs: [input, mask])
-//
-//        return masked.payload
-//    }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        guard let ie = input?.renderExtent, ie != .infinite else {
-//            return mask?.renderExtent ?? .nothing
-//        }
-//
-//        return ie
-//    }
-//
-//    override var calculatedUserExtent: UserExtent {
-//        guard let ie = input?.userExtent, ie.extent != .infinite else {
-//            return mask?.userExtent ?? .nothing
-//        }
-//
-//        return ie
-//    }
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard let input = self.input?.renderPayload(for: options) else { return nil }
+        guard let mask  =  self.mask?.renderPayload(for: options) else { return input }
+
+        let masked = RenderIntermediate(identifier: "Mask", options: options, extent: renderExtent)
+        masked << RenderPassDescriptor(identifier: "Mask",
+            pipeline: pipeline,
+            inputs: [input, mask])
+
+        return masked.payload
+    }
+
+    override var calculatedRenderExtent: RenderExtent {
+        guard let ie = input?.renderExtent, ie != .infinite else {
+            return mask?.renderExtent ?? .nothing
+        }
+
+        return ie
+    }
+
+    override var calculatedUserExtent: UserExtent {
+        guard let ie = input?.userExtent, ie.extent != .infinite else {
+            return mask?.userExtent ?? .nothing
+        }
+
+        return ie
+    }
 
     var pipeline: MetalPipeline {
         switch mode {

@@ -396,3 +396,16 @@ public extension DVec3 {
     static let illuminantD65: DVec3 = [0.9504700,1,1.0888300]
     
 }
+
+extension Matrix3x3: MetalBuffer {
+    
+    public var length: Int {
+        return 36
+    }
+    
+    public var asData: Data {
+        //        return ([a1,b1,c1,a2,b2,c2,a3,b3,c3].map { Float($0) }).asData
+        return ([a1,a2,a3,b1,b2,b3,c1,c2,c3].map { Float($0) }).asData
+    }
+    
+}

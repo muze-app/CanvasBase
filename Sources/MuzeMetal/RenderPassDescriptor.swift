@@ -25,12 +25,12 @@ protocol MetalPassTarget: class {
 
 public class RenderPassDescriptor: AutoHash {
     
-    var identifier: String
-    let pipeline: MetalPipeline
+    public var identifier: String
+    public let pipeline: MetalPipeline
     var target: RenderSurface!
     var fragmentBuffers: [MetalBuffer]
     var inputs: [RenderPayload]
-    var clearColor: Color?
+    public var clearColor: Color?
     
     let primitive: MTLPrimitiveType = .triangleStrip
     let vertexCount: Int = 4
@@ -258,7 +258,7 @@ extension RenderPayload {
         }
     }
     
-    var getTransform: (AffineTransform) {
+    public var getTransform: AffineTransform {
         switch self {
             case .texture:
                 return .identity

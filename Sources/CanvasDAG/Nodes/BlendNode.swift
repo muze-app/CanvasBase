@@ -55,75 +55,74 @@ public final class BlendNode: PayloadNode<BlendPayload> {
         set { destination = newValue }
     }
     
-//    public override var calculatedRenderExtent: RenderExtent {
-//        guard let se = source?.renderExtent else { return destination?.renderExtent ?? .nothing }
-//        guard let de = destination?.renderExtent else { return se }
-//
-//        return se.union(with: de)
-//    }
-//
-//    public override var calculatedUserExtent: UserExtent {
-//        guard let se = source?.userExtent else { return destination?.userExtent ?? .nothing }
-//        guard let de = destination?.userExtent else { return se }
-//
-//        return se.union(with: de)
-//    }
-//
-//    public override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard alpha > 0 else {
-//            return destination?.renderPayload(for: options)
-//        }
-//
-//        let dstLoadO = destination?.renderPayload(for: options)
-//        guard let srcLoad = source?.renderPayload(for: options) else {
-//            return dstLoadO
-//        }
-//
-//        guard let dstLoad = dstLoadO else {
-//            return composite(source: srcLoad, destination: nil, options: options)
-//        }
-//
-//        if blendMode == .normal {
-////            #warning("this'll be optimized away soon")
-//            return composite(source: srcLoad, destination: dstLoad, options: options)
-//        }
-//
-//            return blend(source: srcLoad,
-//                         destination: dstLoad,
-//                         options: options)
-//
-//    }
+    override public var calculatedRenderExtent: RenderExtent {
+        guard let se = source?.renderExtent else { return destination?.renderExtent ?? .nothing }
+        guard let de = destination?.renderExtent else { return se }
+
+        return se.union(with: de)
+    }
+
+    override public var calculatedUserExtent: UserExtent {
+        guard let se = source?.userExtent else { return destination?.userExtent ?? .nothing }
+        guard let de = destination?.userExtent else { return se }
+
+        return se.union(with: de)
+    }
+
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard alpha > 0 else {
+            return destination?.renderPayload(for: options)
+        }
+
+        let dstLoadO = destination?.renderPayload(for: options)
+        guard let srcLoad = source?.renderPayload(for: options) else {
+            return dstLoadO
+        }
+
+        guard let dstLoad = dstLoadO else {
+            return composite(source: srcLoad, destination: nil, options: options)
+        }
+
+        if blendMode == .normal {
+//            #warning("this'll be optimized away soon")
+            return composite(source: srcLoad, destination: dstLoad, options: options)
+        }
+
+        return blend(source: srcLoad,
+                     destination: dstLoad,
+                     options: options)
+    }
     
     // MARK: Blend
     
-//    public func blend(source: RenderPayload, destination: RenderPayload, options: RenderOptions) -> RenderPayload {
-//
-//        let composite = RenderIntermediate(identifier: "Blend \(blendMode)", options: options, extent: renderExtent)
-//
-//        composite << RenderPassDescriptor(identifier: "Blend \(blendMode)",
-//            pipeline: blendMode.pipeline,
-//            inputs: [.alpha(source, alpha), destination])
-//
-//        return composite.payload
-//    }
+    public func blend(source: RenderPayload, destination: RenderPayload, options: RenderOptions) -> RenderPayload {
+
+        let composite = RenderIntermediate(identifier: "Blend \(blendMode)", options: options, extent: renderExtent)
+
+        composite << RenderPassDescriptor(identifier: "Blend \(blendMode)",
+            pipeline: blendMode.pipeline,
+            inputs: [.alpha(source, alpha), destination])
+
+        return composite.payload
+    }
     
     // MARK: Composite
     
-//    public func composite(source: RenderPayload, destination: RenderPayload?, options: RenderOptions) -> RenderPayload {
-//        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
-//
-//        if let destination = destination {
-//            composite << RenderPassDescriptor(identifier: "Destination",
-//                                              pipeline: .drawPipeline2,
-//                                              input: destination)
-//        }
-//
-//        composite << RenderPassDescriptor(identifier: "Source",
-//                                          pipeline: .drawPipeline2,
-//                                          input: .alpha(source, alpha))
-//
-//        return composite.payload
-//    }
+    public func composite(source: RenderPayload, destination: RenderPayload?, options: RenderOptions) -> RenderPayload {
+        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+
+        if let destination = destination {
+            composite << RenderPassDescriptor(identifier: "Destination",
+                                              pipeline: .drawPipeline2,
+                                              input: destination)
+        }
+
+        composite << RenderPassDescriptor(identifier: "Source",
+                                          pipeline: .drawPipeline2,
+                                          input: .alpha(source, alpha))
+
+        return composite.payload
+    }
     
     var sourceIsInvisible: Bool {
         return alpha == 0 || (source?.isInvisible ?? true)
@@ -136,14 +135,7 @@ public final class BlendNode: PayloadNode<BlendPayload> {
     override public var isInvisible: Bool {
         return sourceIsInvisible && destinationIsInvisible
     }
-//
-//    override var possibleOptimizations: [OptFunc] {
-//        return [removeInvisibles, blendCleanUp, blendToComp]
-//    }
-    
-//    var blendCleanUp: OptFunc { return { BlendCleanUpOpt($0) } }
-//    var blendToComp: OptFunc { return { BlendToCompOpt($0) } }
-    
+
 }
 
 final class BlendCleanUpOpt: Optimization {

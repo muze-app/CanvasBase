@@ -13,7 +13,7 @@ import UIKit
 
 public struct MemorySize: Equatable, ExpressibleByIntegerLiteral, Comparable, CustomDebugStringConvertible {
     
-    let size: Int
+    public let size: Int
     
     public init(_ size: Int) { self.size = size }
     public init<T: BinaryInteger>(_ size: T) { self.size = Int(size) }

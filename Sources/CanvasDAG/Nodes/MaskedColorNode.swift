@@ -39,25 +39,25 @@ public final class MaskedColorNode: InputNode<MaskedColorPayload> {
     
     final var colorTexture: MetalTexture { return MetalSolidColorTexture(color).texture }
     
-//    final override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard let mask = self.mask?.renderPayload(for: options) else {
-//            return nil
-//        }
-//
-//        let colorBuffer = color
-//
-//        let masked = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
-//        masked << RenderPassDescriptor(identifier: "Mask",
-//                                       pipeline: pipeline,
-//                                       fragmentBuffers: [colorBuffer],
-//                                       inputs: [mask])
-//
-//        return masked.payload
-//    }
-//
-//    final override var calculatedRenderExtent: RenderExtent {
-//        return mask?.renderExtent ?? .infinite
-//    }
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard let mask = self.mask?.renderPayload(for: options) else {
+            return nil
+        }
+
+        let colorBuffer = color
+
+        let masked = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+        masked << RenderPassDescriptor(identifier: "Mask",
+                                       pipeline: pipeline,
+                                       fragmentBuffers: [colorBuffer],
+                                       inputs: [mask])
+
+        return masked.payload
+    }
+
+    override public var calculatedRenderExtent: RenderExtent {
+        return mask?.renderExtent ?? .infinite
+    }
     
     final var pipeline: MetalPipeline {
         switch mode {

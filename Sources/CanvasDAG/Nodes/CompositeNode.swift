@@ -8,6 +8,7 @@
 
 import Foundation
 import DAG
+import MuzeMetal
 
 public class CompositeNode: ListNode<Float> {
 
@@ -16,52 +17,52 @@ public class CompositeNode: ListNode<Float> {
     }
 
 //    override var worthCaching: Bool { return true }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        return inputs.reduce(.nothing) { $0.union(with: $1.renderExtent) }
-//    }
-//
-//    override var calculatedUserExtent: UserExtent {
-//        return inputs.reduce(.nothing) { $0.union(with: $1.userExtent) }
-//    }
-//
-//    override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
-//
-//        if !composite.extent.basic.exists {
-//            print(" no basic extent? \(composite.extent)")
-//            for input in inputs {
-//                print("    - \(input.renderExtent) \(input)")
-//            }
-//            print("hmmm")
-//        }
-//
-//        for (alpha, input) in pairs.reversed() {
-//            guard let payload = input?.renderPayload(for: options), alpha > 0 else { continue }
-//
-//            let identifier: String
-//            if let t = payload.texture {
-//                identifier = "Draw \(t.pointerString)"
-//            } else if let i = payload.intermediate {
-//                identifier = "Draw \(i.identifier)"
-//            } else {
-//                identifier = "Draw...something"
-//            }
-//
-//            if alpha == 1, let intermediate = payload.intermediate, intermediate.canAlias, intermediate.passes.count == 1 {
-//                let pass = intermediate.passes[0]
-//                pass.transform(by: payload.getTransform)
-//                composite << pass
-//            } else {
-//                composite << RenderPassDescriptor(identifier: identifier,
-//                                                  pipeline: .drawPipeline2,
-//                                                  input: .alpha(payload, alpha))
-//            }
-//        }
-//
-//        return composite.payload
-//    }
-//
+
+    override public var calculatedRenderExtent: RenderExtent {
+        inputs.reduce(.nothing) { $0.union(with: $1.renderExtent) }
+    }
+
+    override public var calculatedUserExtent: UserExtent {
+        inputs.reduce(.nothing) { $0.union(with: $1.userExtent) }
+    }
+
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+
+        if !composite.extent.basic.exists {
+            print(" no basic extent? \(composite.extent)")
+            for input in inputs {
+                print("    - \(input.renderExtent) \(input)")
+            }
+            print("hmmm")
+        }
+
+        for (alpha, input) in pairs.reversed() {
+            guard let payload = input?.renderPayload(for: options), alpha > 0 else { continue }
+
+            let identifier: String
+            if let t = payload.texture {
+                identifier = "Draw \(t.pointerString)"
+            } else if let i = payload.intermediate {
+                identifier = "Draw \(i.identifier)"
+            } else {
+                identifier = "Draw...something"
+            }
+
+            if alpha == 1, let intermediate = payload.intermediate, intermediate.canAlias, intermediate.passes.count == 1 {
+                let pass = intermediate.passes[0]
+                pass.transform(by: payload.getTransform)
+                composite << pass
+            } else {
+                composite << RenderPassDescriptor(identifier: identifier,
+                                                  pipeline: .drawPipeline2,
+                                                  input: .alpha(payload, alpha))
+            }
+        }
+
+        return composite.payload
+    }
+
 //    override var possibleOptimizations: [OptFunc] {
 //        return [combine, invisibles, justOne]
 //    }
