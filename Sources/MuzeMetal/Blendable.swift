@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import Foundation
+import MuzePrelude
 
 public protocol Blendable {
     

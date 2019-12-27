@@ -8,6 +8,10 @@
 
 @_exported import Foundation
 
+#if os(iOS)
+@_exported import UIKit
+#endif
+
 // MARK: Pair
 
 public struct Pair<A, B>: CustomDebugStringConvertible {

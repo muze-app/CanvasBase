@@ -7,6 +7,7 @@
 //
 
 import Metal
+import MuzePrelude
 
 protocol MetalAllocator {
     
