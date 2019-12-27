@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 
 //extension InternalImage: Equatable, Hashable {
 //
@@ -165,69 +165,7 @@ import UIKit
 //    }
 //
 //}
-//
-//struct MaskedColorPayload: NodePayload {
-//    var a: RenderColor2
-//    var b: MaskMode
-//    init(_ a: RenderColor2, _ b: MaskMode) { self.a = a; self.b = b }
-//}
-//
-//final class MaskedColorNode: INode<MaskedColorPayload> {
-//
-//    final var mask: DNode? {
-//        get { return input }
-//        set { input = newValue }
-//    }
-//
-//    final var mode: MaskMode {
-//        get { return payload.b }
-//        set { payload.b = mode }
-//    }
-//
-//    final var color: RenderColor2 {
-//        get { return payload.a }
-//        set { payload.a = newValue }
-//    }
-//
-//    final var colorTexture: MetalTexture { return MetalSolidColorTexture(color).texture }
-//
-//    final override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard let mask = self.mask?.renderPayload(for: options) else {
-//            return nil
-//        }
-//
-//        let colorBuffer = color
-//
-//        let masked = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
-//        masked << RenderPassDescriptor(identifier: "Mask",
-//                                       pipeline: pipeline,
-//                                       fragmentBuffers: [colorBuffer],
-//                                       inputs: [mask])
-//
-//        return masked.payload
-//    }
-//
-//    final override var calculatedRenderExtent: RenderExtent {
-//        return mask?.renderExtent ?? .infinite
-//    }
-//
-//    final var pipeline: MetalPipeline {
-//        switch mode {
-//        case .blackIsTransparent: return .maskColorPipeline
-//        case .whiteIsTransparent: return .inverseMaskColorPipeline
-//        }
-//    }
-//
-//    override var possibleOptimizations: [OptFunc] {
-//        return [removeInvisibles]
-//    }
-//
-//    override var isInvisible: Bool {
-//        return input?.isInvisible ?? true
-//    }
-//
-//}
-//
+
 //extension BasicExtent: NodePayload {
 //
 //}

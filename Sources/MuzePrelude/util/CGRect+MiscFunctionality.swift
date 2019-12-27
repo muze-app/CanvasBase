@@ -6,10 +6,17 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension CGRect {
+    
+    #if os(iOS)
     static let screen: CGRect = UIScreen.main.bounds
+    #endif
     
     init(left: CGFloat, top: CGFloat, right: CGFloat, bottom: CGFloat) {
         self.init(x: left, y: top, width: right-left, height: bottom-top)

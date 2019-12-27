@@ -6,15 +6,17 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class MemoryManager {
     
     static let shared = MemoryManager()
     
     init() {
+        #if os(iOS)
         let center = NotificationCenter.default
         _ = center.addObserver(for: UIApplication.didReceiveMemoryWarningNotification, using: didReceiveMemoryWarning)
+        #endif
     }
     
     func didReceiveMemoryWarning(_ note: Notification) {

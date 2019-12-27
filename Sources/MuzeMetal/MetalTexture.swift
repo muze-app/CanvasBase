@@ -6,9 +6,14 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import Metal
 import MuzePrelude
+
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 public class MetalTexture: Equatable {
     
@@ -62,9 +67,11 @@ public class MetalTexture: Equatable {
     
     var bytesNeeded: Int = 0
     
+    #if os(iOS)
     public var uiImage: UIImage {
         return _texture.uiImage
     }
+    #endif
     
     public static func == (lhs: MetalTexture, rhs: MetalTexture) -> Bool {
         return lhs === rhs

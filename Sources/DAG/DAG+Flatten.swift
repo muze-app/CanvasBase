@@ -8,18 +8,18 @@
 
 import Foundation
 
-extension DAGBase {
+public extension DAGBase {
     
 //    typealias InternalDirectSnapshot = canvas_base.InternalDirectSnapshot<Collection>
     
     func copy(usingFreshKeys: Bool = false, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
         var pred: InternalDirectSnapshot<Collection>?
         
-        for level in 0...maxLevel {
+//        for level in 0...maxLevel {
             let newKey = usingFreshKeys ? CommitKey() : key
-            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, level: level, key: newKey)
+            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, key: newKey)
             
-            let this = self.modify(level: level) { _ in }
+            let this = self.modify { _ in }
             
 //            print("LEVEL \(level)")
 //            print("   subgraphs: \(this.allSubgraphKeys)")
@@ -43,7 +43,7 @@ extension DAGBase {
             
             snapshot.becomeImmutable()
             pred = snapshot
-        }
+//        }
         
         return pred!
     }
@@ -63,11 +63,11 @@ extension DAGBase {
     func diff(from parent: InternalDirectSnapshot<Collection>, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
         var pred = parent
         
-        for level in 0...max(maxLevel, parent.maxLevel) {
-            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, level: level, key: key)
+//        for level in 0...max(maxLevel, parent.maxLevel) {
+            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, key: key)
             
-            let this = self.modify(level: level) { _ in }
-            let parent = parent.modify(level: level) { _ in }
+            let this = self.modify { _ in }
+            let parent = parent.modify { _ in }
             
 //            print("LEVEL \(level)")
 //            print("   subgraphs: \(this.allSubgraphKeys)")
@@ -93,7 +93,7 @@ extension DAGBase {
             
             snapshot.becomeImmutable()
             pred = snapshot
-        }
+//        }
         
         return pred
     }
@@ -102,12 +102,12 @@ extension DAGBase {
 
 extension PayloadBufferAllocation: Hashable {
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         fatalError()
 //        hasher.combine("\(debugDescription)")
     }
     
-    static func == (l: PayloadBufferAllocation, r: PayloadBufferAllocation) -> Bool {
+    public static func == (l: PayloadBufferAllocation, r: PayloadBufferAllocation) -> Bool {
         return l === r
     }
     

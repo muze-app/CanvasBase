@@ -6,10 +6,18 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MetalPerformanceShaders
 import MuzePrelude
+
+#if os(macOS)
+import AppKit
+public typealias Color = NSColor
+#else
+import UIKit
+public typealias Color = UIColor
+#endif
 
 protocol MetalPassTarget: class {
     
@@ -22,7 +30,7 @@ public class RenderPassDescriptor: AutoHash {
     var target: RenderSurface!
     var fragmentBuffers: [MetalBuffer]
     var inputs: [RenderPayload]
-    var clearColor: UIColor?
+    var clearColor: Color?
     
     let primitive: MTLPrimitiveType = .triangleStrip
     let vertexCount: Int = 4
@@ -50,7 +58,7 @@ public class RenderPassDescriptor: AutoHash {
                 pipeline: MetalPipeline,
                 fragmentBuffers: [MetalBuffer] = [],
                 inputs: [RenderPayload] = [],
-                clearColor: UIColor? = nil) {
+                clearColor: Color? = nil) {
         self.identifier = identifier
         self.pipeline = pipeline
         self.fragmentBuffers = fragmentBuffers
@@ -62,7 +70,7 @@ public class RenderPassDescriptor: AutoHash {
                 pipeline: MetalPipeline,
                 fragmentBuffers: [MetalBuffer] = [],
                 input: RenderPayload,
-                clearColor: UIColor? = nil) {
+                clearColor: Color? = nil) {
         self.identifier = identifier
         self.pipeline = pipeline
         self.fragmentBuffers = fragmentBuffers

@@ -6,6 +6,8 @@
 //  Copyright © 2018 Ergo Sum. All rights reserved.
 //
 
+#if !os(macOS)
+
 import UIKit
 import Metal
 import MetalKit
@@ -229,3 +231,5 @@ extension MTLPixelFormat: CustomDebugStringConvertible {
     }
     
 }
+
+#endif

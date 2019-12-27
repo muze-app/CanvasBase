@@ -6,7 +6,11 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public protocol Placement {
     
@@ -35,12 +39,14 @@ public protocol Placement {
     
 }
 
+#if !os(macOS)
 public protocol Placeable: UIView {
     
     var isPlacing: Bool { get set }
     var placement: Placement { get set }
     
 }
+#endif
 
 public extension Placement {
     
@@ -130,6 +136,7 @@ extension SizeAndTransform: Placement {
     
 }
 
+#if !os(macOS)
 public extension Placeable {
     
     var placement: Placement {
@@ -153,6 +160,7 @@ public extension Placeable {
     }
     
 }
+#endif
 
 public extension Array where Element == CGFloat {
     
@@ -197,9 +205,11 @@ public extension Placement {
         return self.transformed(by: transform)
     }
     
+    #if !os(macOS)
     func converted(from: UIView, to: UIView) -> Placement {
         return converted(from: .init(from), to: .init(to))
     }
+    #endif
     
     func transformed(by transform: AffineTransform) -> Placement {
         return asSizeAndTransform.transformed(by: transform)
@@ -216,6 +226,7 @@ public struct PlacementContext {
         self.transformToScreen = transformToScreen
     }
     
+    #if !os(macOS)
     init(_ view: UIView) {
         fatalError()
 //        let zeroZero = view.convert(CGPoint(x: 0, y: 0), to: nil)
@@ -224,6 +235,7 @@ public struct PlacementContext {
 //
 //        self = .init(AffineTransform(mystery: zeroZero, zeroOne, oneZero))
     }
+    #endif
     
     static let screen: PlacementContext = .init(.identity)
     

@@ -83,7 +83,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
             graph.setType(sourceType, for: key)
         }
         
-        if let sourceEdgeMap = source.edgeMap(for: key, level: 0), parent.edgeMap(for: key, level: 0) != sourceEdgeMap {
+        if let sourceEdgeMap = source.edgeMap(for: key), parent.edgeMap(for: key) != sourceEdgeMap {
             graph.setEdgeMap(sourceEdgeMap, for: key)
         }
         
@@ -94,16 +94,16 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         graph.setRevData(data, for: key)
     }
     
-    var edgeMap: [Int:NodeKey] {
-        return graph.edgeMap(for: key, level: graph.level) ?? [:]
+    public final var edgeMap: [Int:NodeKey] {
+        graph.edgeMap(for: key) ?? [:]
     }
     
-    var sortedEdges: [(Int, NodeKey)] {
-        return edgeMap.sorted { $0.key < $1.key }
+    public final var sortedEdges: [(Int, NodeKey)] {
+        edgeMap.sorted { $0.key < $1.key }
     }
     
-    final var inputs: [GenericNode] {
-        return sortedEdges.map { graph.node(for: $0.1) }
+    public final var inputs: [GenericNode] {
+        sortedEdges.map { graph.node(for: $0.1) }
     }
     
     public final var inputCount: Int { edgeMap.count }
@@ -265,6 +265,21 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return all { $0 is U } as! [U]
     }
     
+    // MARK: Other
+    
+    open var isIdentity: Bool { false }
+    open var isInvisible: Bool { false }
+    
+    open var cost: Int { inputCost }
+    public final var inputCost: Int {
+        inputs.reduce(into: 0) { $0 += $1.cost }
+    }
+    
+    public var nodeInputs: NodeInputs<Collection> {
+        get { return NodeInputs(self) }
+        set { } // ok, we be cheating a little here. the action has already happened before this gets called
+    }
+    
 }
 
 // MARK: - OLD
@@ -366,10 +381,8 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
 ////        optimizeInputs()
 ////        return asNodeOrOpt
 ////    }
-//    
-////    var cost: Int {
-////        return inputs.reduce(into: 0) { $0 += $1.cost }
-////    }
+//
+
 //    
 ////    public var possibleOptimizations: [OptFunc] { return [] }
 ////

@@ -5,7 +5,11 @@
 //  Created by Greg Fajen on 12/19/19.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension Range where Element == Int {
     
@@ -75,6 +79,7 @@ public extension CGPoint {
     
 }
 
+#if !os(macOS)
 public extension UIColor {
     
     var alpha: CGFloat {
@@ -105,3 +110,4 @@ public extension UIColor {
     }
     
 }
+#endif

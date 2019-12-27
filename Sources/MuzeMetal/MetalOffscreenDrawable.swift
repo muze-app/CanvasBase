@@ -6,9 +6,14 @@
 //  Copyright © 2018 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import Metal
 import MuzePrelude
+
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 @available(*, deprecated)
 public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
@@ -50,6 +55,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
         self.init(width: width, height: height, pixelFormat: .bgra8Unorm)
     }
     
+    #if os(iOS)
     convenience init(size: CGSize = UIScreen.main.bounds.size,
                      scale: CGFloat = UIScreen.main.scale,
                      pixelFormat: MTLPixelFormat) {
@@ -58,6 +64,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
         let h = Int(round(s.height))
         self.init(width: w, height: h, pixelFormat: pixelFormat)
     }
+    #endif
     
     public static var fullscreenPool: DrawablePool<MetalOffscreenDrawable> { return DrawablePool<MetalOffscreenDrawable>() }
     
@@ -83,7 +90,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
     
     // will still clear if needsClear is set
     public func blit<T: MetalDrawable>(_ source: T, clear: Bool = true) {
-        let clearColor = clear ? UIColor.clear : nil
+        let clearColor = clear ? Color.clear : nil
         
         let vertices = MetalPipeline.defaultVertexBuffer
         let pass = MetalPass(pipeline: .blitPipeline,
@@ -101,7 +108,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
               alpha: Float = 1,
               clear: Bool = false,
               completion: (()->())? = nil) {
-        let clearColor = clear ? UIColor.clear : nil
+        let clearColor = clear ? Color.clear : nil
         draw(texture,
              vertexBuffer: vertexBuffer,
              transform: transform,
@@ -114,7 +121,7 @@ public final class MetalOffscreenDrawable: MetalDrawable, Equatable, AutoHash {
               vertexBuffer: MetalBuffer = MetalPipeline.defaultVertexBuffer,
               transform: CGAffineTransform,
               alpha: Float = 1,
-              clearColor: UIColor?,
+              clearColor: Color?,
               completion: (()->())? = nil) {
         assert(vertexBuffer.length == 48)
         

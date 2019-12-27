@@ -6,14 +6,16 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import Foundation
+import MuzeMetal
 
-//final class MaskSeriesNode: ListNode<MaskMode> {
-//
-//    init(_ key: NodeKey = NodeKey(), graph: DAG, payload: [MaskMode]? = nil) {
-//        super.init(key, graph: graph, payload: payload, nodeType: .maskSeries)
-//    }
-//
+public final class MaskSeriesNode: ListNode<MaskMode> {
+
+    init(_ key: NodeKey = NodeKey(),
+         graph: CanvasGraph,
+         payload: [MaskMode]? = nil) {
+        super.init(key, graph: graph, payload: payload, nodeType: .maskSeries)
+    }
+
 //    override var calculatedRenderExtent: RenderExtent {
 //        return inputs.reduce(.nothing) { $0.union(with: $1.renderExtent) }
 //    }
@@ -39,14 +41,12 @@ import Foundation
 //
 //        return intermediate.payload
 //    }
-//
-//    func pipeline(for mode: MaskMode) -> MetalPipeline {
-//        switch mode {
-//        case .blackIsTransparent:
-//            return .combineMaskPipeline
-//        case .whiteIsTransparent:
-//            return .inverseCombineMaskPipeline
-//        }
-//    }
-//
-//}
+
+    func pipeline(for mode: MaskMode) -> MetalPipeline {
+        switch mode {
+            case .blackIsTransparent: return .combineMaskPipeline
+            case .whiteIsTransparent: return .inverseCombineMaskPipeline
+        }
+    }
+
+}

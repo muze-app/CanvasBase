@@ -6,7 +6,11 @@
 //  Copyright © 2018 Ergo Sum. All rights reserved.
 //
 
+import Foundation
+#if !os(macOS)
 import UIKit
+#endif
+
 import MuzePrelude
 
 public final class DrawingContext: Drawable {
@@ -34,7 +38,7 @@ public final class DrawingContext: Drawable {
                 colorInfo = []
         }
         
-        let bitmapInfo: CGBitmapInfo = [colorInfo, CGBitmapInfo(alphaInfo)]
+        let bitmapInfo: CGBitmapInfo = [colorInfo, CGBitmapInfo(rawValue: alphaInfo.rawValue)]
         
         context = CGContext(data: nil,
                             width: width,
@@ -45,6 +49,14 @@ public final class DrawingContext: Drawable {
                             bitmapInfo: bitmapInfo.rawValue)!
     }
     
+    #if os(macOS)
+    public convenience init(size: CGSize = CGSize(8), scale: CGFloat = 1, bgra: Bool = false) {
+        let s = size * scale
+        let w = Int(round(s.width))
+        let h = Int(round(s.height))
+        self.init(width: w, height: h, bgra: bgra)
+    }
+    #else
     public convenience init(size: CGSize = UIScreen.main.bounds.size, scale: CGFloat = UIScreen.main.scale, bgra: Bool = false) {
         let s = size * scale
         let w = Int(round(s.width))
@@ -59,6 +71,7 @@ public final class DrawingContext: Drawable {
             image.draw(in: bounds)
         }
     }
+    #endif
     
     public static var fullscreenPool: DrawablePool<DrawingContext> { return DrawablePool<DrawingContext>() }
     
@@ -68,11 +81,15 @@ public final class DrawingContext: Drawable {
     }
     
     public func draw(_ block: ()->()) {
+        #if os(macOS)
+        fatalError()
+        #else
         UIGraphicsPushContext(context)
         context.saveGState()
         block()
         context.restoreGState()
         UIGraphicsPopContext()
+        #endif
     }
     
     public var width: Int {
@@ -134,9 +151,11 @@ public final class DrawingContext: Drawable {
         return context.makeImage()!
     }
     
+    #if os(iOS)
     public var uiImage: UIImage {
         return UIImage(cgImage: cgImage)
     }
+    #endif
     
     public typealias FilterType = ((_ x: Int,_ y: Int,_ value: UVec4) -> UVec4)
     
@@ -163,6 +182,7 @@ public final class DrawingContext: Drawable {
     
     // temp
     
+    #if os(iOS)
     func save(to file: String) {
         var url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
         
@@ -174,5 +194,6 @@ public final class DrawingContext: Drawable {
         
         try! data!.write(to: url)
     }
+    #endif
     
 }

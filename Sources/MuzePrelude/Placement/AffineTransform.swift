@@ -6,7 +6,11 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 // a wrapper around CGAffineTransform with approximate equality
 public struct AffineTransform: Equatable {

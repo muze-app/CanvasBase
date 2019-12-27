@@ -51,63 +51,47 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     override var snapshotToModify: DAGBase<Collection> { return internalSnapshot }
     
     override public var depth: Int {
-        return internalSnapshot.depth
+        internalSnapshot.depth
     }
     
-    override func type(for key: NodeKey) -> Collection? {
-        return internalSnapshot.type(for: key)
-    }
-    
-    override var level: Int {
-        return internalSnapshot.level
-    }
-    
-    override var maxLevel: Int {
-        return internalSnapshot.maxLevel
-    }
-    
-    override func parent(at level: Int) -> DAGBase<Collection>? {
-        return internalSnapshot.parent(at: level)
+    override public func type(for key: NodeKey) -> Collection? {
+        internalSnapshot.type(for: key)
     }
     
     override public var allSubgraphKeys: Set<SubgraphKey> {
-        return internalSnapshot.allSubgraphKeys
+        internalSnapshot.allSubgraphKeys
     }
     
-    override public func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
-        return internalSnapshot.subgraphData(for: key, level: level)
+    override public func subgraphData(for key: SubgraphKey) -> SubgraphData? {
+        internalSnapshot.subgraphData(for: key)
     }
     
     override public func finalKey(for subgraph: SubgraphKey) -> NodeKey? {
-        return internalSnapshot.finalKey(for: subgraph)
+        internalSnapshot.finalKey(for: subgraph)
     }
     
     override public func metaKey(for subgraph: SubgraphKey) -> NodeKey? {
-        return internalSnapshot.metaKey(for: subgraph)
+        internalSnapshot.metaKey(for: subgraph)
     }
     
     var modLock: NSRecursiveLock? {
-        return store.lock
+        store.lock
     }
     
-    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? {
-        return internalSnapshot.payloadAllocation(for: key, level: level)
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+        internalSnapshot.payloadAllocation(for: key)
     }
     
-    override public func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? {
-        return internalSnapshot.payloadPointer(for: key, level: level)
-    }
-    
-    override public func edgeMap(for key: NodeKey, level: Int) -> [Int : NodeKey]? {
-        return internalSnapshot.edgeMap(for: key, level: level)
+    override public func edgeMap(for key: NodeKey) -> [Int : NodeKey]? {
+        internalSnapshot.edgeMap(for: key)
     }
     
     override func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
-        return internalSnapshot.reverseEdges(for: key)
+        internalSnapshot.reverseEdges(for: key)
     }
     
     override func revData(for key: NodeKey) -> NodeRevData? {
-        return internalSnapshot.revData(for: key)
+        internalSnapshot.revData(for: key)
     }
     
     func setRevData(_ data: NodeRevData, for key: NodeKey) {
@@ -115,7 +99,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     }
     
     func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
-        return internalSnapshot.contains(allocations: allocations)
+        internalSnapshot.contains(allocations: allocations)
     }
     
 //    func contains(textures: Set<MetalTexture>) -> Bool {

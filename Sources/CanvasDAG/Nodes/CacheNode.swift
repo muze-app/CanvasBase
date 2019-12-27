@@ -17,37 +17,57 @@ extension NodeKey: NodePayload {
     
 }
 
-//final class CacheNode: INode<NodeKey> {
-//
-////    var cachedPayload: RenderPayload? = nil
-////    var cachedHash: Int = 0
-//
-//    var store: DAGStore {
-//        let graph = dag!
-//        let store = graph.store!
-//        return store
-//    }
+final class CacheNode: InputNode<NodeKey> {
+
+//    var cachedPayload: RenderPayload? = nil
+//    var cachedHash: Int = 0
+
+    override var cost: Int { 1 }
+    
+    var store: DAGStore<CanvasNodeCollection> {
+        return graph.store
+    }
+    
 //    var cacheStore: CacheStore { return store.cacheStore }
-//
-//    var originalKey: NodeKey {
-//        get { return payload }
-//        set { payload = newValue }
+    
+    weak var cacheStore: CacheAndOptimizer?
+
+    var originalKey: NodeKey {
+        get { return payload }
+        set { payload = newValue }
+    }
+    
+    init(_ graph: MutableCanvasGraph,
+         _ optimizer: CacheAndOptimizer,
+         original: CanvasNode,
+         optimized: CanvasNode) {
+        self.cacheStore = optimizer
+        
+        super.init(original.key.cacheKey,
+                   graph: graph,
+                   payload: original.key,
+                   nodeType: .cache)
+        
+        graph.setInput(for: key, index: 0, to: optimized.key)
+    }
+
+//    init(node: CanvasNode) {
+//        super.init(node.key.cacheKey,
+//                   graph: node.graph,
+//                   payload: node.key,
+//                   nodeType: .cache)
 //    }
-//
-//    init(node: DNode) {
-//        super.init(node.key.cacheKey, graph: node.dag!, payload: node.key, nodeType: .cache)
-//    }
-//
-//    init(_ key: NodeKey = NodeKey(), graph: DAG) {
-//        super.init(key, graph: graph, payload: nil, nodeType: .cache)
-//    }
-//
+
+    init(_ key: NodeKey = NodeKey(), graph: CanvasGraph) {
+        super.init(key, graph: graph, payload: nil, nodeType: .cache)
+    }
+
 //    override var calculatedRenderExtent: RenderExtent {
 //        return input?.renderExtent ?? .nothing
 //    }
-//
-//    var cachingEnabled: Bool { return true }
-//
+
+    var cachingEnabled: Bool { return true }
+
 //    override func renderPayload(for options: RenderOptions) -> RenderPayload? {
 //        guard let input = input else { return nil }
 //        if cachingEnabled, let payload = cacheStore.lookup(key: key, hash: input.contentHash) {
@@ -65,26 +85,26 @@ extension NodeKey: NodePayload {
 //
 //        return payload
 //    }
-//
+
 //    @available(*, deprecated)
 //    func finalize() {
 //        cacheStore.finalize()
 //    }
-//
-//    var inputHash: Int {
-//        guard let input = input else { return Int.max }
-//
-//        return input.contentHash
-//    }
-//
+
+    var inputHash: Int {
+        guard let input = input else { return Int.max }
+
+        return input.contentHash
+    }
+
 //    override var possibleOptimizations: [OptFunc] {
 //        return []
 //    }
-//
+
 //    override var className: String {
 //        return debugDescription
 //    }
-//
+
 //    override var debugDescription: String {
 //        guard let input = input else { return "CacheNode (no input!?!?)" }
 //
@@ -99,9 +119,9 @@ extension NodeKey: NodePayload {
 //            return "CacheNode (no payload)"
 //        }
 //    }
-//
-////    override var cost: Int {
-////        return 1
-////    }
-//
-//}
+
+//    override var cost: Int {
+//        return 1
+//    }
+
+}

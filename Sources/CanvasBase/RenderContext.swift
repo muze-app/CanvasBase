@@ -6,7 +6,6 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import Metal
 
 import MuzePrelude
@@ -43,15 +42,16 @@ open class RenderContext {
 //        return matrixNode
 //    }
     
+    // swiftlint:disable:next function_parameter_count
     public func render(graph: Graph,
-                subgraph: SubgraphKey,
-                canvasSize: CGSize,
-                time: TimeInterval,
-                caching keysToCache: [NodeKey] = [],
-                optimize: Bool = true,
-                format: RenderOptions.PixelFormat,
-                colorSpace: RenderOptions.ColorSpace,
-                completion: @escaping CompletionType) {
+                       subgraph: SubgraphKey,
+                       canvasSize: CGSize,
+                       time: TimeInterval,
+                       caching keysToCache: [NodeKey] = [],
+                       optimize: Bool = true,
+                       format: RenderOptions.PixelFormat,
+                       colorSpace: RenderOptions.ColorSpace,
+                       completion: @escaping CompletionType) {
         
 //        fatalError()
 //        graph1.keysToCache.formUnion(keysToCache)

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import MuzePrelude
 
 public class DAGStore<Collection: NodeCollection> {
@@ -16,9 +16,9 @@ public class DAGStore<Collection: NodeCollection> {
     
     var tempSubgraphKey: SubgraphKey?
     
-    typealias Snapshot = InternalDirectSnapshot<Collection>
+    public typealias Snapshot = InternalDirectSnapshot<Collection>
     
-    var latest: DAGSnapshot<Collection>!
+    public var latest: DAGSnapshot<Collection>!
     var commits = WeakDict<CommitKey, Snapshot>()
     
     private var internalRetainedCommitsBag = Bag<CommitKey>()
@@ -37,7 +37,7 @@ public class DAGStore<Collection: NodeCollection> {
             if commit.key != key {
                 // shouldn't happen but we'll just let it slide for now.
                 // pretty sure keys are going to get removed from the commits themselves
-                return commit.modify(as: key, level: commit.level) { _ in }
+                return commit.modify(as: key) { _ in }
             }
             
             assert(commit.key == key)
@@ -54,10 +54,10 @@ public class DAGStore<Collection: NodeCollection> {
     
     weak var delegate: AnyObject?
     
-    init(delegate: AnyObject? = nil) {
+    public init(delegate: AnyObject? = nil) {
         self.delegate = delegate
         
-        let graph = Snapshot(store: self, level: 0)
+        let graph = Snapshot(store: self)
         commit(graph)
     }
     
@@ -79,14 +79,14 @@ public class DAGStore<Collection: NodeCollection> {
     
     // MARK: - Commits
     
-    func commit(for key: CommitKey) -> Snapshot? {
+    public func commit(for key: CommitKey) -> Snapshot? {
         var commit: Snapshot?
         sync { commit = commits[key] }
         return commit
     }
     
     @discardableResult
-    func commit(_ snapshot: Snapshot, process: Bool = true) -> CommitKey {
+    public func commit(_ snapshot: Snapshot, process: Bool = true) -> CommitKey {
         return commit(snapshot, setLatest: true, process: process)
     }
     

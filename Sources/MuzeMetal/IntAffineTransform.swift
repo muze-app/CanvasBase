@@ -6,10 +6,11 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import MuzePrelude
 
+#if os(iOS)
 public typealias ImageOrientation = UIImage.Orientation
+#endif
 
 public struct IntAffineTransform: CustomDebugStringConvertible {
     
@@ -75,6 +76,7 @@ extension Int16: MetalBuffer {
     
 }
 
+#if os(iOS)
 public extension ImageOrientation {
     
     static var all: [ImageOrientation] {
@@ -325,3 +327,4 @@ extension ImageOrientation: CustomDebugStringConvertible {
     }
     
 }
+#endif

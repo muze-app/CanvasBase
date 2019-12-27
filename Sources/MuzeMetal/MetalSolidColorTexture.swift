@@ -6,14 +6,14 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MuzePrelude
 
-struct MetalSolidColorTexture {
+public struct MetalSolidColorTexture {
     
-    var texture: MetalTexture
-    var color: RenderColor2 {
+    public var texture: MetalTexture
+    public var color: RenderColor2 {
         didSet {
             if color != oldValue {
                 texture = MetalSolidColorTexture.texture(for: color)
@@ -21,7 +21,7 @@ struct MetalSolidColorTexture {
         }
     }
     
-    init(_ color: RenderColor2) {
+    public init(_ color: RenderColor2) {
         texture = MetalSolidColorTexture.texture(for: color)
         self.color = color
     }
@@ -48,7 +48,7 @@ struct MetalSolidColorTexture {
 
 extension MetalSolidColorTexture: Equatable {
     
-    static func == (lhs: MetalSolidColorTexture, rhs: MetalSolidColorTexture) -> Bool {
+    public static func == (lhs: MetalSolidColorTexture, rhs: MetalSolidColorTexture) -> Bool {
         return lhs.color == rhs.color
     }
     

@@ -9,7 +9,7 @@
 import Foundation
 import MuzePrelude
 
-class PayloadBufferAllocation {
+public class PayloadBufferAllocation {
     
     let buffer: PayloadBuffer
     let pointer: UnsafeMutableRawPointer

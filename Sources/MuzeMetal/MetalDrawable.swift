@@ -6,8 +6,13 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import Metal
+
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 public protocol SimpleMetalDrawable: class {
     

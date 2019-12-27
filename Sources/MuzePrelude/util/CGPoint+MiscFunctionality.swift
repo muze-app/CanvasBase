@@ -6,10 +6,17 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension CGPoint {
+    
+    #if os(iOS)
     static let screenCenter: CGPoint = UIScreen.main.bounds.center
+    #endif
     
     var asVector: CGVector {
         return CGVector(dx: self.x, dy: self.y)

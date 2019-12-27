@@ -9,11 +9,11 @@
 import Foundation
 import DAG
 
-extension Array: NodePayload where Element: NodePayload {
-      
-}
-
-//class ListNode<PayloadElement: NodePayload>: PNode<[PayloadElement]> {
+//extension Array: NodePayload where Element: NodePayload {
+//      
+//}
+//
+//class ListNode<PayloadElement: NodePayload>: PayloadNode<[PayloadElement]> {
 //    
 //    typealias PayloadType = [PayloadElement]
 //    
@@ -40,56 +40,56 @@ extension Array: NodePayload where Element: NodePayload {
 ////        }
 ////    }
 //    
-//    func input(for index: Int) -> DNode? {
-//        guard let key = edgeMap[index] else { return nil }
-//        return dag.node(for: key)
-//    }
-//    
-//    func set(input: DNode?, for index: Int) {
-//        let dag = self.dag as! MutableDAG
-//        dag.setInput(for: key, index: index, to: input?.key)
-//    }
-//    
+////    func input(for index: Int) -> Node? {
+////        guard let key = edgeMap[index] else { return nil }
+////        return graph.node(for: key)
+////    }
+////
+////    func set(input: Node?, for index: Int) {
+////        let dag = graph as! MutableDAG
+////        dag.setInput(for: key, index: index, to: input?.key)
+////    }
+////    
 ////    subscript(index: Int) -> DNode? {
 ////        get { return input(for: index) }
 ////        set { set(input: newValue, for: index) }
 ////    }
 //    
-//    // MARK: Pairs
-//    
-//    typealias PairType = (PayloadElement,DNode?)
-//    
-//    var pairs: [PairType] {
-//        get {
-//            return payload.izip.map { ($0.1, input(for: $0.0)) }
-//        }
-//        
-//        set {
-//            payload = newValue.map { $0.0 }
-//            
-//            var edgeMap = [Int:NodeKey]()
-//            
-//            let nodes = newValue.map{ $0.1 }
-//            for (i, node) in nodes.izip {
-//                edgeMap[i] = node?.key
-//            }
-//            
-//            let dag = self.dag as! MutableDAG
-//            dag.setEdgeMap(edgeMap, for: key)
-//        }
-//    }
+////    // MARK: Pairs
+////    
+////    typealias PairType = (PayloadElement, Node?)
+////
+////    var pairs: [PairType] {
+////        get {
+////            return payload.enumerated().map { ($0.1, input(for: $0.0)) }
+////        }
+////
+////        set {
+////            payload = newValue.map { $0.0 }
+////
+////            var edgeMap = [Int:NodeKey]()
+////
+////            let nodes = newValue.map{ $0.1 }
+////            for (i, node) in nodes.enumerated() {
+////                edgeMap[i] = node?.key
+////            }
+////
+////            let dag = self.graph as! MutableGraph
+////            dag.setEdgeMap(edgeMap, for: key)
+////        }
+////    }
 //    
 //    // MARK: Hashing
 //    
 ////    final override func hash(into hasher: inout Hasher, includeKeys: Bool) {
 ////        hasher.combine(nodeType)
-////        
+////
 ////        if includeKeys {
 ////            hasher.combine(key)
 ////        }
-////        
+////
 ////        hasher.combine(payload)
-////        
+////
 ////        for input in inputs {
 ////            input.hash(into: &hasher, includeKeys: includeKeys)
 ////        }
@@ -123,11 +123,11 @@ extension Array: NodePayload where Element: NodePayload {
 //    
 //    // MARK: Optimizing
 //    
-////    final override func optimizeInputs() {
-////        for (i, input) in _inputs.izip {
-////            self[i] = input.optimize() as! Node
-////        }
-////    }
+//    final override func optimizeInputs() {
+//        for (i, input) in _inputs.izip {
+//            self[i] = input.optimize() as! Node
+//        }
+//    }
 //    
 ////    final override func replace(_ keyToReplace: NodeKey, with replacement: Node) {
 ////        for (i, input) in _inputs.izip {
@@ -136,37 +136,37 @@ extension Array: NodePayload where Element: NodePayload {
 ////            }
 ////        }
 ////    }
-////    
+////
 ////    final override func addingCacheNodes(_ keysToCache: [NodeKey]) -> Node? {
 ////        _inputs = _inputs.map { $0.addingCacheNodes(keysToCache)! }
 ////        return super.addingCacheNodes(keysToCache)
 ////    }
 //    
-//    final override func _purgingUnneededCaches(isBehindCache: Bool) -> Node? {
-//        fatalError()
-//////        print("BEFORE")
-//////        for input in _inputs {
-//////            input.log(with: "\t")
+////    final override func _purgingUnneededCaches(isBehindCache: Bool) -> Node? {
+////        fatalError()
+////////        print("BEFORE")
+////////        for input in _inputs {
+////////            input.log(with: "\t")
+////////        }
+//////
+//////        _inputs = _inputs.map{
+//////            $0._purgingUnneededCaches(isBehindCache: isBehindCache) ?? SolidColorNode(.clear)
 //////        }
+//////
+////////        print("AFTER")
+////////        for input in _inputs {
+////////            input.log(with: "\t")
+////////        }
+//////
+//////        return self
+////    }
 ////
-////        _inputs = _inputs.map{
-////            $0._purgingUnneededCaches(isBehindCache: isBehindCache) ?? SolidColorNode(.clear)
+////    public override var linearized: [Node] {
+////        switch inputs.count {
+////        case 0: return [self]
+////        case 1: return [self] + inputs[0].linearized
+////        default: fatalError()
 ////        }
-////
-//////        print("AFTER")
-//////        for input in _inputs {
-//////            input.log(with: "\t")
-//////        }
-////
-////        return self
-//    }
-//    
-//    public override var linearized: [Node] {
-//        switch inputs.count {
-//        case 0: return [self]
-//        case 1: return [self] + inputs[0].linearized
-//        default: fatalError()
-//        }
-//    }
+////    }
 //    
 //}

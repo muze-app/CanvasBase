@@ -6,9 +6,14 @@
 //  Copyright © 2018 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import Metal
 import MuzePrelude
+
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 @available(*, deprecated)
 public final class MetalOnscreenDrawable: MetalDrawable {
@@ -38,7 +43,7 @@ public final class MetalOnscreenDrawable: MetalDrawable {
     
     #if targetEnvironment(simulator)
     
-    var _texture: MTLTexture {
+    public var _texture: MTLTexture {
         fatalError()
     }
     
@@ -98,9 +103,12 @@ public final class MetalOnscreenDrawable: MetalDrawable {
     public func blit<T: MetalDrawable>(_ source: T, clear: Bool, present: Bool) {
         if source.needsClear { return }
         
+        #if os(iOS)
         blit(source._texture, clear: clear, present: present)
+        #endif
     }
     
+    #if os(iOS)
     @available(*, deprecated)
     public func blit(_ texture: MTLTexture, clear: Bool, present: Bool) {
         let clearColor = clear ? UIColor.clear : nil
@@ -159,6 +167,7 @@ public final class MetalOnscreenDrawable: MetalDrawable {
             #endif
         }
     }
+    #endif
 
     // MARK: Other
     

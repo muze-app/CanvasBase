@@ -8,9 +8,11 @@
 import Foundation
 import DAG
 
-class ImageNode: GeneratorNode<ImagePayload> {
+public class ImageNode: GeneratorNode<ImagePayload> {
     
-    init(_ key: NodeKey = NodeKey(), graph: Graph, payload: ImagePayload? = nil) {
+    override public var cost: Int { 1 }
+    
+    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: ImagePayload? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .image)
     }
     
@@ -102,5 +104,7 @@ public struct ImagePayload: NodePayload {
 //    public func transformed(by transform: AffineTransform) -> ImagePayload {
 //        return ImagePayload(image, transform * transform, colorMatrix)
 //    }
+    
+    public init() { }
     
 }

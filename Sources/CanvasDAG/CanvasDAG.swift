@@ -5,17 +5,27 @@
 //  Created by Greg Fajen on 12/23/19.
 //
 
-import Foundation
-import DAG
+@_exported import MuzePrelude
+@_exported import DAG
 
-public typealias GeneratorNode<Payload: NodePayload> = DAG.GeneratorNode<CanvasNodeCollection, Payload> & CanvasNode
+public typealias GeneratorNode<Payload: NodePayload> = DAG.GeneratorNode<CanvasNodeCollection, Payload>
 
-public protocol CanvasNode: GenericNode<CanvasNodeCollection> {
-    
-    typealias Graph = DAGBase<CanvasNodeCollection>
-    typealias Node = GenericNode<CanvasNodeCollection>
-    
-}
+public typealias PayloadNode<Payload: NodePayload> = DAG.PayloadNode<CanvasNodeCollection, Payload>
+
+public typealias ListNode<Payload: NodePayload> = DAG.ListNode<CanvasNodeCollection, Payload>
+
+public typealias InputNode<Payload: NodePayload> = DAG.INode<CanvasNodeCollection, Payload>
+
+public typealias CanvasGraph = DAGBase<CanvasNodeCollection>
+public typealias CanvasNode = GenericNode<CanvasNodeCollection>
+public typealias MutableCanvasGraph = MutableDAG<CanvasNodeCollection>
+
+//public protocol CanvasNode: GenericNode<CanvasNodeCollection> {
+//
+//    typealias Graph = DAGBase<CanvasNodeCollection>
+//    typealias Node = GenericNode<CanvasNodeCollection>
+//
+//}
 
 public enum CanvasNodeCollection: NodeCollection, Hashable {
     
@@ -56,28 +66,31 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     public func node(for key: NodeKey, graph: Graph) -> Node {
         switch self {
+//            case .color: return CNode(key, graph: graph)
+//            case .string: return SNode(key, graph: graph)
+//            case .canvasOverlay: return CanvasOverlayNode(key, graph: graph)
+            case .image: return ImageNode(key, graph: graph)
+            case .blend: return BlendNode(key, graph: graph)
+            case .comp:  return CompositeNode(key, graph: graph)
+            case .alpha: return AlphaNode(key, graph: graph)
+            case .cache: return CacheNode(key, graph: graph)
+//            case .rects: return RectsNode(key, graph: graph)
+//            case .blurPreview: return BlurPreviewNode(key, graph: graph)
+//            case .solidColor: return SolidColorNode(key, graph: graph)
+//            case .transform: return TransformNode(key, graph: graph)
+//            case .canvasMeta: return CanvasMetaNode(key, graph: graph)
+//            case .layerMeta: return LayerMetaNode(key, graph: graph)
+//            case .brush: return BrushNode(key, graph: graph)
+            case .maskedColor: return MaskedColorNode(key, graph: graph)
+//            case .effect: return EffectNode(key, graph: graph)
+            case .mask: return MaskNode(key, graph: graph)
+            
+//            case .colorMatrix: return ColorMatrixNode(key, graph: graph)
+            case .maskSeries: return MaskSeriesNode(key, graph: graph)
+            
+//            case .checkerboard: return CheckerboardNode(key, graph: graph)
+            
             default: fatalError()
-            //                    case .color: return CNode(key, graph: self)
-            //                    case .string: return SNode(key, graph: self)
-            //                    case .canvasOverlay: return CanvasOverlayNode(key, graph: self)
-            //                    case .image: return ImageNode(key, graph: self)
-            //                    case .blend: return BlendNode(key, graph: self)
-            //                    case .rects: return RectsNode(key, graph: self)
-            //                    case .blurPreview: return BlurPreviewNode(key, graph: self)
-            //                    case .solidColor: return SolidColorNode(key, graph: self)
-            //                    case .transform: return TransformNode(key, graph: self)
-            //                    case .canvasMeta: return CanvasMetaNode(key, graph: self)
-            //                    case .layerMeta: return LayerMetaNode(key, graph: self)
-            //                    case .brush: return BrushNode(key, graph: self)
-            //                    case .maskedColor: return MaskedColorNode(key, graph: self)
-            //                    case .effect: return EffectNode(key, graph: self)
-            //                    case .mask: return MaskNode(key, graph: self)
-            //                    case .comp: return CompositeNode(key, graph: self)
-            //                    case .alpha: return AlphaNode(key, graph: self)
-            //                    case .colorMatrix: return ColorMatrixNode(key, graph: self)
-            //                    case .maskSeries: return MaskSeriesNode(key, graph: self)
-            //                    case .cache: return CacheNode(key, graph: self)
-            //                    case .checkerboard: return CheckerboardNode(key, graph: self)
         }
     }
     

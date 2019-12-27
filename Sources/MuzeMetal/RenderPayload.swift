@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MuzePrelude
 
@@ -112,6 +112,7 @@ extension CGColorSpace {
     
 }
 
+#if os(iOS)
 public extension UIColor {
     
     func converted(to space: CGColorSpace, intent: CGColorRenderingIntent) -> UIColor {
@@ -120,6 +121,7 @@ public extension UIColor {
     }
     
 }
+#endif
 
 @available(*, deprecated)
 func * (m: DMatrix3x3, v: RenderColor) -> RenderColor {
@@ -190,6 +192,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
         self.a = Float(a)
     }
     
+    #if os(iOS)
     public init(_ ui: UIColor) {
         let p3_compressed = ui.converted(to: .displayP3Space, intent: .absoluteColorimetric)
         var rgb = p3_compressed.components
@@ -207,6 +210,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
         let cg = CGColor(colorSpace: .displayP3Space, components: rgba)
         return UIColor(cgColor: cg!)
     }
+    #endif
     
     public static let white = RenderColor.white(1)
     public static let black = RenderColor.white(0)
@@ -222,6 +226,9 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
     }
     
     static func displayP3<N: BinaryFloatingPoint>(red: N, green: N, blue: N, alpha: N = 1) -> RenderColor {
+        #if os(macOS)
+        fatalError()
+        #else
         let components = [red,green,blue,alpha].map { CGFloat($0) }
         let cg = CGColor(colorSpace: .displayP3Space, components: components)!
         let ui = UIColor(cgColor: cg)
@@ -233,6 +240,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
 //        print(" got \(rui.components)")
         
         return color
+        #endif
     }
     
 }
@@ -255,6 +263,7 @@ extension RenderColor {
     
 }
 
+#if os(iOS)
 @available(*, deprecated)
 extension RenderColor {
     
@@ -271,7 +280,9 @@ extension RenderColor {
     }
     
 }
+#endif
 
+#if os(iOS)
 public extension UIColor {
     
     convenience init(_ color: RenderColor2) {
@@ -285,3 +296,4 @@ public extension UIColor {
     }
     
 }
+#endif

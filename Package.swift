@@ -5,14 +5,18 @@ import PackageDescription
 let package = Package(
     
     name: "CanvasBase",
-    platforms: [.iOS(.v12)],
+    platforms: [.iOS(.v12), .macOS(.v10_14)],
     
     products: [
         .library( name: "CanvasBase",
-                  targets: ["CanvasBase"])
+                  targets: ["CanvasBase"]),
+        .executable(name: "RunAndPlay", targets: ["RunAndPlay"])
     ],
     
-    dependencies: [],
+    dependencies: [
+//        .package(url: "https://github.com/Quick/Quick.git", from: "2.2.0"),
+//        .package(url: "https://github.com/Quick/Nimble.git", from: "8.0.0")
+    ],
     
     targets: [
         .target(name: "MuzePrelude",
@@ -31,7 +35,11 @@ let package = Package(
                  dependencies: ["CanvasDAG"]),
         
         .testTarget( name: "CanvasBaseTests",
-                     dependencies: ["CanvasBase"])
-    ]
+                     dependencies: ["CanvasBase"]),
+        
+        .target(name: "RunAndPlay", dependencies: ["CanvasBase"])
+    ],
+    
+    swiftLanguageVersions: [.v5]
     
 )

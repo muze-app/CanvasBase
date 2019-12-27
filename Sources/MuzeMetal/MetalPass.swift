@@ -6,14 +6,14 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 
 public class MetalPass<DrawableType: SimpleMetalDrawable> {
     
     let pipeline: MetalPipeline
     let drawable: DrawableType
-    let clearColor: UIColor?
+    let clearColor: Color?
     
     let primitive: MTLPrimitiveType
     let vertexCount: Int
@@ -31,7 +31,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
                 drawable: DrawableType,
                 primitive: MTLPrimitiveType = .triangleStrip,
                 vertexCount: Int = 4,
-                clearColor: UIColor? = nil,
+                clearColor: Color? = nil,
                 vertexBuffers: [MetalBuffer],
                 fragmentBuffers: [MetalBuffer] = [],
                 fragmentTextures: [MTLTexture] = [],
@@ -178,7 +178,7 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
 
 public extension MTLClearColor {
     
-    init(_ color: UIColor) {
+    init(_ color: Color) {
         var r: CGFloat = 1
         var g: CGFloat = 1
         var b: CGFloat = 1

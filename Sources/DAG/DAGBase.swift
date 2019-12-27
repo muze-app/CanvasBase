@@ -18,14 +18,21 @@ public class DAGBase<Collection: NodeCollection> {
     
     public var store: DAGStore<Collection> { die }
     public var depth: Int { die }
-    var level: Int { die }
-    var maxLevel: Int { die }
+    
+    @available(*, deprecated)
+    final var level: Int { 0 }
+    
+    @available(*, deprecated)
+    final var maxLevel: Int { 0 }
     
     init(_ key: CommitKey = .init()) {
         self.key = key
     }
     
-    func parent(at level: Int) -> DAGBase? { die }
+    @available(*, deprecated)
+    public func parent(at level: Int) -> DAGBase? { die }
+    
+    var payloadBuffers: PayloadBufferSet? { nil }
     
     // MARK: - Subgraphs
     
@@ -36,10 +43,6 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     public func subgraphData(for key: SubgraphKey) -> SubgraphData? {
-        subgraphData(for: key, level: level)
-    }
-    
-    public func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
         die
     }
     
@@ -50,10 +53,10 @@ public class DAGBase<Collection: NodeCollection> {
     // MARK: - Nodes
     
     //    func node(for key: NodeKey) -> Node { }
-    func type(for key: NodeKey) -> Collection? { die }
+    public func type(for key: NodeKey) -> Collection? { die }
     
     // PRECONDITION: node must exist in graph or will crash
-    func node(for key: NodeKey) -> Node {
+    public func node(for key: NodeKey) -> Node {
         guard let type = type(for: key) else { die }
         
         return type.node(for: key, graph: self)
@@ -75,18 +78,26 @@ public class DAGBase<Collection: NodeCollection> {
     
     // MARK: - Payloads
 
-//    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? { }
-    public func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? { die }
-    public func payload<T>(for key: NodeKey, of type: T.Type) -> T? { die }
+    public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+        die
+    }
+    
+    public final func payloadPointer(for key: NodeKey) -> UnsafeMutableRawPointer? {
+        payloadAllocation(for: key)?.pointer
+    }
+    
+    public final func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
+        payloadPointer(for: key)?.assumingMemoryBound(to: T.self).pointee
+    }
 
     var die: Never { fatalError() }
     
     // MARK: - Edges
     
-    public func edgeMap(for key: NodeKey, level: Int) -> [Int: NodeKey]? { die }
+    public func edgeMap(for key: NodeKey) -> [Int: NodeKey]? { die }
     
     public final func input(for parent: NodeKey, index: Int) -> NodeKey? {
-        return edgeMap(for: parent, level: level)?[index]
+        return edgeMap(for: parent)?[index]
     }
     
     public final func inputNode(for parent: NodeKey, index: Int) -> Node? {
@@ -103,26 +114,27 @@ public class DAGBase<Collection: NodeCollection> {
     var snapshotToModify: DAGBase { self }
     
 //    @inlinable
-    public final func modify(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
-        return modify(as: nil, level: level, block)
-    }
+//    public final func modify(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
+//        return modify(as: nil, block)
+//    }
     
     @inlinable
-    public final func modify(level: Int, _ block: (MutableDAG<Collection>)->()) -> Snapshot {
-        return modify(as: nil, level: level, block)
+    public final func modify(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
+        return modify(as: nil, block)
     }
     
 //    @inlinable
-    public final func modify(as key: CommitKey?, level: Int, _ block: (MutableDAG<Collection>)->()) -> Snapshot {
+    public final func modify(as key: CommitKey?,
+                             _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         let snapshot = snapshotToModify
         
         //        modLock?.lock()
         let pred: DAGBase = snapshot
-        let result = InternalDirectSnapshot(predecessor: pred, store: store, level: level, key: key ?? CommitKey())
+        let result = InternalDirectSnapshot(predecessor: pred, store: store, key: key ?? CommitKey())
         block(result)
         //        modLock?.unlock()
         
-        if self.level == level, !key.exists, !result.hasChanges, let me = snapshot as? InternalDirectSnapshot {
+        if !key.exists, !result.hasChanges, let me = snapshot as? InternalDirectSnapshot {
             return me
         } else {
             result.becomeImmutable()
@@ -133,70 +145,8 @@ public class DAGBase<Collection: NodeCollection> {
     
     // MARK: - UNSORTED
     
-//    var modLock: NSRecursiveLock? { die }
-//    func  alias(_ block: (MutableDAG)->()) -> InternalDirectSnapshot { die } // use carefully!
-//    func modify(_ block: (MutableDAG)->()) -> InternalDirectSnapshot { die }
-//    func modify(level: Int, _ block: (MutableDAG)->()) -> InternalDirectSnapshot { die }
-//    func modify(as key: CommitKey?, level: Int, _ block: (MutableDAG)->()) -> InternalDirectSnapshot { die }
-//    func importing(_ other: DAG) -> ImportSnapshot { die }
-//
-//
-//    func contains(allocations: Set<PayloadBufferAllocation>) -> Bool { die }
-//    func contains(textures: Set<MetalTexture>) -> Bool
-    
-//}
-
-//protocol MutableDAG: DAG {
-//
-//    func setType(_ type: DNodeType, for key: NodeKey)
-//    func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey)
-//    func setEdgeMap(_ edgeMap: [Int:NodeKey], for key: NodeKey)
-//    func setInput(for parent: NodeKey, index: Int, to child: NodeKey?)
-//
-//    func setFinalKey(_ key: NodeKey?, for subgraph: SubgraphKey)
-//    func setFinalNode(_ node: Node?, for subgraph: SubgraphKey)
-//    func setMetaKey(_ key: NodeKey?, for subgraph: SubgraphKey)
-//    func setMetaNode(_ node: Node?, for subgraph: SubgraphKey)
-//
-//    func setReverseEdges(_ bag: Bag<NodeKey>, for key: NodeKey)
-//
-//}
-    
-//    func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-//        guard let raw = payloadPointer(for: key, level: level) else { return nil }
-//        let pointer = raw.assumingMemoryBound(to: T.self)
-//        return pointer.pointee
-//    }
-     
     func  alias(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
-        return modify(as: self.key, level: level, block)
-    }
-    
-    func optimizing(subgraph: SubgraphKey, throughCacheNodes: Bool = false) -> Snapshot {
-        return modify { _ in
-//            let subgraph = graph.subgraph(for: subgraph)
-//            subgraph.finalNode = subgraph.finalNode?.optimize(throughCacheNodes: throughCacheNodes)
-        }
-        
-//        return self as! InternalDirectSnapshot
-        
-//        let optimized = modify { (graph) in
-//            graph.finalNode = graph.finalNode?.optimize(throughCacheNodes: throughCacheNodes)
-//        }
-        
-//        for (parent, edgeMap) in optimized.edgeMaps {
-//            print("PARENT: \(parent)")
-//            for (i, child) in edgeMap {
-//                print("    \(i) = \(child)")
-//            }
-//        }
-        
-//        print("ORIGINAL")
-//        finalNode?.log()
-//        print("OPTIMIZED")
-//        optimized.finalNode?.log()
-
-//        return optimized.flattened
+        return modify(as: self.key, block)
     }
     
     func reference(for mode: DAGSnapshot<Collection>.Mode) -> DAGSnapshot<Collection> {

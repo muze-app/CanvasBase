@@ -6,8 +6,17 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import MuzePrelude
+
+#if os(macOS)
+func pow(_ b: Double, _ e: Double) -> Double {
+//    Swift.Double.po
+    fatalError()
+}
+#else
+import USBDriverKit
+#endif
 
 // unpremultiplied, linear color
 public struct RenderColor2: Hashable, Blendable, MetalBuffer {
@@ -79,6 +88,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         self.colorSpace = colorSpace
     }
     
+    #if os(iOS)
     public init(_ ui: UIColor) {
         let p3_compressed = ui.converted(to: .displayP3Space, intent: .absoluteColorimetric)
         var rgb = p3_compressed.components
@@ -99,6 +109,7 @@ public struct RenderColor2: Hashable, Blendable, MetalBuffer {
         let cg = CGColor(colorSpace: space, components: rgba)
         return UIColor(cgColor: cg!)
     }
+    #endif
     
     public func converted(to space: ColorSpace) -> RenderColor2 {
         if self.colorSpace == space { return self }

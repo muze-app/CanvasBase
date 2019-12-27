@@ -6,13 +6,19 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(macOS)
+import AppKit
+#else
 import UIKit
+#endif
 
 public extension CGSize {
     
     init(_ dimension: CGFloat) { self = CGSize(width: dimension, height: dimension) }
     
+    #if os(iOS)
     static let screenCenter: CGPoint = UIScreen.main.bounds.center
+    #endif
     
     var aspectRatio: CGFloat {
         return width / height

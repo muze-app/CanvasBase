@@ -10,6 +10,8 @@ import MuzePrelude
 
 // MARK: Payload Node
 
+public typealias AffineTransform = MuzePrelude.AffineTransform
+
 public protocol NodePayload: Hashable {
     
     func transformed(by transform: AffineTransform) -> Self
@@ -26,7 +28,7 @@ extension NodePayload {
 
 open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: GenericNode<Collection> {
     
-    var payload: PayloadType {
+    public var payload: PayloadType {
         get { graph.payload(for: key, of: PayloadType.self)! }
         set { (graph as! MutableDAG).setPayload(newValue, for: key) }
     }
@@ -53,11 +55,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
     //    override var inputCount: Int { return edgeMap.count }
     
     // better differentiate between this and inputs var
-    var nodeInputs: NodeInputs<Collection> {
-        get { return NodeInputs(self) }
-        set { } // ok, we be cheating a little here. the action has already happened before this gets called
-    }
-    
+     
     //    final override func addingCacheNodes(_ keysToCache: [NodeKey]) -> DNode? {
     //        if let cacheNode = self as? CacheNode {
     //            return cacheNode.input?.addingCacheNodes(keysToCache + [key])
@@ -92,7 +90,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         }
     }
     
-    subscript(i: Int) -> Node? {
+    public subscript(i: Int) -> Node? {
         get {
             guard let inputKey = graph.input(for: key, index: i) else { return nil }
             return graph.node(for: inputKey)

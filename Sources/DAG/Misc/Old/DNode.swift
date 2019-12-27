@@ -10,9 +10,9 @@ import Foundation
 
 class Nothing { }
 
-public class INode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {
+open class INode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {
     
-    var input: GenericNode<Collection>? {
+    public var input: GenericNode<Collection>? {
         get { nodeInputs[0] }
         set { nodeInputs[0] = newValue }
     }
@@ -37,14 +37,14 @@ open class GeneratorNode<Collection: NodeCollection, PayloadType: NodePayload>: 
 
 public struct NodeInputs<Collection: NodeCollection> {
     
-    typealias Node = GenericNode<Collection>
+    public typealias Node = GenericNode<Collection>
     weak var node: Node?
     
     init(_ node: Node) {
         self.node = node
     }
 
-    subscript(i: Int) -> Node? {
+    public subscript(i: Int) -> Node? {
         get {
             let node = self.node!
             let graph = node.graph

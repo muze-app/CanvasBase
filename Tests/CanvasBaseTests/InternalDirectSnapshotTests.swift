@@ -7,7 +7,15 @@
 
 import XCTest
 @testable import DAG
-@testable import canvas_base
+@testable import CanvasBase
+
+extension DAGBase: Equatable {
+    
+    public static func == (lhs: DAGBase<Collection>, rhs: DAGBase<Collection>) -> Bool {
+        return lhs.key == rhs.key
+    }
+    
+}
 
 final class InternalDirectSnapshotTests: XCTestCase {
     
@@ -16,6 +24,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     typealias Graph = DAGBase<Collection>
     typealias MutableGraph = MutableDAG<Collection>
     typealias InternalSnapshot = InternalDirectSnapshot<Collection>
+    typealias Subgraph = DAG.Subgraph<Collection>
     
     typealias ImageNode = MockImageNode
     typealias BlendNode = MockBlendNode
@@ -23,7 +32,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     
     func testCommit() {
         let store = Store()
-        let initial = InternalSnapshot(store: store, level: 0)
+        let initial = InternalSnapshot(store: store)
         store.commit(initial)
         
         let found = store.commit(for: initial.key)
@@ -32,7 +41,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     
     func testNotModifiedOptimization() {
         let store = Store()
-        let initial = InternalSnapshot(store: store, level: 0)
+        let initial = InternalSnapshot(store: store)
         
         let notReallyModified = initial.modify { _ in }
         
@@ -41,7 +50,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     
     func testAddImageNode() {
         let store = Store()
-        let initial = InternalSnapshot(store: store, level: 0)
+        let initial = InternalSnapshot(store: store)
         store.commit(initial)
         
         let nodeKey = NodeKey()
@@ -58,7 +67,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     
     func testFilterNode() {
         let store = Store()
-        let initial = InternalSnapshot(store: store, level: 0)
+        let initial = InternalSnapshot(store: store)
         store.commit(initial)
         
         let imageKey = NodeKey()
@@ -79,7 +88,7 @@ final class InternalDirectSnapshotTests: XCTestCase {
     
     func testRevEdgesNode() {
         let store = Store()
-        let initial = InternalSnapshot(store: store, level: 0)
+        let initial = InternalSnapshot(store: store)
         store.commit(initial)
         
         let imageKey = NodeKey()
@@ -98,6 +107,37 @@ final class InternalDirectSnapshotTests: XCTestCase {
         
         let filterRevEdges = final.reverseEdges(for: filterKey)!
         XCTAssert(filterRevEdges.asArray.count == 0)
+    }
+    
+    func testDepth() {
+        let store = Store()
+        let initial = InternalSnapshot(store: store)
+        store.commit(initial)
+        
+        print("initial.depth: \(initial.depth)")
+        
+        let subgraphKey = SubgraphKey()
+        
+        let one = initial.modify { graph in
+            let subgraph = graph.subgraph(for: subgraphKey)
+            
+            subgraph.finalNode = ImageNode(graph: graph,
+                                           payload: 1,
+                                           nodeType: .image)
+        }
+        
+        let two = one.modify { graph in
+            let subgraph = graph.subgraph(for: subgraphKey)
+            
+            subgraph.finalNode = ImageNode(graph: graph,
+                                           payload: 2,
+                                           nodeType: .image)
+        }
+        
+        print("one.depth: \(one.depth)")
+        XCTAssert(one.depth == 1)
+        print("two.depth: \(two.depth)")
+        XCTAssert(two.depth == 2)
     }
     
 }

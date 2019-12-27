@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MetalKit
 import MuzePrelude
@@ -68,6 +68,7 @@ public extension MetalHeapManager {
         return texture
     }
     
+    #if os(iOS)
     func makeTexture(from image: UIImage) -> MetalTexture? {
         let size = image.size * image.scale
         
@@ -107,6 +108,7 @@ public extension MetalHeapManager {
         return tex.reoriented(fromRAW: orientation)
         #endif
     }
+    #endif
     
 }
 
@@ -152,6 +154,7 @@ public extension MetalTexture {
         return target
     }
     
+    #if os(iOS)
     func reoriented(from orientation: ImageOrientation) -> MetalTexture {
         let texture = MetalHeapManager.shared.makeTexture(size.after(orientation),
                                                           self.pixelFormat,
@@ -187,6 +190,7 @@ public extension MetalTexture {
         
         return texture
     }
+    #endif
     
     func convertedToSRGB() -> MetalTexture {
         if colorSpace == .srgb, pixelFormat == .bgra8Unorm_srgb { return self }
@@ -209,6 +213,7 @@ public extension MetalTexture {
     
 }
 
+#if os(iOS)
 extension ImageOrientation {
     
     var isLeftOrRight: Bool {
@@ -234,3 +239,4 @@ public extension CGSize {
     }
     
 }
+#endif

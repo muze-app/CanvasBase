@@ -25,49 +25,51 @@ public struct NodeRevData {
     
 }
 
-private let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot<MockNodeCollection>>()
-private var i = 0
+//private let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot<MockNodeCollection>>()
+//private var i = 0
 
 public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
+    
+//    class var tempDict
     
     weak var _store: DAGStore<Collection>?
     override public var store: DAGStore<Collection> { _store! }
     let predecessor: DAGBase<Collection>?
-    let _level: Int
-    override var level: Int { _level }
     
     var modLock: NSRecursiveLock? { return store.lock }
     
-    init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, level: Int, key: CommitKey = CommitKey()) {
+    public init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
         self._store = store
-        self._level = level
         
         super.init(key)
         
-        tempDict[i] = (self as! InternalDirectSnapshot<MockNodeCollection>)
-        i += 1
+//        tempDict[i] = (self as! InternalDirectSnapshot<Collection>)
+//        i += 1
     }
     
-    func with(key: CommitKey, level: Int) -> InternalDirectSnapshot {
-        let snapshot = InternalDirectSnapshot(predecessor: self, store: store, level: level, key: key)
+    public func with(key: CommitKey) -> InternalDirectSnapshot {
+        let snapshot = InternalDirectSnapshot(predecessor: self, store: store, key: key)
         snapshot.becomeImmutable()
         return snapshot
     }
     
-    override func parent(at level: Int) -> DAGBase<Collection>? {
-        if let pred = predecessor as? InternalDirectSnapshot {
-            if pred.level == level {
-                return pred
-            } else {
-                return pred.parent(at: level)
-            }
-        }
-        
-        return nil
-    }
+//    @available(*, deprecated)
+//    override public func parent(at level: Int = 0) -> DAGBase<Collection>? {
+//        return predecessor
+//        if let pred = predecessor as? InternalDirectSnapshot {
+//            if pred.level == level {
+//                return pred
+//            } else {
+//                return pred.parent(at: level)
+//            }
+//        }
+//
+//        return nil
+//    }
     
-    var payloadBuffers: PayloadBufferSet?
+    var _payloadBuffers: PayloadBufferSet?
+    override var payloadBuffers: PayloadBufferSet? { _payloadBuffers }
     var payloadMap: [NodeKey:PayloadBufferAllocation] = [:]
     
 //    deinit {
@@ -82,12 +84,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     var reverseEdges: [NodeKey:Bag<NodeKey>] = [:]
     var revData: [NodeKey:NodeRevData] = [:]
     
-    override public var depth: Int { return (predecessor?.depth ?? 0) + 1 }
-    
-    override var maxLevel: Int {
-        guard let p = predecessor?.maxLevel else { return level }
-        return max(p, level)
-    }
+    override public var depth: Int { return (predecessor?.depth ?? -1) + 1 }
     
     private var isMutable = true
     
@@ -113,7 +110,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Types
     
-    override func type(for key: NodeKey) -> Collection? {
+    override public func type(for key: NodeKey) -> Collection? {
         return typeMap[key] ?? predecessor?.type(for: key)
     }
     
@@ -125,20 +122,20 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Edges
     
-    override public func edgeMap(for key: NodeKey, level: Int) -> [Int:NodeKey]? {
-        if level >= self.level, let edgeMap = edgeMaps[key] {
+    override public func edgeMap(for key: NodeKey) -> [Int:NodeKey]? {
+        if let edgeMap = edgeMaps[key] {
             return edgeMap
         }
         
-        return predecessor?.edgeMap(for: key, level: level)
+        return predecessor?.edgeMap(for: key)
     }
     
-    func setEdgeMap(_ edgeMap: [Int:NodeKey], for key: NodeKey) {
+    public func setEdgeMap(_ edgeMap: [Int:NodeKey], for key: NodeKey) {
         assert(isMutable)
         edgeMaps[key] = edgeMap
     }
     
-    func setInput(for parent: NodeKey, index: Int, to child: NodeKey?) {
+    public func setInput(for parent: NodeKey, index: Int, to child: NodeKey?) {
         assert(isMutable)
         assert(child != parent)
         
@@ -146,7 +143,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         
         if oldChild == child { return }
         
-        var map = edgeMap(for: parent, level: level) ?? [:]
+        var map = edgeMap(for: parent) ?? [:]
         map[index] = child
         edgeMaps[parent] = map
         
@@ -173,35 +170,31 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return pred + mine //+ alt
     }
 
-    override public func subgraphData(for key: SubgraphKey, level: Int) -> SubgraphData? {
-        if level >= self.level, let subgraph = subgraphs[key] {
-            return subgraph
-        }
-
-        return predecessor?.subgraphData(for: key, level: level)
+    override public func subgraphData(for key: SubgraphKey) -> SubgraphData? {
+        subgraphs[key] ?? predecessor?.subgraphData(for: key)
     }
     
     func updateSubgraph(_ key: SubgraphKey, _ block: (inout SubgraphData)->()) {
 //        die
         assert(isMutable)
 
-        let old = subgraphData(for: key, level: level) ?? SubgraphData(key: key)
-        let alt = subgraphData(for: key, level: 99999) ?? SubgraphData(key: key)
+        let old = subgraphData(for: key) ?? SubgraphData(key: key)
+//        let alt = subgraphData(for: key) ?? SubgraphData(key: key)
         var new = old
 
         block(&new)
 
-        if new != old || old != alt {
+        if new != old /*|| old != alt*/ {
             subgraphs[key] = new
         }
     }
     
     override public func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
-        return subgraphData(for: subgraphKey, level: level)?.finalKey
+        return subgraphData(for: subgraphKey)?.finalKey
     }
     
     override public func metaKey(for subgraphKey: SubgraphKey) -> NodeKey? {
-        return subgraphData(for: subgraphKey, level: level)?.metaKey
+        return subgraphData(for: subgraphKey)?.metaKey
     }
     
     func setFinalKey(_ key: NodeKey?, for subgraphKey: SubgraphKey) {
@@ -221,32 +214,11 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Payloads
     
-    func payloadAllocation(for key: NodeKey, level: Int) -> PayloadBufferAllocation? {
-        if level >= self.level, let pointer = payloadMap[key] {
-            return pointer
-        }
-        
-        die
-//        return predecessor?.payloadAllocation(for: key, level: level)
-    }
-    
-    override public func payloadPointer(for key: NodeKey, level: Int) -> UnsafeMutableRawPointer? {
-        if level >= self.level, let pointer = payloadMap[key]?.pointer {
-            return pointer
-        }
-        
-//        die
-        return predecessor?.payloadPointer(for: key, level: level)
-    }
-    
-    override public func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-        guard let raw = payloadPointer(for: key, level: level) else { return nil }
-        let pointer = raw.assumingMemoryBound(to: T.self)
-        return pointer.pointee
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+        payloadMap[key] ?? predecessor?.payloadAllocation(for: key)
     }
     
     func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey) {
-        
         assert(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
@@ -257,7 +229,9 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
             return
         }
         
-        if !payloadBuffers.exists { payloadBuffers = PayloadBufferSet() }
+        if !payloadBuffers.exists {
+            _payloadBuffers = predecessor?.payloadBuffers ?? PayloadBufferSet()
+        }
         
         guard let allocation = payloadBuffers!.new(payload) else {
             fatalError("out of memory")
@@ -268,7 +242,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Reverse Edges
     
-    override func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
+    override public func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
         return reverseEdges[key] ?? predecessor?.reverseEdges(for: key)
     }
     

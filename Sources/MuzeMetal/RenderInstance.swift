@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MuzePrelude
 
@@ -320,6 +320,8 @@ public enum Either<L,R> {
     }
     
 }
+
+public typealias AffineTransform = MuzePrelude.AffineTransform
 
 public typealias TextureAndTransform = (MetalTexture,AffineTransform)
 public typealias IntermediateAndTransform = (IntermediateOrTexture,AffineTransform)

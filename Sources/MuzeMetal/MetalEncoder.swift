@@ -6,9 +6,15 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+//import UIKit
 import Metal
 import MetalPerformanceShaders
+
+#if os(macOS)
+
+#else
+
+#endif
 
 class MetalEncoder {
     
@@ -20,7 +26,7 @@ class MetalEncoder {
     var identifier: String?
     
     enum LoadAction: Equatable {
-        case dontCare, load, clear(UIColor)
+        case dontCare, load, clear(Color)
         
         var isClear: Bool {
             switch self {

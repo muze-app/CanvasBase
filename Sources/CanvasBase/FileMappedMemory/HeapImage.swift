@@ -6,7 +6,6 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
 import MuzePrelude
 
 enum ContextError: Error {
@@ -129,9 +128,11 @@ public class HeapImage {
     }
     
     // make sure to retain HeapImage for the lifetime of this UIImage
+    #if os(iOS)
     var uiImage: UIImage {
         return UIImage(cgImage: cgImage)
     }
+    #endif
     
     func flip(_ context: CGContext) {
         context.scaleBy(x: 1, y: -1)
@@ -139,11 +140,13 @@ public class HeapImage {
     }
     
     func draw(in context: CGContext, _ block: ()->()) {
+        #if os(iOS)
         UIGraphicsPushContext(context)
         context.saveGState()
         block()
         context.restoreGState()
         UIGraphicsPopContext()
+        #endif
     }
     
 }
