@@ -24,8 +24,8 @@ extension NodeCollection {
     
     var maskToSeries: OptFunc { { MaskToSeriesOpt($0) } }
     
-    var pushThrough: OptFunc { { PushTransformThroughCompOpt($0) } }
-    var coalesce: OptFunc { { TransformCoalesce($0) } }
+    var transformPushThrough: OptFunc { { PushTransformThroughCompOpt($0) } }
+    var transformCoalesce: OptFunc { { TransformCoalesce($0) } }
     
     var possibleOptimizations: [OptFunc] {
         guard let self = self as? CanvasNodeCollection else { return [] }
@@ -59,7 +59,7 @@ extension NodeCollection {
 //
 //            case .rects:
 //
-            case .transform:  return [removeIdentity, removeInvisibles, pushThrough, coalesce]
+            case .transform:  return [removeIdentity, removeInvisibles, transformPushThrough, transformCoalesce]
 //
 //            case .blurPreview:
 //            

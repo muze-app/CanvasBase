@@ -58,7 +58,10 @@ public class TransformNode: InputNode<AffineTransform> {
 
 class TransformCoalesce: CoalescingOptimization<AffineTransform,TransformNode> {
     
-    required init?(_ source: Node) { super.init(source as! TransformNode, coalescingFunction: { $1 * $0 }) }
+    required init?(_ source: Node) {
+        guard let source = source as? TransformNode else { return nil }
+        super.init(source) { $1 * $0 }
+    }
     
 }
 
