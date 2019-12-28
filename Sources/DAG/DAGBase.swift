@@ -150,31 +150,29 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     func reference(for mode: DAGSnapshot<Collection>.Mode) -> DAGSnapshot<Collection> {
-        die
-//        let store = self.store!
-//        if let self = self as? InternalDirectSnapshot {
-//            if !store.commit(for: key).exists { store.commit(self) }
-//        } else {
-//            assert( store.commit(for: key).exists )
-//        }
-//
-//        return DAGSnapshot(store: store, key: key, mode)
+        if let self = self as? InternalDirectSnapshot {
+            if !store.commit(for: key).exists { store.commit(self) }
+        } else {
+            assert( store.commit(for: key).exists )
+        }
+
+        return DAGSnapshot(store: store, key: key, mode)
     }
     
     public var internalReference: DAGSnapshot<Collection> {
-        return reference(for: .internalReference)
+        reference(for: .internalReference)
     }
     
     public var externalReference: DAGSnapshot<Collection> {
-        return reference(for: .externalReference)
+        reference(for: .externalReference)
     }
     
     public var isCommitted: Bool {
-        return (store.commit(for: key)).exists
+        (store.commit(for: key)).exists
     }
     
     public func importing(_ other: DAGBase) -> ImportSnapshot<Collection> {
-        return ImportSnapshot(predecessor: self, imported: other)
+        ImportSnapshot(predecessor: self, imported: other)
     }
     
 }
