@@ -90,10 +90,10 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
 //            case .rects: return RectsNode(key, graph: graph)
 //            case .blurPreview: return BlurPreviewNode(key, graph: graph)
             case .solidColor: return SolidColorNode(key, graph: graph)
-//            case .transform: return TransformNode(key, graph: graph)
-//            case .canvasMeta: return CanvasMetaNode(key, graph: graph)
-//            case .layerMeta: return LayerMetaNode(key, graph: graph)
-//            case .brush: return BrushNode(key, graph: graph)
+            case .transform: return TransformNode(key, graph: graph)
+            case .canvasMeta: return CanvasMetaNode(key, graph: graph)
+            case .layerMeta: return LayerMetaNode(key, graph: graph)
+            case .brush: return BrushNode(key, graph: graph)
             case .maskedColor: return MaskedColorNode(key, graph: graph)
 //            case .effect: return EffectNode(key, graph: graph)
             case .mask: return MaskNode(key, graph: graph)
@@ -103,7 +103,9 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
             
             case .checkerboard: return CheckerboardNode(key, graph: graph)
             
-            default: fatalError()
+            default:
+                print("type: \(self)")
+                fatalError()
         }
     }
     
