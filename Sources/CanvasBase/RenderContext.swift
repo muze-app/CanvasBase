@@ -115,8 +115,7 @@ open class RenderContext {
     public typealias CompletionType = RenderManager.CompletionType
     
     var clearPayload: RenderPayload {
-        fatalError()
-//        return .texture(MetalSolidColorTexture(.clear).texture)
+        .texture(MetalSolidColorTexture(.clear).texture)
     }
     
 //    func update(with node: Node, setRoot: Bool, optimize: Bool) -> Node {
