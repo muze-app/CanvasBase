@@ -114,7 +114,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return [self]
     }
     
-    var className: String {
+    public var className: String {
         return "\(Swift.type(of: self))"
     }
     

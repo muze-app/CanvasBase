@@ -20,21 +20,18 @@ public class BrushStroke: MemoryManageeLeaf {
         self.spacing = spacing
     }
     
-    var defaultDiameter: CGFloat { CGFloat(defaultDab.diameter) }
-    var actualSpacing: CGFloat { defaultDiameter * spacing }
+    public var defaultDiameter: CGFloat { CGFloat(defaultDab.diameter) }
+    public var actualSpacing: CGFloat { defaultDiameter * spacing }
     
     // MARK: Dabs
     
-    private var _dabs: [AbstractDab] = []
-    var dabs: [AbstractDab] {
-        return _dabs
+    public private(set) var dabs: [AbstractDab] = []
+    
+    public func append(dab: AbstractDab) {
+        dabs.append(dab)
     }
     
-    func append(dab: AbstractDab) {
-        _dabs.append(dab)
-    }
-    
-    func append(dabs: [AbstractDab]) {
+    public func append(dabs: [AbstractDab]) {
         for dab in dabs {
             append(dab: dab)
         }
@@ -42,18 +39,18 @@ public class BrushStroke: MemoryManageeLeaf {
     
     // MARK: Points
     
-    var points: [CGPoint] {
+    public var points: [CGPoint] {
         return dabs.map { $0.point }
     }
     
-    func append(point: CGPoint) {
+    public func append(point: CGPoint) {
         var dab = defaultDab
         dab.point = point
         
         append(dab: dab)
     }
     
-    func append(points: [CGPoint]) {
+    public func append(points: [CGPoint]) {
         for point in points {
             append(point: point)
         }
@@ -63,7 +60,7 @@ public class BrushStroke: MemoryManageeLeaf {
     
     public var memorySize: MemorySize {
         let dabSize = MemoryLayout<AbstractDab>.size
-        return MemorySize(dabSize * (_dabs.count + 1))
+        return MemorySize(dabSize * (dabs.count + 1))
     }
     
     public let hashValue: Int = Int(arc4random())
