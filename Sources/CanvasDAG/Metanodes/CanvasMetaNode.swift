@@ -34,10 +34,10 @@ public struct CanvasMetadata: NodePayload {
     //    var sortedProcessedSnapshots: [DAGSnapshot] { return layers.map { processedSnapshots[$0]! } }
     var selectedLayers = Set<LayerKey>()
     
-    var layerCount: Int { return layers.count }
+    public var layerCount: Int { return layers.count }
     
     // do we have just one selected layer? none? many? let's pretend for now that there's always one and crash otherwise
-    var selectedLayer: LayerKey {
+    public var selectedLayer: LayerKey {
         get {
             assert(selectedLayers.count == 1)
             return selectedLayers.first!
@@ -46,7 +46,7 @@ public struct CanvasMetadata: NodePayload {
         set { selectedLayers = Set(newValue) }
     }
     
-    var selectedIndex: Int {
+    public var selectedIndex: Int {
         get {
             return layers.index(of: selectedLayer)!
         }
@@ -56,12 +56,12 @@ public struct CanvasMetadata: NodePayload {
         }
     }
     
-    init(width: Int, height: Int) {
+    public init(width: Int, height: Int) {
         self.width = width
         self.height = height
     }
     
-    init(size: CGSize) {
+    public init(size: CGSize) {
         width = Int(round(size.width))
         height = Int(round(size.height))
     }
@@ -72,18 +72,18 @@ public struct CanvasMetadata: NodePayload {
     
 }
 
-extension DAGSnapshot: Equatable {
-    
-    public static func == (l: DAGSnapshot, r: DAGSnapshot) -> Bool {
-        return l.key == r.key
-    }
-    
-}
-
-extension DAGSnapshot: Hashable {
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(key)
-    }
-    
-}
+//extension DAGSnapshot: Equatable {
+//
+//    public static func == (l: DAGSnapshot, r: DAGSnapshot) -> Bool {
+//        return l.key == r.key
+//    }
+//
+//}
+//
+//extension DAGSnapshot: Hashable {
+//
+//    public func hash(into hasher: inout Hasher) {
+//        hasher.combine(key)
+//    }
+//
+//}
