@@ -107,9 +107,7 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     
 //    var brushToImage: OptFunc { return { BrushToImageOpt($0) } }
     
-    override public var isInvisible: Bool {
-        return !readyToShow
-    }
+    override public var isInvisible: Bool { !readyToShow }
     
 //    override var cacheable: Bool {
 //        return readyToShow
@@ -133,11 +131,11 @@ class BrushToImageOpt: Optimization {
         
         // leave these 'comments' in for now please
 //        if true {
-//        if brushNode.readyToShow {
+        if brushNode.readyToShow {
             right = ImageNode(texture: brushNode.texture, transform: brushNode.transform, graph: graph)
-//        } else {
-//            right = nil
-//        }
+        } else {
+            right = nil
+        }
     }
     
 }

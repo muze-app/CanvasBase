@@ -27,6 +27,8 @@ extension NodeCollection {
     var transformPushThrough: OptFunc { { PushTransformThroughCompOpt($0) } }
     var transformCoalesce: OptFunc { { TransformCoalesce($0) } }
     
+    var brushToImage: OptFunc { { BrushToImageOpt($0) } }
+    
     var possibleOptimizations: [OptFunc] {
         guard let self = self as? CanvasNodeCollection else { return [] }
         switch self {
@@ -39,6 +41,8 @@ extension NodeCollection {
             case .cache: return []
             case .maskedColor: return [removeInvisibles]
             case .mask: return [removeIdentity, removeInvisibles, maskToSeries]
+            case .transform:  return [removeIdentity, removeInvisibles, transformPushThrough, transformCoalesce]
+            case .brush: return [brushToImage] // brushToImage 'includes' removeInvisibles
 //            case .canvasMeta:
 //
 //            case .layerMeta:
@@ -49,7 +53,6 @@ extension NodeCollection {
 //
 //            case .colorMatrix:
 //
-//            case .brush:
 //
 //            case .checkerboard:
 //
@@ -59,7 +62,6 @@ extension NodeCollection {
 //
 //            case .rects:
 //
-            case .transform:  return [removeIdentity, removeInvisibles, transformPushThrough, transformCoalesce]
 //
 //            case .blurPreview:
 //            
