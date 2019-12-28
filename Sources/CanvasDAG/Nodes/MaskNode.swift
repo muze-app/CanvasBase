@@ -17,23 +17,23 @@ public class MaskNode: PayloadNode<MaskMode> {
 
 //    override var worthCaching: Bool { return true }
 
-    init(_ key: NodeKey = NodeKey(),
-         graph: CanvasGraph,
-         payload: MaskMode? = nil) {
+    public init(_ key: NodeKey = NodeKey(),
+                graph: CanvasGraph,
+                payload: MaskMode? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .mask)
     }
 
-    var mask: Node? {
+    public var mask: Node? {
         get { return nodeInputs[1] }
         set { nodeInputs[1] = newValue }
     }
 
-    var input: Node? {
+    public var input: Node? {
         get { return nodeInputs[0] }
         set { nodeInputs[0] = newValue }
     }
 
-    var mode: MaskMode {
+    public var mode: MaskMode {
         get { return payload }
         set { payload = newValue }
     }

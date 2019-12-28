@@ -47,25 +47,25 @@ public struct BrushNodePayload: NodePayload {
 
 public class BrushNode: GeneratorNode<BrushNodePayload> {
     
-    convenience init(_ key: NodeKey = NodeKey(),
-                     graph: Graph,
-                     defaultDab: AbstractDab,
-                     canvasSize: CGSize) {
+    public convenience init(_ key: NodeKey = NodeKey(),
+                            graph: Graph,
+                            defaultDab: AbstractDab,
+                            canvasSize: CGSize) {
         let payload = BrushNodePayload(defaultDab: defaultDab, canvasSize: canvasSize)
         self.init(key, graph: graph, payload: payload)
     }
     
-    init(_ key: NodeKey = NodeKey(),
-         graph: Graph,
-         payload: BrushNodePayload? = nil) {
+    public init(_ key: NodeKey = NodeKey(),
+                graph: Graph,
+                payload: BrushNodePayload? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .brush)
     }
     
-    var texture: MetalTexture { return payload.texture }
-    var transform: AffineTransform { return payload.transform }
+    public var texture: MetalTexture { return payload.texture }
+    public var transform: AffineTransform { return payload.transform }
     
-    var stroke: BrushStroke { return payload.stroke }
-    var realizer: DabRealizer { return payload.realizer }
+    public var stroke: BrushStroke { return payload.stroke }
+    public var realizer: DabRealizer { return payload.realizer }
     
     var readyToShow: Bool {
         get { return payload.readyToShow }
@@ -80,7 +80,7 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
         return .brush & renderExtent
     }
     
-    func draw() {
+    public func draw() {
         let dabs = realizer.getDabs()
         if dabs.count == 0 { return }
         

@@ -26,11 +26,11 @@ public class ImageNode: GeneratorNode<ImagePayload> {
 //        super.init(key, graph: graph, payload: payload, nodeType: .image)
 //    }
 
-    init(_ key: NodeKey = NodeKey(),
-         texture: MetalTexture,
-         transform: AffineTransform = .identity,
-         colorMatrix: DMatrix3x3 = .identity,
-         graph: Graph) {
+    public init(_ key: NodeKey = NodeKey(),
+                texture: MetalTexture,
+                transform: AffineTransform = .identity,
+                colorMatrix: DMatrix3x3 = .identity,
+                graph: Graph) {
 //        let image = Image.with(texture)
         let payload = ImagePayload(texture, transform, colorMatrix)
         super.init(key, graph: graph, payload: payload, nodeType: .image)

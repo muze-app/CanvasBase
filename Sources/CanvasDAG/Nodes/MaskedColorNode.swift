@@ -9,9 +9,9 @@ import DAG
 import MuzeMetal
 
 public struct MaskedColorPayload: NodePayload {
-    var a: RenderColor2
-    var b: MaskMode
-    init(_ a: RenderColor2, _ b: MaskMode) { self.a = a; self.b = b }
+    public var a: RenderColor2
+    public var b: MaskMode
+    public init(_ a: RenderColor2, _ b: MaskMode) { self.a = a; self.b = b }
 }
 
 public final class MaskedColorNode: InputNode<MaskedColorPayload> {

@@ -22,11 +22,11 @@ extension AffineTransform: NodePayload {
 
 public class TransformNode: InputNode<AffineTransform> {
     
-    init(_ key: NodeKey = NodeKey(), graph: Graph, payload: AffineTransform? = nil) {
+    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: AffineTransform? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .transform)
     }
     
-    var transform: AffineTransform {
+    public var transform: AffineTransform {
         get { return payload }
         set { payload = newValue }
     }

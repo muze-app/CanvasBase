@@ -12,7 +12,7 @@ public enum One { case one } // Not as silly as it might first appear...
 
 public class CheckerboardNode: GeneratorNode<One> {
 
-    init(_ key: NodeKey = NodeKey(), graph: Graph) {
+    public init(_ key: NodeKey = NodeKey(), graph: Graph) {
         super.init(key, graph: graph, payload: .one, nodeType: .checkerboard)
     }
 

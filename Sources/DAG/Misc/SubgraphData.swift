@@ -34,7 +34,7 @@ public class Subgraph<Collection: NodeCollection> {
     public let graph: Graph
     public var mutableGraph: MutableGraph { graph as! MutableGraph }
     
-    init(key: SubgraphKey, graph: Graph) {
+    public init(key: SubgraphKey, graph: Graph) {
         self.key = key
         self.graph = graph
     }
