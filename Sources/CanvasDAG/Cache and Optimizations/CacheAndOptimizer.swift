@@ -39,7 +39,7 @@ public class CacheAndOptimizer {
         graph = optimize(graph, &map1)
         
         let map2 = map1.mapValues { initial.node(for: $0) }
-        graph = placeNewCaches(graph, map2)
+        graph = placeNewCaches(graph, map2, initial)
         pruneOldCaches()
         
         print("AFTER:")
@@ -67,12 +67,13 @@ public class CacheAndOptimizer {
         return graph
     }
     
-    func placeNewCaches(_ graph: Graph, _ map: [NodeKey:CanvasNode]) -> Graph {
+    func placeNewCaches(_ graph: Graph, _ map: [NodeKey:CanvasNode], _ og: Graph) -> Graph {
         var addedNodes = Set<CacheEntry>()
         
         let graph = graph.addingNewCacheNodes(to: subgraphKey,
                                               optimizer: self,
                                               map: map,
+                                              og: og,
                                               addedNodes: &addedNodes)
         
 //        print("NEW CACHE NODES:")

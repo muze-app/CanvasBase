@@ -13,12 +13,14 @@ extension CanvasGraph {
     func addingNewCacheNodes(to subgraph: SubgraphKey,
                              optimizer: CacheAndOptimizer,
                              map: [NodeKey:CanvasNode],
+                             og: CanvasGraph,
                              addedNodes: inout Set<CacheEntry>) -> CanvasGraph {
         modify {
             let subgraph = $0.subgraph(for: subgraph)
             subgraph.finalNode = subgraph.finalNode?.addingNewCacheNodes(to: $0,
                                                                          optimizer: optimizer,
                                                                          map: map,
+                                                                         og: og,
                                                                          addedNodes: &addedNodes)
         }
     }
@@ -65,11 +67,12 @@ extension CanvasNode {
     func addingNewCacheNodes(to graph: MutableGraph,
                              optimizer: CacheAndOptimizer,
                              map: [NodeKey:CanvasNode],
+                             og: Graph,
                              addedNodes: inout Set<CacheEntry>) -> CanvasNode {
         if self is CacheNode { return self }
         if cost < 3 { return self }
         
-        let original = map[key]!
+        let original = map[key] ?? og.node(for: key)
         
         let cacheNode = CacheNode(graph,
                                   optimizer,
