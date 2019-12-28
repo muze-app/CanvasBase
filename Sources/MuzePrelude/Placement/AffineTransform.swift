@@ -82,7 +82,7 @@ public extension AffineTransform {
 //    public static func rotating(_ angle: Angle) -> AffineTransform {
 //        return AffineTransform(CGAffineTransform(rotationAngle: angle.angleInRadians))
 //    }
-    
+//    
 //    public static func rotating(degrees angleInDegrees: CGFloat) -> AffineTransform {
 //        return AffineTransform.rotating(Angle(degrees: angleInDegrees))
 //    }
@@ -91,15 +91,18 @@ public extension AffineTransform {
 
 public extension AffineTransform {
     
-    init(from s: CGRect, to d: CGRect, flipHorizontally: Bool = false, flipVertically: Bool = false) {
-        fatalError()
-//        let t = CGAffineTransform.init(from: s, to: d, flipHorizontally: flipHorizontally, flipVertically: flipVertically)
-//        self = AffineTransform(t)
+    init(from s: CGRect,
+         to d: CGRect,
+         flipHorizontally: Bool = false,
+         flipVertically: Bool = false) {
+        let t = CGAffineTransform(from: s,
+                                  to: d,
+                                  flipHorizontally: flipHorizontally,
+                                  flipVertically: flipVertically)
+        self = AffineTransform(t)
     }
     
-    var decomposition: TransformDecomposition {
-        return cg.decomposition
-    }
+    var decomposition: TransformDecomposition { cg.decomposition }
     
 }
 
