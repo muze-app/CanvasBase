@@ -75,19 +75,15 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     case blurPreview
     
-    case color, string
-    
     public func node(for key: NodeKey, graph: Graph) -> Node {
         switch self {
-//            case .color: return CNode(key, graph: graph)
-//            case .string: return SNode(key, graph: graph)
 //            case .canvasOverlay: return CanvasOverlayNode(key, graph: graph)
             case .image: return ImageNode(key, graph: graph)
             case .blend: return BlendNode(key, graph: graph)
             case .comp:  return CompositeNode(key, graph: graph)
             case .alpha: return AlphaNode(key, graph: graph)
             case .cache: return CacheNode(key, graph: graph)
-//            case .rects: return RectsNode(key, graph: graph)
+            case .rects: return RectsNode(key, graph: graph)
 //            case .blurPreview: return BlurPreviewNode(key, graph: graph)
             case .solidColor: return SolidColorNode(key, graph: graph)
             case .transform: return TransformNode(key, graph: graph)
