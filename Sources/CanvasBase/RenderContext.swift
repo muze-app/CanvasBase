@@ -13,9 +13,6 @@ import MuzeMetal
 import DAG
 import CanvasDAG
 
-public typealias Graph = DAGBase<CanvasNodeCollection>
-public typealias Node = GenericNode<CanvasNodeCollection> & RenderableNode
-
 public protocol RenderableNode {
     
     func renderPayload(for options: RenderOptions) -> RenderPayload?
@@ -70,7 +67,7 @@ open class RenderContext {
         
         var finalNode: Node?
         _ = graph.modify { graph in
-            finalNode = graph.finalNode(for: subgraph) as? Node //?.optimize(throughCacheNodes: false)
+            finalNode = graph.finalNode(for: subgraph) //?.optimize(throughCacheNodes: false)
         }
         
         let payload = finalNode?.renderPayload(for: options) ?? clearPayload
