@@ -44,7 +44,7 @@ extension Array: MetalBuffer where Element: MetalBuffer {
     }
     
     public var asData: Data {
-        return reduce(into: Data(capacity: length)) { $0.append($1.asData) }
+        reduce(into: Data(capacity: length)) { $0.append($1.asData) }
     }
     
     public func transformed(by transform: AffineTransform) -> [Element] {
@@ -55,8 +55,8 @@ extension Array: MetalBuffer where Element: MetalBuffer {
 
 extension Float: MetalBuffer {
     
-    public var length: Int { return 4 }
-    public var asData: Data { /*return Data(from: self)*/ fatalError() }
+    public var length: Int { 4 }
+    public var asData: Data { Data(from: self) }
     
     public func transformed(by transform: AffineTransform) -> Float {
         return self
@@ -66,14 +66,8 @@ extension Float: MetalBuffer {
 
 extension AffineTransform: MetalBuffer {
     
-    public var length: Int {
-        return 32
-    }
-    
-    public var asData: Data {
-        fatalError()
-//        return asPaddedFloats.asData
-    }
+    public var length: Int { 32 }
+    public var asData: Data { cg.asPaddedFloats.asData }
     
 }
 

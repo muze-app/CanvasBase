@@ -138,8 +138,8 @@ public class RenderPassDescriptor: AutoHash {
 
 struct RenderDrawParams: MetalBuffer {
     
-    var length: Int { return 72 }
-    var asData: Data { /*return Data(from: self)*/ fatalError() }
+    var length: Int { 72 }
+    var asData: Data { Data(from: self) }
     
     var ta, tb, tc, td, t1, t2: Float                       // 24
     var cropRectStart, cropRectCount: UInt16                // 28
@@ -341,13 +341,9 @@ public struct RenderCrop: Equatable {
 
 extension RenderCrop: MetalBuffer {
     
-    public var length: Int {
-        return 128
-    }
+    public var length: Int { 128 }
     
-    public var asData: Data {
-        return asPaddedFloats.asData
-    }
+    public var asData: Data { asPaddedFloats.asData }
     
 }
 

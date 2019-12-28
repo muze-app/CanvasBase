@@ -106,32 +106,42 @@ public extension ShadedLine {
         return self.applying(transform.cg)
     }
     
-//    var floats: [Float] {
-//        return transform.asPaddedFloats
-//    }
+    var floats: [Float] {
+        return transform.asPaddedFloats
+    }
     
 }
 
-//extension ShadedLine: MetalBuffer {
-//
-//    var length: Int {
-//        return 32
-//    }
-//
-//    var asData: Data {
-//        return AffineTransform(transform).asData
-//    }
-//
-//    func transformed(by transform: AffineTransform) -> ShadedLine {
-//        return self.applying(transform)
-//    }
-//
-//}
+extension ShadedLine: MetalBuffer {
 
-//extension Array where Element == ShadedLine {
-//
-//    var floats: [Float] {
-//        return flatMap { $0.floats }
-//    }
-//
-//}
+    public var length: Int { 32 }
+
+    public var asData: Data { AffineTransform(transform).asData }
+
+    public func transformed(by transform: AffineTransform) -> ShadedLine {
+        applying(transform)
+    }
+
+}
+
+extension Array where Element == ShadedLine {
+
+    var floats: [Float] { flatMap { $0.floats } }
+
+}
+
+extension Data {
+    
+    init<T>(from value: T) {
+        var value = value
+        self.init(buffer: UnsafeBufferPointer(start: &value, count: 1))
+    }
+    
+    //    func to<T>(type: T.Type) -> T {
+    //        return self.withUnsafeBytes { $0.pointee }
+    //    }
+    func to<T>(_ type: T.Type) -> T {
+        return withUnsafeBytes { $0.bindMemory(to: type).baseAddress!.pointee }
+    }
+    
+}

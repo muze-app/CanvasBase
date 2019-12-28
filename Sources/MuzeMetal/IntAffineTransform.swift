@@ -61,18 +61,18 @@ public struct IntAffineTransform: CustomDebugStringConvertible {
 
 extension IntAffineTransform: MetalBuffer {
     
-    public var length: Int { return 16 }
-    public var asData: Data { return padded.asData }
+    public var length: Int { 16 }
+    public var asData: Data { padded.asData }
     
-    public var array: [Int16] { return [a,b,c,d,x,y] }
-    public var padded: [Int16] { return array + [0,0] }
+    public var array: [Int16] { [a,b,c,d,x,y] }
+    public var padded: [Int16] { array + [0,0] }
     
 }
 
 extension Int16: MetalBuffer {
     
     public var length: Int { 2 }
-    public var asData: Data { /*return Data(from: self)*/ fatalError() }
+    public var asData: Data { Data(from: self) }
     
 }
 
