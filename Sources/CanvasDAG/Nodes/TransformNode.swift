@@ -10,7 +10,7 @@
 import MuzePrelude
 import DAG
 
-//typealias AffineTransform = MuzePrelude.AffineTransform
+public typealias AffineTransform = MuzePrelude.AffineTransform
 
 extension AffineTransform: NodePayload {
     

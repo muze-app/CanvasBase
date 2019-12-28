@@ -345,6 +345,10 @@ extension RenderCrop: MetalBuffer {
     
     public var asData: Data { asPaddedFloats.asData }
     
+    public func transformed(by transform: AffineTransform) -> RenderCrop {
+        applying(transform)
+    }
+    
 }
 
 public class SpecialRenderPass: RenderPassDescriptor {
