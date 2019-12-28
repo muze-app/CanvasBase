@@ -15,19 +15,21 @@ import XCTest
 final class OptimizationTests: XCTestCase {
     
     typealias Collection = CanvasNodeCollection
-    typealias Store = DAGStore<Collection>
+    typealias Store = DAG.DAGStore<Collection>
     typealias Graph = DAGBase<Collection>
     typealias MutableGraph = MutableDAG<Collection>
     typealias InternalSnapshot = InternalDirectSnapshot<Collection>
     typealias Subgraph = DAG.Subgraph<Collection>
-
+    
+    var mockImagePayload: ImagePayload { .init(.mock, .identity, .identity) }
+    
     func addLayer(to graph: MutableGraph,
                   subgraph: SubgraphKey,
                   blendMode: BlendMode = .normal,
                   alpha: Float = 1) {
         let subgraph = graph.subgraph(for: subgraph)
         
-        let image = ImageNode(graph: graph, payload: ImagePayload.init())
+        let image = ImageNode(graph: graph, payload: mockImagePayload)
         let blend = BlendNode(graph: graph, payload: BlendPayload.init(blendMode, alpha))
         blend.source = image
         blend.destination = subgraph.finalNode
@@ -41,7 +43,7 @@ final class OptimizationTests: XCTestCase {
         
         let color = RenderColor2.white(1)
         
-        let brushNode = ImageNode(graph: graph, payload: ImagePayload.init())
+        let brushNode = ImageNode(graph: graph, payload: mockImagePayload)
         let colorNode = MaskedColorNode(graph: graph, payload: MaskedColorPayload(color, .whiteIsTransparent))
         let blendNode = BlendNode(graph: graph, payload: BlendPayload.init(.normal, 1))
         
@@ -57,7 +59,7 @@ final class OptimizationTests: XCTestCase {
                    subgraph: SubgraphKey) {
         let subgraph = graph.subgraph(for: subgraph)
         
-        let brushNode = ImageNode(graph: graph, payload: ImagePayload.init())
+        let brushNode = ImageNode(graph: graph, payload: mockImagePayload)
         let maskNode = MaskNode(graph: graph, payload: .whiteIsTransparent)
         
         maskNode.input = subgraph.finalNode
@@ -248,7 +250,7 @@ final class OptimizationTests: XCTestCase {
         let final = initial.modify { (graph: MutableGraph) -> Void in
             let background = ImageNode(backgroundKey,
                                        graph: graph,
-                                       payload: ImagePayload())
+                                       payload: mockImagePayload)
             graph.subgraph(for: subgraphKey).finalNode = background
             
             addEraser(to: graph, subgraph: subgraphKey)

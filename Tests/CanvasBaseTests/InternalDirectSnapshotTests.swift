@@ -20,7 +20,7 @@ extension DAGBase: Equatable {
 final class InternalDirectSnapshotTests: XCTestCase {
     
     typealias Collection = MockNodeCollection
-    typealias Store = DAGStore<Collection>
+    typealias Store = DAG.DAGStore<Collection>
     typealias Graph = DAGBase<Collection>
     typealias MutableGraph = MutableDAG<Collection>
     typealias InternalSnapshot = InternalDirectSnapshot<Collection>

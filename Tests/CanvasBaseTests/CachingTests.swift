@@ -14,11 +14,13 @@ import XCTest
 final class CachingTests: XCTestCase {
     
     typealias Collection = CanvasNodeCollection
-    typealias Store = DAGStore<Collection>
+    typealias Store = DAG.DAGStore<Collection>
     typealias Graph = DAGBase<Collection>
     typealias MutableGraph = MutableDAG<Collection>
     typealias InternalSnapshot = InternalDirectSnapshot<Collection>
     typealias Subgraph = DAG.Subgraph<Collection>
+    
+    var mockImagePayload: ImagePayload { .init(.mock, .identity, .identity) }
     
     func addLayer(to graph: MutableGraph,
                   subgraph: SubgraphKey,
@@ -26,7 +28,7 @@ final class CachingTests: XCTestCase {
                   alpha: Float = 1) {
         let subgraph = graph.subgraph(for: subgraph)
         
-        let image = ImageNode(graph: graph, payload: ImagePayload.init())
+        let image = ImageNode(graph: graph, payload: mockImagePayload)
         let blend = BlendNode(graph: graph, payload: BlendPayload.init(blendMode, alpha))
         blend.source = image
         blend.destination = subgraph.finalNode

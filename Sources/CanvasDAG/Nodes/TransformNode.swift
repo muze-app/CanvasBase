@@ -54,13 +54,6 @@ public class TransformNode: InputNode<AffineTransform> {
         return transform ~= .identity
     }
     
-//    override var possibleOptimizations: [OptFunc] {
-//        return [removeIdentity, removeInvisibles, pushThrough, coalesce]
-//    }
-//
-//    var pushThrough: OptFunc { return { PushTransformThroughCompOpt($0) } }
-//    var coalesce: OptFunc { return { TransformCoalesce($0) } }
-    
 }
 
 class TransformCoalesce: CoalescingOptimization<AffineTransform,TransformNode> {

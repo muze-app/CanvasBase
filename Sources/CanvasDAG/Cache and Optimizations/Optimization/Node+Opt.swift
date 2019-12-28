@@ -24,6 +24,9 @@ extension NodeCollection {
     
     var maskToSeries: OptFunc { { MaskToSeriesOpt($0) } }
     
+    var pushThrough: OptFunc { { PushTransformThroughCompOpt($0) } }
+    var coalesce: OptFunc { { TransformCoalesce($0) } }
+    
     var possibleOptimizations: [OptFunc] {
         guard let self = self as? CanvasNodeCollection else { return [] }
         switch self {
@@ -36,7 +39,32 @@ extension NodeCollection {
             case .cache: return []
             case .maskedColor: return [removeInvisibles]
             case .mask: return [removeIdentity, removeInvisibles, maskToSeries]
-            default: fatalError()
+//            case .canvasMeta:
+//
+//            case .layerMeta:
+//
+//            case .solidColor:
+//
+//            case .maskSeries:
+//
+//            case .colorMatrix:
+//
+//            case .brush:
+//
+//            case .checkerboard:
+//
+//            case .effect:
+//
+//            case .canvasOverlay:
+//
+//            case .rects:
+//
+            case .transform:  return [removeIdentity, removeInvisibles, pushThrough, coalesce]
+//
+//            case .blurPreview:
+//            
+            
+            default: return [removeIdentity, removeInvisibles]
         }
     }
     
