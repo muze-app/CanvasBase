@@ -61,7 +61,7 @@ public class DAGStore<Collection: NodeCollection> {
         commit(graph)
     }
     
-    func doNothing() {
+    public func doNothing() {
         // just to keep in memory
     }
     

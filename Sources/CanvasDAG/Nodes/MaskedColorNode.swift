@@ -22,17 +22,17 @@ public final class MaskedColorNode: InputNode<MaskedColorPayload> {
         super.init(key, graph: graph, payload: payload, nodeType: .maskedColor)
     }
     
-    final var mask: Node? {
+    public var mask: Node? {
         get { return input }
         set { input = newValue }
     }
     
-    final var mode: MaskMode {
+    public var mode: MaskMode {
         get { return payload.b }
         set { payload.b = newValue }
     }
     
-    final var color: RenderColor2 {
+    public var color: RenderColor2 {
         get { return payload.a }
         set { payload.a = newValue }
     }

@@ -39,7 +39,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 //        }
     }
     
-    var internalSnapshot: InternalDirectSnapshot<Collection> {
+    public var internalSnapshot: InternalDirectSnapshot<Collection> {
         if let commit = store.commit(for: key) {
             return commit
         } else {

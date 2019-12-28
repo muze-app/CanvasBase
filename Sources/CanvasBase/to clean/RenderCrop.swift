@@ -11,28 +11,28 @@ import MuzeMetal
 
 public struct RenderCrop: Equatable {
     
-    init(size: CGSize, transform: AffineTransform = .identity) {
+    public var size: CGSize
+    public var transform: AffineTransform
+    
+    public init(size: CGSize, transform: AffineTransform = .identity) {
         self.size = size
         self.transform = transform
     }
     
-    init(rect: CGRect, transform: AffineTransform = .identity) {
+    public init(rect: CGRect, transform: AffineTransform = .identity) {
         let translate = AffineTransform.translating(x: rect.origin.x, y: rect.origin.y)
         self.init(size: rect.size, transform: translate * transform)
     }
     
-    var size: CGSize
-    var transform: AffineTransform
-    
-    func applying(_ transform: AffineTransform) -> RenderCrop {
+    public func applying(_ transform: AffineTransform) -> RenderCrop {
         return RenderCrop(size: size, transform: self.transform * transform)
     }
     
-    var rect: CGRect {
+    public var rect: CGRect {
         return .zero & size
     }
     
-    var shadedLines: [ShadedLine] {
+    public var shadedLines: [ShadedLine] {
         return rect.shadedLines.map { $0.applying(transform) }
     }
     
@@ -40,11 +40,11 @@ public struct RenderCrop: Equatable {
 //        return shadedLines.flatMap { $0.asPaddedFloats }
 //    }
     
-    var corners: [CGPoint] {
+    public var corners: [CGPoint] {
         return rect.corners.map { $0.applying(transform.cg) }
     }
     
-    func fullyContains(_ other: RenderCrop) -> Bool {
+    public func fullyContains(_ other: RenderCrop) -> Bool {
         for line in shadedLines {
             for corner in other.corners {
                 if !line.pointIsInShade(corner) {
