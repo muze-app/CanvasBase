@@ -6,11 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import Metal
-
-import MuzePrelude
 import MuzeMetal
-import DAG
 import CanvasDAG
 
 public protocol RenderableNode {

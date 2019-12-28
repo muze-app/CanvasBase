@@ -8,7 +8,9 @@
 
 import MuzeMetal
 
-final class CheckerboardNode: GeneratorNode<One> {
+public enum One { case one } // Not as silly as it might first appear...
+
+public class CheckerboardNode: GeneratorNode<One> {
 
     init(_ key: NodeKey = NodeKey(), graph: Graph) {
         super.init(key, graph: graph, payload: .one, nodeType: .checkerboard)
@@ -23,11 +25,11 @@ final class CheckerboardNode: GeneratorNode<One> {
         return result.payload
     }
 
-    override var calculatedRenderExtent: RenderExtent {
+    override public var calculatedRenderExtent: RenderExtent {
         return .screen
     }
 
-    override var calculatedUserExtent: UserExtent {
+    override public var calculatedUserExtent: UserExtent {
         return .brush & calculatedRenderExtent
     }
 

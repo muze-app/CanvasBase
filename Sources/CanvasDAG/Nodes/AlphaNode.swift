@@ -9,9 +9,9 @@
 import Foundation
 import DAG
 
-final class AlphaNode: InputNode<Float> {
+public class AlphaNode: InputNode<Float> {
     
-    init(_ key: NodeKey = NodeKey(), graph: Graph, payload: Float? = nil) {
+    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: Float? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .alpha)
     }
     
@@ -25,12 +25,12 @@ final class AlphaNode: InputNode<Float> {
         return .alpha(payload, alpha)
     }
 
-    override var calculatedRenderExtent: RenderExtent {
+    override public var calculatedRenderExtent: RenderExtent {
         guard alpha > 0 else { return .nothing }
         return input?.renderExtent ?? .nothing
     }
     
-    override var isInvisible: Bool {
+    override public var isInvisible: Bool {
         if alpha > 0, !(input?.isInvisible ?? true) {
             return false
         } else {
@@ -38,7 +38,7 @@ final class AlphaNode: InputNode<Float> {
         }
     }
     
-    override var isIdentity: Bool { alpha == 1 }
+    override public var isIdentity: Bool { alpha == 1 }
     
 }
 

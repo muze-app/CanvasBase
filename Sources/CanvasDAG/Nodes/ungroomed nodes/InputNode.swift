@@ -196,8 +196,6 @@ typealias AbstractInputKey = Hashable
 
 // MARK: Unary Input Node
 
-enum One { case one } // Not as silly as it might first appear...
-
 //class UnaryInputNode<PayloadType: NodePayload>: InputNode<PayloadType, One> {
 //
 //    var input: Node?

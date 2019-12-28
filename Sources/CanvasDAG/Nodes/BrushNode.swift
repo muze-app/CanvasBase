@@ -45,7 +45,7 @@ public struct BrushNodePayload: NodePayload {
     
 }
 
-final class BrushNode: GeneratorNode<BrushNodePayload> {
+public class BrushNode: GeneratorNode<BrushNodePayload> {
     
     convenience init(_ key: NodeKey = NodeKey(),
                      graph: Graph,
@@ -72,11 +72,11 @@ final class BrushNode: GeneratorNode<BrushNodePayload> {
         set { payload.readyToShow = newValue }
     }
     
-    override var calculatedRenderExtent: RenderExtent {
+    override public var calculatedRenderExtent: RenderExtent {
         return .basic(.init(size: texture.size, transform: transform))
     }
     
-    override var calculatedUserExtent: UserExtent {
+    override public var calculatedUserExtent: UserExtent {
         return .brush & renderExtent
     }
     
@@ -107,7 +107,7 @@ final class BrushNode: GeneratorNode<BrushNodePayload> {
     
 //    var brushToImage: OptFunc { return { BrushToImageOpt($0) } }
     
-    override var isInvisible: Bool {
+    override public var isInvisible: Bool {
         return !readyToShow
     }
     

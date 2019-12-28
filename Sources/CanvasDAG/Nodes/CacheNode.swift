@@ -17,12 +17,12 @@ extension NodeKey: NodePayload {
     
 }
 
-final class CacheNode: InputNode<NodeKey> {
+public class CacheNode: InputNode<NodeKey> {
 
 //    var cachedPayload: RenderPayload? = nil
 //    var cachedHash: Int = 0
 
-    override var cost: Int { 1 }
+    override public var cost: Int { 1 }
     
     var store: DAGStore<CanvasNodeCollection> {
         return graph.store

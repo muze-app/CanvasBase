@@ -11,7 +11,7 @@ import MuzeMetal
 public enum MaskMode: Hashable { case blackIsTransparent, whiteIsTransparent }
 extension MaskMode: NodePayload { }
 
-final class MaskNode: PayloadNode<MaskMode> {
+public class MaskNode: PayloadNode<MaskMode> {
 
     var isResultOfMaskToSeriesOptimization = false
 
@@ -50,7 +50,7 @@ final class MaskNode: PayloadNode<MaskMode> {
         return masked.payload
     }
 
-    override var calculatedRenderExtent: RenderExtent {
+    override public var calculatedRenderExtent: RenderExtent {
         guard let ie = input?.renderExtent, ie != .infinite else {
             return mask?.renderExtent ?? .nothing
         }
@@ -58,7 +58,7 @@ final class MaskNode: PayloadNode<MaskMode> {
         return ie
     }
 
-    override var calculatedUserExtent: UserExtent {
+    override public var calculatedUserExtent: UserExtent {
         guard let ie = input?.userExtent, ie.extent != .infinite else {
             return mask?.userExtent ?? .nothing
         }
@@ -73,8 +73,8 @@ final class MaskNode: PayloadNode<MaskMode> {
         }
     }
 
-    override var isInvisible: Bool { input?.isInvisible ?? true }
-    override var isIdentity: Bool { mask?.isInvisible ?? true }
+    override public var isInvisible: Bool { input?.isInvisible ?? true }
+    override public var isIdentity: Bool { mask?.isInvisible ?? true }
 
 //    override var possibleOptimizations: [OptFunc] {
 //        return [removeIdentity, removeInvisibles, maskToSeries]
