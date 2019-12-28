@@ -62,29 +62,29 @@ public class CacheNode: InputNode<NodeKey> {
         super.init(key, graph: graph, payload: nil, nodeType: .cache)
     }
 
-//    override var calculatedRenderExtent: RenderExtent {
-//        return input?.renderExtent ?? .nothing
-//    }
+    override public var calculatedRenderExtent: RenderExtent {
+        input?.renderExtent ?? .nothing
+    }
 
     var cachingEnabled: Bool { return true }
 
-//    override func renderPayload(for options: RenderOptions) -> RenderPayload? {
-//        guard let input = input else { return nil }
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard let input = input else { return nil }
 //        if cachingEnabled, let payload = cacheStore.lookup(key: key, hash: input.contentHash) {
 //            return payload
 //        }
-//
-//        let payload = input.renderPayload(for: options)
-//
+
+        let payload = input.renderPayload(for: options)
+
 //        if let intermediate = payload?.intermediate, !intermediate.isCache {
 //            intermediate.canAlias = false
 //            intermediate.isCache = true
 //
 //            cacheStore.store(payload!, for: key, hash: inputHash)
 //        }
-//
-//        return payload
-//    }
+
+        return payload
+    }
 
 //    @available(*, deprecated)
 //    func finalize() {
@@ -120,8 +120,5 @@ public class CacheNode: InputNode<NodeKey> {
 //        }
 //    }
 
-//    override var cost: Int {
-//        return 1
-//    }
 
 }
