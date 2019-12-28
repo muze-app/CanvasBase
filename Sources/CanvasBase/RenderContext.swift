@@ -35,6 +35,19 @@ open class RenderContext {
 //        return matrixNode
 //    }
     
+//    let cache = CacheAndOptimizer()
+    
+    var caches: [SubgraphKey:CacheAndOptimizer] = [:]
+    
+    func cache(for subgraph: SubgraphKey) -> CacheAndOptimizer {
+        if let cache = caches[subgraph] { return cache }
+        
+        let cache = CacheAndOptimizer(subgraph)
+        caches[subgraph] = cache
+        
+        return cache
+    }
+    
     // swiftlint:disable:next function_parameter_count
     public func render(graph: Graph,
                        subgraph: SubgraphKey,
@@ -59,14 +72,16 @@ open class RenderContext {
 //        let finalNode = node.finalNode
 //        finalNode.log()
 
+        let cache = self.cache(for: subgraph)
+        let optimized = cache.march(graph).subgraph(for: subgraph)
 //        let optimized = graph.optimized(throughCacheNodes: false)
         
-        var finalNode: Node?
-        _ = graph.modify { graph in
-            finalNode = graph.finalNode(for: subgraph) //?.optimize(throughCacheNodes: false)
-        }
+//        var finalNode: Node?
+//        _ = graph.modify { graph in
+//            finalNode = graph.finalNode(for: subgraph) //?.optimize(throughCacheNodes: false)
+//        }
         
-        let payload = finalNode?.renderPayload(for: options) ?? clearPayload
+        let payload = optimized.finalNode?.renderPayload(for: options) ?? clearPayload
 
         let manager = RenderManager.shared
         manager.render(payload, options) { (result) in
