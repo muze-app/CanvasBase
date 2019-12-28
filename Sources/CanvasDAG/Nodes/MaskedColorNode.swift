@@ -59,6 +59,10 @@ public final class MaskedColorNode: InputNode<MaskedColorPayload> {
         return mask?.renderExtent ?? .infinite
     }
     
+    override public var calculatedUserExtent: UserExtent {
+        return mask?.userExtent ?? (.brush & .nothing)
+    }
+    
     final var pipeline: MetalPipeline {
         switch mode {
             case .blackIsTransparent: return .maskColorPipeline

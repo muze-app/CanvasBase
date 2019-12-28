@@ -67,7 +67,7 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     public var stroke: BrushStroke { return payload.stroke }
     public var realizer: DabRealizer { return payload.realizer }
     
-    var readyToShow: Bool {
+    public var readyToShow: Bool {
         get { return payload.readyToShow }
         set { payload.readyToShow = newValue }
     }
