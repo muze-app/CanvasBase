@@ -98,7 +98,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.setRevData(data, for: key)
     }
     
-    func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
         internalSnapshot.contains(allocations: allocations)
     }
     

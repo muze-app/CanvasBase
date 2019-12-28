@@ -295,21 +295,20 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 //        return pred.haveNodesChanged(nodes, sinceParent: parent)
     }
     
-    func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
-        die
-//        let mine = Set(payloadMap.values)
-//
-//        let intersection = mine.intersection(allocations)
-//
-//        if intersection.count > 0 {
-//            return true
-//        }
-//
-//        if let predecessor = predecessor {
-//            return predecessor.contains(allocations: allocations)
-//        }
-//
-//        return false
+    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+        let mine = Set(payloadMap.values)
+
+        let intersection = mine.intersection(allocations)
+
+        if intersection.count > 0 {
+            return true
+        }
+
+        if let predecessor = predecessor {
+            return predecessor.contains(allocations: allocations)
+        }
+
+        return false
     }
     
 //    func contains(textures: Set<MetalTexture>) -> Bool {

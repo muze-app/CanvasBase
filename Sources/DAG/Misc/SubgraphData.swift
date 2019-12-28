@@ -40,7 +40,7 @@ public class Subgraph<Collection: NodeCollection> {
     }
     
     public var finalKey: NodeKey? {
-        get { die /*return graph.finalKey(for: key)*/ }
+        get { return graph.finalKey(for: key) }
         set { mutableGraph.setFinalKey(newValue, for: key) }
     }
     

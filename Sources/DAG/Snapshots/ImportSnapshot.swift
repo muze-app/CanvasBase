@@ -64,22 +64,21 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         return predecessor.revData(for: key) ?? imported.revData(for: key)
     }
     
-    public func setRevData(_ data: NodeRevData, for key: NodeKey) {
-        die
-//        fatalError()
-    }
+//    public func setRevData(_ data: NodeRevData, for key: NodeKey) {
+//        die
+////        fatalError()
+//    }
     
     var modLock: NSRecursiveLock? {
         die
 //        return predecessor.modLock
     }
     
-    func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
-        die
-//        if predecessor.contains(allocations: allocations) { return true }
-//        if    imported.contains(allocations: allocations) { return true }
-//
-//        return false
+    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+        if predecessor.contains(allocations: allocations) { return true }
+        if    imported.contains(allocations: allocations) { return true }
+
+        return false
     }
     
 //    func contains(textures: Set<MetalTexture>) -> Bool {

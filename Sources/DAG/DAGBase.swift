@@ -175,4 +175,6 @@ public class DAGBase<Collection: NodeCollection> {
         ImportSnapshot(predecessor: self, imported: other)
     }
     
+    public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool { die }
+    
 }
