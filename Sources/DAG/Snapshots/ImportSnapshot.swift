@@ -9,7 +9,7 @@
 import Foundation
 import MuzePrelude
 
-class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
+public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     
     typealias Graph = DAGBase<Collection>
     
@@ -22,32 +22,32 @@ class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         super.init()
     }
     
-    override var depth: Int { 1 + max(predecessor.depth, imported.depth) }
+    override public var depth: Int { 1 + max(predecessor.depth, imported.depth) }
     
-    override var store: DAGStore<Collection> { predecessor.store }
+    override public var store: DAGStore<Collection> { predecessor.store }
     
-    override var allSubgraphKeys: Set<SubgraphKey> {
+    override public var allSubgraphKeys: Set<SubgraphKey> {
         return predecessor.allSubgraphKeys + imported.allSubgraphKeys
     }
     
-    override func subgraphData(for key: SubgraphKey) -> SubgraphData? {
+    override public func subgraphData(for key: SubgraphKey) -> SubgraphData? {
         return predecessor.subgraphData(for: key)
             ??    imported.subgraphData(for: key)
     }
     
-    override func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
+    override public func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
         return subgraphData(for: subgraphKey)?.finalKey
     }
     
-    override func metaKey(for subgraphKey: SubgraphKey) -> NodeKey? {
+    override public func metaKey(for subgraphKey: SubgraphKey) -> NodeKey? {
         return subgraphData(for: subgraphKey)?.metaKey
     }
     
-   override func type(for key: NodeKey) -> Collection? {
+    override public func type(for key: NodeKey) -> Collection? {
         return predecessor.type(for: key) ?? imported.type(for: key)
     }
     
-    override func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
         return predecessor.payloadAllocation(for: key)
             ??    imported.payloadAllocation(for: key)
     }

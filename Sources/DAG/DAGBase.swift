@@ -161,19 +161,19 @@ public class DAGBase<Collection: NodeCollection> {
 //        return DAGSnapshot(store: store, key: key, mode)
     }
     
-    var internalReference: DAGSnapshot<Collection> {
+    public var internalReference: DAGSnapshot<Collection> {
         return reference(for: .internalReference)
     }
     
-    var externalReference: DAGSnapshot<Collection> {
+    public var externalReference: DAGSnapshot<Collection> {
         return reference(for: .externalReference)
     }
     
-    var isCommitted: Bool {
+    public var isCommitted: Bool {
         return (store.commit(for: key)).exists
     }
     
-    func importing(_ other: DAGBase) -> ImportSnapshot<Collection> {
+    public func importing(_ other: DAGBase) -> ImportSnapshot<Collection> {
         return ImportSnapshot(predecessor: self, imported: other)
     }
     

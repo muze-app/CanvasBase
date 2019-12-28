@@ -26,13 +26,13 @@ public class Subgraph<Collection: NodeCollection> {
     
     public typealias Node = GenericNode<Collection>
     public typealias Graph = DAGBase<Collection>
-    typealias MutableGraph = MutableDAG<Collection>
+    public typealias MutableGraph = MutableDAG<Collection>
     
     var die: Never { fatalError() }
     
     public let key: SubgraphKey
     public let graph: Graph
-    var mutableGraph: MutableGraph { return graph as! MutableGraph }
+    public var mutableGraph: MutableGraph { graph as! MutableGraph }
     
     init(key: SubgraphKey, graph: Graph) {
         self.key = key
