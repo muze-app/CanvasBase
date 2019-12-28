@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 import MuzeMetal
 
 public typealias Blendable = MuzeMetal.Blendable
@@ -77,6 +77,7 @@ public struct DabColor: Equatable, Blendable {
         self.blue = blue
     }
     
+    #if os(iOS)
     public init(color: UIColor) {
         let color = color.converted(to: .displayP3Space, intent: .absoluteColorimetric)
         
@@ -104,6 +105,7 @@ public struct DabColor: Equatable, Blendable {
                        blue:  CGFloat(b),
                        alpha: 1.0)
     }
+    #endif
     
 //    init(color: CGColor) {
 //        let c = color.components!.map { return Float($0) }

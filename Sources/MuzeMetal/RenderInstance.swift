@@ -209,7 +209,7 @@ class RenderInstance {
 //        }
     }
     
-    let isDebugging: Bool = false
+    let isDebugging: Bool = true
     
 }
 

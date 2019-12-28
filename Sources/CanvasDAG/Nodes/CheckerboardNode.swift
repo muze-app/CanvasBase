@@ -26,7 +26,11 @@ public class CheckerboardNode: GeneratorNode<One> {
     }
 
     override public var calculatedRenderExtent: RenderExtent {
+        #if os(macOS)
+        fatalError()
+        #else
         return .screen
+        #endif
     }
 
     override public var calculatedUserExtent: UserExtent {
@@ -35,8 +39,10 @@ public class CheckerboardNode: GeneratorNode<One> {
 
 }
 
+#if os(iOS)
 public extension RenderExtent {
 
     static let screen = RenderExtent.basic(.init(rect: UIScreen.main.nativeBounds))
 
 }
+#endif

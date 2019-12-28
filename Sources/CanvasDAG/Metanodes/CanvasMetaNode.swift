@@ -66,9 +66,11 @@ public struct CanvasMetadata: NodePayload {
         height = Int(round(size.height))
     }
     
+    #if os(iOS)
     // probably obselete but will stick around for now
     var backgroundColor: UIColor { return .white }
     var backgroundIsHidden: Bool { return true }
+    #endif
     
 }
 

@@ -6,8 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import Foundation
-import UIKit
+import MuzePrelude
 
 #if MZE_DEBUG
 class FPSChecker {

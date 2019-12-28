@@ -5,6 +5,7 @@
 //  Created by Greg Fajen on 12/28/19.
 //
 
+import Metal
 @testable import MuzeMetal
 // swiftlint:disable all
 
@@ -17,6 +18,15 @@ extension MetalTexture {
 }
 
 class MockTexture: NSObject, MTLTexture {
+    
+    #if os(macOS)
+    var remoteStorageTexture: MTLTexture? { fatalError() }
+    
+    func makeRemoteTextureView(_ device: MTLDevice) -> MTLTexture? {
+        fatalError()
+    }
+    #endif
+    
     
     #if targetEnvironment(simulator)
     
@@ -35,14 +45,17 @@ class MockTexture: NSObject, MTLTexture {
     
     var isSparse: Bool { fatalError() }
     
+    @available(OSX 10.15, *)
     @available(iOS 13.0, *)
     var swizzle: MTLTextureSwizzleChannels { fatalError() }
     
+    @available(OSX 10.15, *)
     @available(iOS 13.0, *)
     func __newTextureView(with pixelFormat: MTLPixelFormat, textureType: MTLTextureType, levels levelRange: NSRange, slices sliceRange: NSRange, swizzle: MTLTextureSwizzleChannels) -> MTLTexture? {
         fatalError()
     }
     
+    @available(OSX 10.15, *)
     @available(iOS 13.0, *)
     var hazardTrackingMode: MTLHazardTrackingMode { fatalError()}
     

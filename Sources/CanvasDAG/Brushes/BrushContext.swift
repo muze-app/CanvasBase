@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 import MuzeMetal
 
 public struct BrushContext: MemoryManagee, Equatable {
