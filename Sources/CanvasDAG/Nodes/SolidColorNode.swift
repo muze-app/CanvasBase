@@ -11,7 +11,7 @@ extension RenderColor2: NodePayload { }
 
 public class SolidColorNode: GeneratorNode<RenderColor2> {
     
-    init(_ key: NodeKey = NodeKey(), graph: Graph, payload: RenderColor2? = nil) {
+    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: RenderColor2? = nil) {
         super.init(key, graph: graph, payload: payload, nodeType: .solidColor)
     }
     
@@ -21,7 +21,7 @@ public class SolidColorNode: GeneratorNode<RenderColor2> {
     //
     //    override var nodeType: NodeType { return .solidColor }
     
-    var color: RenderColor2 {
+    public var color: RenderColor2 {
         get { return payload }
         set { payload = newValue }
     }
