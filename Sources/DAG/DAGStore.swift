@@ -46,11 +46,13 @@ public class DAGStore<Collection: NodeCollection> {
         }
     }
     
-    public var sortedExternalCommits: [Snapshot] {
+    var sortedExternalCommits: [Snapshot] {
         var pairs = externalCommits.map { ($0, commitTimes[$0.key]!) }
         pairs.sort { $0.1 < $1.1 }
         return pairs.map { $0.0 }
     }
+    
+    public var sortedCommits: HeadAndTail<Snapshot> { HeadAndTail(sortedExternalCommits)! }
     
     weak var delegate: AnyObject?
     
@@ -800,3 +802,21 @@ extension DAGStore {
 
 infix operator ?= : AssignmentPrecedence
 func ?= <T>(l: inout T?, r: T) { l = l ?? r }
+
+public struct HeadAndTail<T>: Sequence {
+    
+    public let head:  T
+    public let tail: [T]
+
+    public init?(_ array: [T]) {
+        if array.isEmpty { return nil }
+        
+        head = array.first!
+        tail = .init(array.dropFirst())
+    }
+    
+    public var asArray: [T] { [head] + tail }
+    
+    public func makeIterator() -> IndexingIterator<[T]> { asArray.makeIterator() }
+
+}
