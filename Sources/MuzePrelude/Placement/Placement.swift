@@ -118,8 +118,8 @@ extension SizeAndTransform: Placement {
     }
     
     public func contains(_ point: CGPoint) -> Bool {
-        fatalError()
-//        return renderCrop.contains(point)
+        let p = point.applying(transform.inverse.cg)
+        return bounds.contains(p)
     }
     
     public var asSizeAndTransform: SizeAndTransform {
