@@ -276,7 +276,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // Changes
     
-    var nodesTouchedSincePredecessor: Set<NodeKey> {
+    public var nodesTouchedSincePredecessor: Set<NodeKey> {
         return Set(edgeMaps.keys) + Set(payloadMap.keys)
     }
     
