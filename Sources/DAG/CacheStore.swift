@@ -8,25 +8,6 @@
 
 //import Foundation
 //
-//class DAGCache {
-//
-//    let key: NodeKey
-//
-//    var hash: Int?
-//    var payload: RenderPayload?
-//
-//    init(_ key: NodeKey) {
-//        self.key = key
-//    }
-//
-//    func finalize() {
-//        if let p = payload, p.isPass {
-//            payload = p.withoutPass
-//        }
-//    }
-//
-//}
-//
 //class CacheStore {
 //
 //    var cacheDict = ThreadSafeDict<NodeKey,DAGCache>()

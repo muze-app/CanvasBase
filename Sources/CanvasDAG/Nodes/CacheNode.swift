@@ -9,7 +9,7 @@
 import Foundation
 import DAG
 
-extension NodeKey: NodePayload {
+extension NodeKey {
     
     var cacheKey: NodeKey {
         return with("cache")
@@ -17,46 +17,42 @@ extension NodeKey: NodePayload {
     
 }
 
-public class CacheNode: InputNode<NodeKey> {
+public struct CachePayload: NodePayload {
+    
+    let originalKey: NodeKey
+    let contentHash: Int
+    let cache: CacheAndOptimizer
+    
+    init(_ key: NodeKey, _ hash: Int, _ cache: CacheAndOptimizer) {
+        originalKey = key
+        contentHash = hash
+        self.cache = cache
+    }
+    
+}
 
-//    var cachedPayload: RenderPayload? = nil
-//    var cachedHash: Int = 0
-
+public class CacheNode: InputNode<CachePayload> {
+    
+    var cachingEnabled: Bool { true }
     override public var cost: Int { 1 }
     
-    var store: DAGStore<CanvasNodeCollection> {
-        return graph.store
-    }
-    
-//    var cacheStore: CacheStore { return store.cacheStore }
-    
-    weak var cacheStore: CacheAndOptimizer?
+    var originalKey: NodeKey { payload.originalKey }
+    var cache: CacheAndOptimizer { payload.cache }
+    var store: DAGStore<CanvasNodeCollection> { graph.store }
 
-    var originalKey: NodeKey {
-        get { return payload }
-        set { payload = newValue }
-    }
-    
     init(_ graph: MutableCanvasGraph,
          _ optimizer: CacheAndOptimizer,
          original: CanvasNode,
          optimized: CanvasNode) {
-        self.cacheStore = optimizer
+        let payload = CachePayload(original.key, original.contentHash, optimizer)
         
         super.init(original.key.cacheKey,
                    graph: graph,
-                   payload: original.key,
+                   payload: payload,
                    nodeType: .cache)
         
         graph.setInput(for: key, index: 0, to: optimized.key)
     }
-
-//    init(node: CanvasNode) {
-//        super.init(node.key.cacheKey,
-//                   graph: node.graph,
-//                   payload: node.key,
-//                   nodeType: .cache)
-//    }
 
     init(_ key: NodeKey = NodeKey(), graph: CanvasGraph) {
         super.init(key, graph: graph, payload: nil, nodeType: .cache)
@@ -66,30 +62,26 @@ public class CacheNode: InputNode<NodeKey> {
         input?.renderExtent ?? .nothing
     }
 
-    var cachingEnabled: Bool { return true }
-
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
         guard let input = input else { return nil }
-//        if cachingEnabled, let payload = cacheStore.lookup(key: key, hash: input.contentHash) {
-//            return payload
-//        }
+        if let payload = cachedPayload { return payload }
 
         let payload = input.renderPayload(for: options)
 
-//        if let intermediate = payload?.intermediate, !intermediate.isCache {
-//            intermediate.canAlias = false
-//            intermediate.isCache = true
-//
-//            cacheStore.store(payload!, for: key, hash: inputHash)
-//        }
+        if let payload = payload, let intermediate = payload.intermediate, !intermediate.isCache {
+            intermediate.canAlias = false
+            intermediate.isCache = true
+
+            cache.store(payload, for: self)
+        }
 
         return payload
     }
-
-//    @available(*, deprecated)
-//    func finalize() {
-//        cacheStore.finalize()
-//    }
+    
+    var cachedPayload: RenderPayload? {
+        guard cachingEnabled else { return nil }
+        return cache.lookup(self)
+    }
 
     var inputHash: Int {
         guard let input = input else { return Int.max }
@@ -105,19 +97,18 @@ public class CacheNode: InputNode<NodeKey> {
 //        return debugDescription
 //    }
 
-//    override var debugDescription: String {
-//        guard let input = input else { return "CacheNode (no input!?!?)" }
-//
-//        if let cachePayload = cacheStore.lookup(key: key, hash: input.contentHash) {
-//            if cachePayload.isPass {
-//                return "CacheNode (with unrendered payload)"
-//            } else {
-//                return "CacheNode (with rendered payload)"
-//            }
-//
-//        } else {
-//            return "CacheNode (no payload)"
-//        }
-//    }
+    override public var debugDescription: String {
+        guard input.exists else { return "CacheNode (no input!?!?)" }
+
+        if let payload = cachedPayload {
+            if payload.isPass {
+                return "CacheNode (with unrendered payload)"
+            } else {
+                return "CacheNode (with rendered payload)"
+            }
+        } else {
+            return "CacheNode (no payload)"
+        }
+    }
 
 }

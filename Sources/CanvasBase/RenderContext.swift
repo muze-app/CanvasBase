@@ -88,6 +88,8 @@ open class RenderContext {
 //            graph.store.cacheStore.finalize()
 //            self.graph1.finalizeCaches(keeping: [])
 //            self.graph2.finalizeCaches(keeping: keysToCache)
+            
+            cache.finalize()
 
             if result.0.pixelFormat != format.rawValue {
                 print("expected \(format.rawValue), received \(result.0.pixelFormat)")

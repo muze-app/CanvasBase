@@ -48,7 +48,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         assert(graph.payload(for: key, of: PayloadType.self).exists)
     }
     
-    override public var debugDescription: String {
+    override open var debugDescription: String {
         return String("\(Swift.type(of: self)) (\(key)) = \(payload)")
     }
     
