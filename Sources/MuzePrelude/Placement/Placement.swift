@@ -228,12 +228,11 @@ public struct PlacementContext {
     
     #if !os(macOS)
     init(_ view: UIView) {
-        fatalError()
-//        let zeroZero = view.convert(CGPoint(x: 0, y: 0), to: nil)
-//        let zeroOne  = view.convert(CGPoint(x: 0, y: 1), to: nil)
-//        let  oneZero = view.convert(CGPoint(x: 1, y: 0), to: nil)
-//
-//        self = .init(AffineTransform(mystery: zeroZero, zeroOne, oneZero))
+        let zeroZero = view.convert(CGPoint(x: 0, y: 0), to: nil)
+        let zeroOne  = view.convert(CGPoint(x: 0, y: 1), to: nil)
+        let  oneZero = view.convert(CGPoint(x: 1, y: 0), to: nil)
+
+        self.init(AffineTransform(mystery: zeroZero, zeroOne, oneZero))
     }
     #endif
     
