@@ -46,7 +46,7 @@ public class DAGStore<Collection: NodeCollection> {
         }
     }
     
-    var sortedExternalCommits: [Snapshot] {
+    public var sortedExternalCommits: [Snapshot] {
         var pairs = externalCommits.map { ($0, commitTimes[$0.key]!) }
         pairs.sort { $0.1 < $1.1 }
         return pairs.map { $0.0 }
