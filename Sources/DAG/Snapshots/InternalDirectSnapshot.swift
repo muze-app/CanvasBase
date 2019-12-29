@@ -38,6 +38,10 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     var modLock: NSRecursiveLock? { return store.lock }
     
+    deinit {
+        print("InternalDirectSnapshot go byebye")
+    }
+    
     public init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
         self._store = store

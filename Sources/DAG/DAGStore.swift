@@ -54,6 +54,24 @@ public class DAGStore<Collection: NodeCollection> {
     
     public var sortedCommits: HeadAndTail<Snapshot> { HeadAndTail(sortedExternalCommits)! }
     
+    public func simplifyHead() {
+        autoreleasepool {
+            let head = sortedCommits.head.flattened
+            self.commit(head, setLatest: false)
+        }
+    }
+    
+    public func simplifyTail() {
+        autoreleasepool {
+            let sorted = sortedCommits
+            let head = sorted.head
+            for commit in sorted.tail {
+                let diff = commit.diff(from: head)
+                self.commit(diff, setLatest: false)
+            }
+        }
+    }
+        
     weak var delegate: AnyObject?
     
     public init(delegate: AnyObject? = nil) {
