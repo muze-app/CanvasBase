@@ -327,6 +327,17 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return false
     }
     
+    public func replace(_ key: NodeKey, with replacement: Node) {
+        guard let rev = self.reverseEdges(for: key)?.asSet else { return }
+        
+        for receiverKey in rev {
+            guard let edges = edgeMap(for: receiverKey) else { continue }
+            for (i, k) in edges where k == key {
+                setInput(for: receiverKey, index: i, to: replacement.key)
+            }
+        }
+    }
+    
 //    func contains(textures: Set<MetalTexture>) -> Bool {
 //        print("checking if contains textrues. level \(level), depth \(depth)")
 //        for (key, type) in typeMap {

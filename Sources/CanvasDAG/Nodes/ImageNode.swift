@@ -91,11 +91,13 @@ public class ImageNode: GeneratorNode<ImagePayload> {
 
 public struct ImagePayload: NodePayload {
     
-    var texture: MetalTexture
-    var transform: AffineTransform
-    var colorMatrix: DMatrix3x3
+    public var texture: MetalTexture
+    public var transform: AffineTransform
+    public var colorMatrix: DMatrix3x3
     
-    init(_ a: MetalTexture, _ b: AffineTransform = .identity, _ c: DMatrix3x3) {
+    public init(_ a: MetalTexture,
+                _ b: AffineTransform = .identity,
+                _ c: DMatrix3x3 = .identity) {
         self.texture = a
         self.transform = b
         self.colorMatrix = c

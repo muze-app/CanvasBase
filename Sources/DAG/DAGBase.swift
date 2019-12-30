@@ -145,7 +145,7 @@ public class DAGBase<Collection: NodeCollection> {
     
     // MARK: - UNSORTED
     
-    func  alias(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
+    public func alias(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
         return modify(as: self.key, block)
     }
     
