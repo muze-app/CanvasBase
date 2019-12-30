@@ -49,7 +49,7 @@ public extension DAGBase {
        return copy(usingFreshKeys: false, hotlist: hotlist)
     }
     
-    func diff(from parent: InternalDirectSnapshot<Collection>, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
+    func diff(from parent: DAGBase<Collection>, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
         let source = self
         let target = InternalDirectSnapshot<Collection>(predecessor: parent,
                                                         store: store,

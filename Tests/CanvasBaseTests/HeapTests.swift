@@ -15,9 +15,9 @@ class HeapTests: XCTestCase {
     func testHeap() {
         let set = PayloadBufferSet()
         
-        weak var object: TrackableObject? = nil
+        weak var object: TrackableObject?
         
-        var allocation: PayloadBufferAllocation? = nil
+        var allocation: PayloadBufferAllocation?
         
 //        print("size: \(set.all)")
         
@@ -27,6 +27,7 @@ class HeapTests: XCTestCase {
             allocation = set.new(payload)
         }
         
+        print("allocation: \(String(describing: allocation))")
         let a1 = set.used
         
         autoreleasepool {

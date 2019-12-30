@@ -16,7 +16,9 @@ final class DiffAndFlattenTests: XCTestCase, CanvasBaseTestCase {
     
     func addTenLayers(to graph: inout Graph, subgraph: SubgraphKey) {
         graph = graph.modify { graph in
-            self.addLayer(to: graph, subgraph: subgraph)
+            for _ in 0..<10 {
+               addLayer(to: graph, subgraph: subgraph)
+            }
         }
     }
     

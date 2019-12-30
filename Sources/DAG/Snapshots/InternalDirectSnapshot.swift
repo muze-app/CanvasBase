@@ -327,15 +327,28 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return false
     }
     
+    // todo: use rev edges
     public func replace(_ key: NodeKey, with replacement: Node) {
-        guard let rev = self.reverseEdges(for: key)?.asSet else { return }
-        
-        for receiverKey in rev {
-            guard let edges = edgeMap(for: receiverKey) else { continue }
-            for (i, k) in edges where k == key {
-                setInput(for: receiverKey, index: i, to: replacement.key)
-            }
+        for subgraph in allSubgraphs {
+            subgraph.finalNode = subgraph.finalNode?.replacing(key, with: replacement)
         }
+        
+//        guard let rev = self.reverseEdges(for: key)?.asSet else {
+//            fatalError()
+//        }
+//
+//        print("rev.count: \(rev.count)")
+//        if rev.isEmpty { fatalError() }
+//
+//        for receiverKey in rev {
+//            guard let edges = edgeMap(for: receiverKey) else {
+//                fatalError()
+//            }
+//
+//            for (i, k) in edges where k == key {
+//                setInput(for: receiverKey, index: i, to: replacement.key)
+//            }
+//        }
     }
     
 //    func contains(textures: Set<MetalTexture>) -> Bool {
@@ -370,6 +383,16 @@ public extension GenericNode {
         }
         
         return all
+    }
+    
+    func replacing(_ old: NodeKey, with new: Node) -> Node {
+        if key == old { return new }
+        
+        for (i, k) in edgeMap {
+            self.nodeInputs[i] = graph.node(for: k).replacing(old, with: new)
+        }
+        
+        return self
     }
     
 }

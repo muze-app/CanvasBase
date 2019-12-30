@@ -64,7 +64,7 @@ public class DAGStore<Collection: NodeCollection> {
     public func simplifyTail() {
         autoreleasepool {
             let sorted = sortedCommits
-            let head = sorted.head
+            let head = sorted.head.externalReference
             for commit in sorted.tail {
                 let diff = commit.diff(from: head)
                 self.commit(diff, setLatest: false)
@@ -111,7 +111,7 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     @discardableResult
-    private func commit(_ snapshot: Snapshot, setLatest: Bool, process: Bool = true) -> CommitKey {
+    public func commit(_ snapshot: Snapshot, setLatest: Bool, process: Bool = true) -> CommitKey {
         let key: CommitKey = snapshot.key
         
 //        if isLayer {
@@ -833,6 +833,7 @@ public struct HeadAndTail<T>: Sequence {
         tail = .init(array.dropFirst())
     }
     
+    public var count: Int { 1 + tail.count }
     public var asArray: [T] { [head] + tail }
     
     public func makeIterator() -> IndexingIterator<[T]> { asArray.makeIterator() }
