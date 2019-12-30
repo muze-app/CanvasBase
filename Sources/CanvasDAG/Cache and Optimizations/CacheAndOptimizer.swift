@@ -35,8 +35,8 @@ public class CacheAndOptimizer {
         var graph = graph
         var map1 = [NodeKey:NodeKey]()
         
-        print("BEFORE:")
-        graph.subgraph(for: subgraphKey).finalNode?.log()
+//        print("BEFORE:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
         
         graph = insertPreExistingCaches(graph)
         graph = optimize(graph, &map1)
@@ -45,8 +45,8 @@ public class CacheAndOptimizer {
         graph = placeNewCaches(graph, map2, initial)
         pruneOldCaches()
         
-        print("AFTER:")
-        graph.subgraph(for: subgraphKey).finalNode?.log()
+//        print("AFTER:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
         
         return graph
     }
