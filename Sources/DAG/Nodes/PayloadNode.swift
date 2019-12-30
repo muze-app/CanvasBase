@@ -52,6 +52,14 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         return String("\(Swift.type(of: self)) (\(key)) = \(payload)")
     }
     
+    override final func equalPayload(to other: Node) -> Bool {
+        if let other = other as? PayloadNode<Collection, PayloadType> {
+            return other.payload == payload
+        } else {
+            return false
+        }
+    }
+    
     //    override var inputCount: Int { return edgeMap.count }
     
     // better differentiate between this and inputs var

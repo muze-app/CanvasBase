@@ -10,42 +10,31 @@ import Foundation
 
 public extension DAGBase {
     
-//    typealias InternalDirectSnapshot = canvas_base.InternalDirectSnapshot<Collection>
-    
     func copy(usingFreshKeys: Bool = false, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
-        var pred: InternalDirectSnapshot<Collection>?
+        let newKey = usingFreshKeys ? CommitKey() : key
+        let source = self
+        let target = InternalDirectSnapshot<Collection>(predecessor: nil,
+                                                          store: store,
+                                                          key: newKey)
         
-//        for level in 0...maxLevel {
-            let newKey = usingFreshKeys ? CommitKey() : key
-            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, key: newKey)
+        for subgraphKey in hotlist ?? source.allSubgraphKeys {
+            let sourceSubgraph = source.subgraph(for: subgraphKey)
+            let targetSubgraph = target.subgraph(for: subgraphKey)
             
-            let this = self.modify { _ in }
-            
-//            print("LEVEL \(level)")
-//            print("   subgraphs: \(this.allSubgraphKeys)")
-            
-            for subgraphKey in hotlist ?? this.allSubgraphKeys {
-                let sourceSubgraph = this.subgraph(for: subgraphKey)
-                let targetSubgraph = snapshot.subgraph(for: subgraphKey)
-                
-                if let finalNode = sourceSubgraph.finalNode {
-                    let key = finalNode.add(to: snapshot, useFreshKeys: usingFreshKeys)
-                    targetSubgraph.finalKey = key
-                }
-                
-                if let metaNode = sourceSubgraph.metaNode {
-                    let key = metaNode.add(to: snapshot, useFreshKeys: usingFreshKeys)
-                    targetSubgraph.metaKey = key
-                }
+            if let finalNode = sourceSubgraph.finalNode {
+                let key = finalNode.add(to: target, useFreshKeys: usingFreshKeys)
+                targetSubgraph.finalKey = key
             }
             
-//            print("PAYLOAD MAP: \(snapshot.payloadMap.keys)")
-            
-            snapshot.becomeImmutable()
-            pred = snapshot
-//        }
+            if let metaNode = sourceSubgraph.metaNode {
+                let key = metaNode.add(to: target, useFreshKeys: usingFreshKeys)
+                targetSubgraph.metaKey = key
+            }
+        }
         
-        return pred!
+        target.becomeImmutable()
+        
+        return target
     }
     
     var duplicated: InternalDirectSnapshot<Collection> {
@@ -61,41 +50,31 @@ public extension DAGBase {
     }
     
     func diff(from parent: InternalDirectSnapshot<Collection>, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
-        var pred = parent
+        let source = self
+        let target = InternalDirectSnapshot<Collection>(predecessor: parent,
+                                                        store: store,
+                                                        key: key)
         
-//        for level in 0...max(maxLevel, parent.maxLevel) {
-            let snapshot = InternalDirectSnapshot<Collection>(predecessor: pred, store: store, key: key)
+        for subgraphKey in hotlist ?? allSubgraphKeys {
+            let sourceSubgraph = source.subgraph(for: subgraphKey)
+            let targetSubgraph = target.subgraph(for: subgraphKey)
             
-            let this = self.modify { _ in }
-            let parent = parent.modify { _ in }
-            
-//            print("LEVEL \(level)")
-//            print("   subgraphs: \(this.allSubgraphKeys)")
-            
-            for subgraphKey in hotlist ?? this.allSubgraphKeys {
-                let sourceSubgraph = this.subgraph(for: subgraphKey)
-                let targetSubgraph = snapshot.subgraph(for: subgraphKey)
+            if let finalNode = sourceSubgraph.finalNode {
+                finalNode.add(diffTo: target, parent: parent)
+                targetSubgraph.finalNode = finalNode
                 
-                if let finalNode = sourceSubgraph.finalNode {
-                    finalNode.add(diffTo: snapshot, parent: parent)
-                    targetSubgraph.finalNode = finalNode
-                    
-                    targetSubgraph.finalNode?.log()
-                }
-                
-                if let metaNode = sourceSubgraph.metaNode {
-                    metaNode.add(diffTo: snapshot, parent: parent)
-                    targetSubgraph.metaNode = metaNode
-                }
+                targetSubgraph.finalNode?.log()
             }
             
-//            print("PAYLOAD MAP: \(snapshot.payloadMap.keys)")
-            
-            snapshot.becomeImmutable()
-            pred = snapshot
-//        }
+            if let metaNode = sourceSubgraph.metaNode {
+                metaNode.add(diffTo: target, parent: parent)
+                targetSubgraph.metaNode = metaNode
+            }
+        }
         
-        return pred
+        target.becomeImmutable()
+        
+        return target
     }
     
 }

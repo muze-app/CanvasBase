@@ -72,7 +72,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
     }
     
     public func add(diffTo graph: MutableGraph, parent: Graph) {
-        let source = graph
+        let source = self.graph
         
         for (_, key) in edgeMap {
             let node = source.node(for: key)
