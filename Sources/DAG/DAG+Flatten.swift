@@ -63,7 +63,7 @@ public extension DAGBase {
                 finalNode.add(diffTo: target, parent: parent)
                 targetSubgraph.finalNode = finalNode
                 
-                targetSubgraph.finalNode?.log()
+//                targetSubgraph.finalNode?.log()
             }
             
             if let metaNode = sourceSubgraph.metaNode {
