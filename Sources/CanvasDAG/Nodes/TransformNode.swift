@@ -12,13 +12,7 @@ import DAG
 
 public typealias AffineTransform = MuzePrelude.AffineTransform
 
-extension AffineTransform: NodePayload {
-    
-    public func transformed(by transform: AffineTransform) -> AffineTransform {
-        return self * transform
-    }
-    
-}
+extension AffineTransform: NodePayload { }
 
 public class TransformNode: InputNode<AffineTransform> {
     

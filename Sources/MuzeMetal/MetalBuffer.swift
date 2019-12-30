@@ -69,6 +69,10 @@ extension AffineTransform: MetalBuffer {
     public var length: Int { 32 }
     public var asData: Data { cg.asPaddedFloats.asData }
     
+    public func transformed(by transform: AffineTransform) -> AffineTransform {
+        return self * transform
+    }
+    
 }
 
 extension MTLBuffer {
