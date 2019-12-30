@@ -72,6 +72,13 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
         set { payload.readyToShow = newValue }
     }
     
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        texture.identifier = texture.identifier ?? "Brush"
+        
+        let t: RenderPayload = .texture(texture)
+        return .cropAndTransform(t, texture.size, transform)
+    }
+    
     override public var calculatedRenderExtent: RenderExtent {
         return .basic(.init(size: texture.size, transform: transform))
     }

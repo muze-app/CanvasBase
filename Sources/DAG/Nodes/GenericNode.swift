@@ -268,6 +268,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
     // MARK: Payloads and Extents
     
     open func renderPayload(for options: Collection.RenderOptionsType) -> Collection.RenderPayloadType? {
+        print("\(self) doesn't implement renderPayload")
         fatalError()
     }
     
