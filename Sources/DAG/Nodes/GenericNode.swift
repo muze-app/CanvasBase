@@ -184,18 +184,18 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
 
     // MARK: - Utilities
 
-    func freshenKeys() {
+    public func freshenKeys() {
         key = NodeKey()
         for input in inputs {
             input.freshenKeys()
         }
     }
     
-    func replace(_ keyToReplace: NodeKey, with replacement: GenericNode) {
+    public func replace(_ keyToReplace: NodeKey, with replacement: GenericNode) {
         fatalError()
     }
     
-    func foreach(_ block: (GenericNode)->()) {
+    public func foreach(_ block: (GenericNode)->()) {
         for input in inputs {
             input.foreach(block)
         }
@@ -203,7 +203,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         block(self)
     }
     
-    func contains(_ key: NodeKey) -> Bool {
+    public func contains(_ key: NodeKey) -> Bool {
         if self.key == key { return true }
         
         for input in inputs {
@@ -215,7 +215,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return false
     }
     
-    func intersects(_ keys: Set<NodeKey>) -> Bool {
+    public func intersects(_ keys: Set<NodeKey>) -> Bool {
         if keys.contains(key) { return true }
         
         for input in inputs {
@@ -227,21 +227,21 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return false
     }
     
-    func nodes(thatDoNotContain key: NodeKey) -> [NodeKey] {
+    public func nodes(thatDoNotContain key: NodeKey) -> [NodeKey] {
         if self.key == key { return [] }
         if !contains(key) { return [key] }
         
         return inputs.flatMap { $0.nodes(thatDoNotContain: key) }
     }
     
-    func nodes(thatDoNotContain keys: Set<NodeKey>) -> [NodeKey] {
+    public func nodes(thatDoNotContain keys: Set<NodeKey>) -> [NodeKey] {
         if keys.contains(key) { return [] }
         if !intersects(keys) { return [key] }
         
         return inputs.flatMap { $0.nodes(thatDoNotContain: keys) }
     }
     
-    func first(where predicate: (GenericNode) -> Bool) -> GenericNode? {
+    public func first(where predicate: (GenericNode) -> Bool) -> GenericNode? {
         if predicate(self) { return self }
         
         for input in inputs {
@@ -253,7 +253,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return nil
     }
     
-    func all(where predicate: (GenericNode) -> Bool) -> [GenericNode] {
+    public func all(where predicate: (GenericNode) -> Bool) -> [GenericNode] {
         var all = inputs.flatMap { $0.all(where: predicate) }
         
         if predicate(self) { all.append(self) }
@@ -261,7 +261,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         return all
     }
     
-    func all<U: GenericNode>(as type: U.Type) -> [U] {
+    public func all<U: GenericNode>(as type: U.Type) -> [U] {
         return all { $0 is U } as! [U]
     }
     
