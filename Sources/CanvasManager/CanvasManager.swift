@@ -440,7 +440,7 @@ public class CanvasManager {
     
     // MARK: Misc
     
-    func purgeCachesIfNeeded() {
+    public func purgeCachesIfNeeded() {
         for manager in layerManagers.values {
             manager.purgeCachesIfNeeded()
         }

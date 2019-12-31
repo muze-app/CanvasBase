@@ -42,7 +42,7 @@ extension LayerManager {
     }
     
     
-    func previewRequested() {
+    public func previewRequested() {
         if let preview = preview, previewIsUpToDate {
             previewDelegate?.layer(updated: preview)
         } else {
