@@ -72,8 +72,13 @@ open class RenderContext {
 //        let finalNode = node.finalNode
 //        finalNode.log()
 
+        let store = graph.store
+        store.modLock.lock()
+        
         let cache = self.cache(for: subgraph)
         let optimized = cache.march(graph).subgraph(for: subgraph)
+        
+        store.modLock.unlock()
 //        let optimized = graph.optimized(throughCacheNodes: false)
         
 //        var finalNode: Node?
