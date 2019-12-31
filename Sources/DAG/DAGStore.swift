@@ -126,6 +126,10 @@ public class DAGStore<Collection: NodeCollection> {
     public func commit(_ snapshot: Snapshot, setLatest: Bool, process: Bool = true) -> CommitKey {
         let key: CommitKey = snapshot.key
         
+//        var snapshot = snapshot
+//        if snapshot.depth > 20 {
+//            snapshot = snapshot.flattened
+//        }
         snapshot.verify()
         
 //        if isLayer {

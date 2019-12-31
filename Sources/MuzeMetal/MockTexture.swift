@@ -32,12 +32,12 @@ public class MockTexture: NSObject, MTLTexture {
     
     #else
     @available(iOS 13.0, *)
-    func makeSharedTextureHandle() -> MTLSharedTextureHandle? {
+    public func makeSharedTextureHandle() -> MTLSharedTextureHandle? {
         fatalError()
     }
     #endif
     
-    var isShareable: Bool { fatalError() }
+    public var isShareable: Bool { fatalError() }
     
     public var firstMipmapInTail: Int { fatalError() }
     
