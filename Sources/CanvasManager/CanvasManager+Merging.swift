@@ -76,9 +76,11 @@ extension CanvasManager {
         var replacements: [NodeKey:Node] = [:]
         
         let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
-            replacements = renderReplacements(sortedCommits.head, oldNodes).map {
-                guard let (texture, transform) = $0.1 else { fatalError() }
-                return ($0.0, ImageNode($0.0, graph: graph, payload: .init(texture, transform, .identity)))
+            for (key, value) in renderReplacements(sortedCommits.head, oldNodes) {
+                guard let (texture, transform) = value else { fatalError() }
+                
+                replacements[key] = ImageNode(key, graph: graph, payload: .init(texture, transform, .identity))
+
             }
         }
         
