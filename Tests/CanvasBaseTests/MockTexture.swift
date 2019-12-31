@@ -6,6 +6,7 @@
 //
 
 import Metal
+@testable import MuzePrelude
 @testable import MuzeMetal
 // swiftlint:disable all
 

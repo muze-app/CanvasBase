@@ -1,5 +1,6 @@
 //
 
+@_exported import CanvasManager
 @_exported import CanvasDAG
 
 public typealias Graph = DAGBase<CanvasNodeCollection>

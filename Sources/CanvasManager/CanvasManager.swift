@@ -1,0 +1,842 @@
+//
+//  CanvasManager.swift
+//  muze
+//
+//  Created by Greg on 2/2/19.
+//  Copyright © 2019 Ergo Sum. All rights reserved.
+//
+
+@_exported import MuzePrelude
+@_exported import MuzeMetal
+@_exported import CanvasDAG
+
+public typealias Graph = DAG.DAGBase<CanvasNodeCollection>
+public typealias MutableGraph = DAG.MutableDAG<CanvasNodeCollection>
+public typealias DAGStore = DAG.DAGStore<CanvasNodeCollection>
+
+protocol TempCanvasVC: class {
+    func updateUndoButtons()
+}
+
+public class CanvasManager {
+    
+//    weak var canvasView: CanvasMetalView?
+    weak var delegate: CanvasManagerDelegate?
+    
+    weak var tempAltStore: DAGStore?
+    
+    let store: DAGStore
+    let subgraphKey: SubgraphKey
+    
+    let context = RenderContext()
+    
+    weak var canvasVC: TempCanvasVC?
+    
+//    @available(*, deprecated)
+//    lazy var tempLayerManager = LayerManager(canvasManager: self)
+    
+    var selectedLayerManager: LayerManager {
+        return manager(for: displayMetadata.selectedLayer)
+    }
+    
+    let queue = DispatchQueue(label: "CanvasManager", qos: .userInteractive)
+    static let mergeQueue = DispatchQueue(label: "CanvasManagerMerge", qos: .default)
+    
+    init(_ metadata: CanvasMetadata) {
+        let store = DAGStore()
+        let subgraphKey = SubgraphKey()
+        
+        let graph = store.latest.modify { (graph) in
+            let metaNode = CanvasMetaNode(graph: graph, payload: metadata)
+            graph.setMetaNode(metaNode, for: subgraphKey)
+        }
+        
+        store.commit(graph)
+        
+        self.store = store
+        self.subgraphKey = subgraphKey
+        
+        let ref = graph.externalReference
+        self.current = ref
+        self.display = ref
+        
+//        store.delegate = self
+    }
+    
+    // Snapshots and Metadata
+    
+    typealias DAG = CanvasGraph
+    typealias DAGSnapshot = CanvasDAG.DAGSnapshot<CanvasNodeCollection>
+    
+    var current: DAGSnapshot
+    private(set) var display: DAGSnapshot {
+        didSet {
+//            print("UPDATE DISPLAY")
+//
+//            for subgraph in display.allSubgraphs {
+//                print("SUBGRAPH \(subgraph.key)")
+//                subgraph.metaNode?.log()
+//                subgraph.finalNode?.log()
+//            }
+            
+            informObservers(old: metadata(for: oldValue),
+                            new: metadata(for: display))
+        }
+    }
+    
+    func metaNode(for commit: DAG) -> CanvasMetaNode {
+        return commit.metaNode(for: subgraphKey) as! CanvasMetaNode
+    }
+    
+    func metadata(for commit: DAG) -> CanvasMetadata {
+        return metaNode(for: commit).payload
+    }
+    
+    func set(_ metadata: CanvasMetadata, in graph: MutableGraph) {
+        metaNode(for: graph).payload = metadata
+    }
+    
+    func modifyMetadata(in graph: MutableGraph,
+                        _ f: (inout CanvasMetadata) -> ()) {
+        var m = metadata(for: graph)
+        f(&m)
+        set(m, in: graph)
+    }
+    
+    var currentMetadata: CanvasMetadata { return metadata(for: current) }
+    var displayMetadata: CanvasMetadata { return metadata(for: display) }
+    
+    var displayLayerKeys: [LayerKey] { return displayMetadata.layers }
+//    @available(*, deprecated)
+//    var displayLayerDAGs: [DAGSnapshot] { return displayMetadata.sortedRawSnapshots }
+//    @available(*, deprecated)
+//    var displayLayerMetaNodes: [LayerMetaNode] { return displayLayerDAGs.map { $0.metaNode as! LayerMetaNode} }
+//    @available(*, deprecated)
+//    var displayLayerMetadatas: [LayerMetadata] { return displayLayerMetaNodes.map { $0.payload } }
+    
+    // MARK: - unsorted
+    
+//    fileprivate var canvasSize = UIScreen.main.nativeBounds.size
+    fileprivate var isProperlyCommittingCanvas = false
+    
+//    @available(*, deprecated)
+//    fileprivate lazy var _canvas: Canvas = {
+//        let canvas = Canvas(size: canvasSize, layers: [])
+//        return canvas
+//    }()
+    
+//    @available(*, deprecated)
+//    fileprivate lazy var _displayCanvas: Canvas = {
+//        let canvas = Canvas(size: canvasSize, layers: [])
+//        return canvas
+//    }()
+
+//    @available(*, deprecated)
+//    var canvas: Canvas {
+//        get { return _canvas }
+//        set { set(canvas: newValue) }
+//    }
+//
+//    @available(*, deprecated)
+//    var displayCanvas: Canvas {
+//        get { return _displayCanvas }
+//        set { set(display: newValue) }
+//    }
+    
+    var size: CGSize { return displayMetadata.size }
+    var canvasScale: CGFloat { return size.width / CGRect.screen.width }
+    
+    weak var currentTransaction: CanvasTransaction? = nil
+//    let transactionSemaphore = DispatchSemaphore(value: 1)
+//    var semaphoreValue: Int = 1
+    
+    let undoManager = CanvasUndoManager()
+    
+    var maxMemorySize: MemorySize = 500000000 // min(MemoryManager.shared.physicalMemory * 0.25, 500000000)
+    var reducingMemory = false
+    
+//    var _mergeContext: RenderContext?
+//    var mergeContext: RenderContext! { return _mergeContext ?? canvasView?.context }
+    
+    convenience init(canvasSize: CGSize = UIScreen.main.nativeBounds.size) {
+        let metadata = CanvasMetadata(width: Int(round(canvasSize.width)), height: Int(round(canvasSize.height)))
+        self.init(metadata)
+    }
+    
+    var activeNode: NodePath? = nil
+//    var activeCaptionPath: CaptionPath? = nil
+    var memoryReductionDisabled = false
+//    let activeCaptionOverlay = BlendNode()
+//    let topAlphaNode = AlphaNode(1)
+//    let bottomAlphaNode = AlphaNode(0)
+//    let captionBlurNode = BlurPreviewNode(.init(15))
+//    var backgroundNode = SolidColorNode(.white)
+    
+    // MARK: Undo/Redo
+    
+    func undo() -> CanvasAction? {
+        if let action = currentTransaction?.undo() {
+            print("UNDO \(action.description)")
+            return action
+        } else  if let (action, graph) = undoManager.undo() {
+            current = graph
+            display = graph
+            print("UNDO \(action.description)")
+            return action
+        }
+        
+        return nil
+    }
+    
+    func redo() -> CanvasAction? {
+        print("REDO")
+        if let (action, graph) = undoManager.redo() {
+            current = graph
+            display = graph
+            print("REDO \(action.description)")
+            return action
+        } else if let action = currentTransaction?.redo() {
+            print("REDO \(action.description)")
+            return action
+        }
+        
+        return nil
+    }
+    
+    var undoCount: Int {
+        var count = undoManager.undoCount
+        if let t = currentTransaction {
+            count += t.undoCount
+        }
+        
+        return count
+    }
+    
+    var redoCount: Int {
+        var count = undoManager.redoCount
+        if let t = currentTransaction {
+            count += t.redoCount
+        }
+        
+        return count
+    }
+
+    func clearRedos() {
+        undoManager.redoList.removeAll()
+        currentTransaction?.clearRedos()
+    }
+    
+    // MARK: Set Canvas
+    
+    var invalidatedNodes = Set<NodeKey>()
+    
+    func checkForInvalidNodes() -> Bool {
+//        for layer in canvas.layers {
+//            for invalid in invalidatedNodes {
+//                if layer.contains(invalid) {
+//                    print("OOPS! Found invalid node \(invalid)")
+//                    layer.node!.log()
+//
+//                    return true
+//                }
+//            }
+//        }
+        
+        return false
+    }
+    
+    
+    func updateCanvasForMemory(_ new: One) {
+//        isProperlyCommittingCanvas = true
+//        set(canvas: new)
+//        isProperlyCommittingCanvas = false
+//
+//        set(display: new)
+    }
+    
+    func informObservers(old: CanvasMetadata, new: CanvasMetadata) {
+        canvasVC?.updateUndoButtons()
+        
+        if observers.count == 0 { return }
+        
+        let permutations = Permutations(from: old.layers, to: new.layers, log: false)
+        
+        if !permutations.moves.isEmpty {
+            informObservers { $0.canvasDidReorderLayers() }
+        } else {
+            for remove in permutations.removes {
+                informObservers { $0.canvasRemoved(layer: remove.element, at: remove.oldIndex) }
+            }
+            
+            for insert in permutations.inserts {
+                informObservers { $0.canvasInserted(layer: insert.element, at: insert.newIndex) }
+            }
+        }
+        
+        if old.layerCount > 0 {
+            if old.selectedLayer != new.selectedLayer {
+                informObservers { $0.canvasSelected(layer: new.selectedLayer, at: new.selectedIndex) }
+            }
+        }
+        
+//        if old.backgroundIsHidden != new.backgroundIsHidden {
+//            informObservers { $0.canvasBackground(hidden: new.backgroundIsHidden) }
+//        }
+        
+        for manager in allLayerManagers {
+            manager.updatePreview()
+        }
+    }
+    
+    func informObservers(_ block: (CanvasObserver)->()) {
+        for observer in observers {
+            block(observer)
+        }
+    }
+    
+    func informBasicObservers(_ block: (BasicCanvasObserver)->()) {
+        for observer in basicObservers {
+            block(observer)
+        }
+    }
+    
+    // MARK: Layers
+    
+    private var layerManagers: [LayerKey:LayerManager] = [:]
+    
+    var allLayerManagers: [LayerManager] {
+        var managers: [LayerManager] = []
+        queue.sync { managers = Array(layerManagers.values) }
+        return managers
+    }
+    
+    func existingManager(for key: LayerKey) -> LayerManager? {
+        var manager: LayerManager? = nil
+        queue.sync { manager = layerManagers[key] }
+        return manager
+    }
+    
+    func manager(for key: LayerKey) -> LayerManager {
+        var manager: LayerManager? = nil
+        
+        queue.sync {
+            if let man = layerManagers[key] {
+                manager = man
+            } else {
+                let man = LayerManager(key, canvasManager: self)
+                layerManagers[key] = man
+                manager = man
+            }
+        }
+        
+        
+        return manager!
+    }
+    
+    func purgeOldManagers() {
+        queue.sync {
+//            let layerKeys = canvas.layerKeys
+//            let managerKeys = layerManagers.keys
+//            
+//            let oldKeys = managerKeys - layerKeys
+//            
+//            for key in oldKeys {
+//                layerManagers.removeValue(forKey: key)
+//            }
+        }
+    }
+    
+    // MARK: Transactions
+    
+    func newTransaction(identifier: String) -> CanvasTransaction {
+        return newTransactionBlocking(identifier: identifier)
+    }
+    
+    func newTransaction(identifier: String, commit: Bool = true, block: (CanvasTransaction)->()) {
+        let transaction = self.newTransactionBlocking(identifier: identifier)
+        block(transaction)
+        
+        if commit {
+            transaction.commit()
+        }
+    }
+    
+    func newTransactionBlocking(identifier: String) -> CanvasTransaction {
+//        transactionSemaphore.wait()
+//        semaphoreValue -= 1
+        
+//        print("new transaction!")
+        
+        if let current = currentTransaction {
+            print("SEMAPHORE ERROR")
+            print("transaction \(current.identifier) already exists")
+            fatalError("transaction \(current.identifier) already exists")
+        }
+        
+        let transaction = CanvasTransaction(manager: self, identifier: identifier)
+        currentTransaction = transaction
+        
+        return transaction
+    }
+    
+    func initializingTransaction() -> InitializingTransaction {
+        guard currentTransaction == nil else {
+            fatalError("Tried to create a new transaction, but one is already pending!")
+        }
+        
+//        transactionSemaphore.wait()
+//        semaphoreValue -= 1
+        
+        let transaction = InitializingTransaction(manager: self, identifier: "initial")
+        currentTransaction = transaction
+        
+        return transaction
+    }
+    
+    func push(_ canvasAction: CanvasAction) {
+        let transaction = newTransaction(identifier: "\(canvasAction)")
+        transaction.push(canvasAction)
+        transaction.commit()
+    }
+    
+//    func push(_ easyAction: EasyCanvasAction) {
+//        let transaction = newTransaction(identifier: "\(easyAction)")
+//        transaction.push(easyAction)
+//        transaction.commit()
+//    }
+    
+//    @available(*, deprecated)
+//    var currentCanvas: Canvas {
+//        return canvas.copy()
+//    }
+    
+    // MARK: Observers
+    
+    private var _basicObservers = NSHashTable<AnyObject>.weakObjects()
+    private var _observers = NSHashTable<AnyObject>.weakObjects()
+    var observers: [CanvasObserver] {
+        return _observers.allObjects.compactMap { $0 as? CanvasObserver }
+    }
+    
+    var basicObservers: [BasicCanvasObserver] {
+        return _basicObservers.allObjects.compactMap { $0 as? BasicCanvasObserver }
+    }
+    
+    func add(observer: CanvasObserver) {
+        _observers.add(observer)
+    }
+    
+    func remove(observer: CanvasObserver) {
+        _observers.remove(observer)
+    }
+    
+    func add(observer: BasicCanvasObserver) {
+        _basicObservers.add(observer)
+    }
+    
+    func remove(observer: BasicCanvasObserver) {
+        _basicObservers.remove(observer)
+    }
+    
+    // MARK: Misc
+    
+    func purgeCachesIfNeeded() {
+        for manager in layerManagers.values {
+            manager.purgeCachesIfNeeded()
+        }
+    }
+    
+}
+
+extension CanvasManager: CanvasTransactionParent {
+    
+    var currentCanvas: DAGSnapshot {
+        return current
+    }
+    
+    var displayCanvas: DAGSnapshot {
+        get { return display }
+        set { display = newValue.modify { updateCanvasSubgraph(in: $0) } .externalReference }
+    }
+    
+    func commit(transaction: CanvasTransaction) {
+        precondition(transaction === currentTransaction)
+        
+        activeNode = nil
+        
+        print("COMMIT TO CANVAS MANAGER")
+        for action in undoManager.undoList {
+            print(" - \(action.description)")
+        }
+        
+        print("ADDING \(transaction.actions.count) ACTIONS...")
+        
+        for action in transaction.actions {
+            if action.before !== action.after {
+                print(" - \(action.description)")
+                undoManager.push(action)
+            } else {
+                print(" - \(action.description) (SKIPPED!)")
+            }
+        }
+        
+        if let graph = transaction.after {
+            let updated = graph.modify { updateCanvasSubgraph(in: $0) } .externalReference
+            
+            current = updated
+            display = updated
+        } else {
+            display = current
+        }
+        
+        currentTransaction = nil
+        
+        delegate?.canvas(changed: currentMetadata)
+        
+//        transactionSemaphore.signal()
+//        semaphoreValue += 1
+    }
+    
+    func cancel(transaction: CanvasTransaction) {
+        precondition(transaction === currentTransaction)
+        
+        display = current
+        
+        currentTransaction = nil
+//        transactionSemaphore.signal()
+//        semaphoreValue += 1
+    }
+    
+}
+
+
+protocol CanvasManagerDelegate: class {
+    
+    func canvas(changed canvas: CanvasMetadata)
+    
+}
+
+struct NodePath {
+    let layerKey: LayerKey
+    let nodeKey: NodeKey
+    
+    init(_ layerKey: LayerKey, _ nodeKey: NodeKey) {
+        self.layerKey = layerKey
+        self.nodeKey = nodeKey
+    }
+}
+
+extension MetalTexture: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        return "MetalTexture (\(_texture.pointerString))"
+    }
+    
+}
+
+//extension CanvasManager: DAGStoreDelegate {
+//
+//    func hotlist(for graphs: [DAG]) -> Set<SubgraphKey>? {
+//        let metadatas = graphs.map { metadata(for: $0) }
+//
+//        return metadatas.reduce(into: Set(subgraphKey)) { $0 += $1.layerSubgraphs.values }
+//    }
+//
+//    func processCommit(commit: DAG) -> InternalDirectSnapshot? {
+//        return commit.modify(level: 1) { graph in
+//            let metadata = self.metadata(for: graph)
+//            for layer in metadata.layers {
+//                let manager = self.manager(for: layer)
+//                manager.processCommit(graph: graph)
+//            }
+//
+//            updateCanvasSubgraph(in: graph)
+//        }
+//    }
+//
+//    func considerPurging(_ pairs: [(DNode, Subgraph)]) {
+//        for (node, subgraph) in pairs {
+//            if considerPurging(node, in: subgraph) {
+//                return
+//            }
+//        }
+//    }
+//
+//    func considerPurging(_ node: DNode, in subgraph: Subgraph) -> Bool {
+//        if subgraph.key == subgraphKey { return false }
+//
+//        var node = node
+//        if let cache = node as? CacheNode {
+//            guard let input = cache.input else { return false }
+//            node = input
+//        }
+//
+//        print("SHOULD FLATTEN? (cost: \(node.cost))")
+//        node.log(with: "\t")
+//
+//        if node.cost <= 1 { return false }
+//
+//        var texturesToPurge = WeakSet( node.all(as: ImageNode.self).map { $0.texture } )
+//        var allocations = WeakSet( node.all(as: ImageNode.self).map { subgraph.graph.payloadAllocation(for: $0.key, level: 0)! } )
+//
+//        let options = RenderOptions("purge", mode: .usingExtent, format: .float16, time: 0)
+//        fatalError()
+////        RenderManager.shared.render(node, options) { [weak self] in
+////            guard let store = self?.store else { return }
+////            guard let head = store.sortedExternalCommits.first else { return }
+////            let (texture, transform) = $0
+////
+////            print("purge received: \(texture) \(transform)")
+////
+//////            let matrix = texture.colorSpace!.matrix(to: .working)
+////
+////            var purged = head.flattened
+////            var replacement: ImageNode!
+////
+////            print("replacing: \(node)")
+////
+//////            for subgraphKey in head.allSubgraphKeys {
+////            let subgraphKey = subgraph.key
+////            for level in 0...head.maxLevel {
+////                print("lv \(level)")
+////                purged = purged.modify(as: head.key, level: level) { (graph) in
+////                    replacement = replacement ?? ImageNode(texture: texture,
+////                                                           transform: transform,
+////                                                           colorMatrix: .identity,
+////                                                           graph: graph)
+////
+////                    print("    with: \(replacement)")
+////
+////                    let subgraph = graph.subgraph(for: subgraphKey)
+////                    subgraph.finalNode = subgraph.finalNode?.replacing(node.key, with: replacement)
+////                }
+////            }
+//////            }
+////
+////            purged = purged.modify(as: purged.key, level: 1) { graph in
+////                self?.updateCanvasSubgraph(in: graph)
+////            }
+////
+////            purged = purged.flattened
+////
+////            print("BEFORE \(head.key)")
+////            for subgraph in head.allSubgraphs {
+////                print("  - \(subgraph.key)")
+////                subgraph.finalNode?.log(with: "\t\t")
+////            }
+////
+////            print("AFTER \(purged.key)")
+////            for subgraph in purged.allSubgraphs {
+////                print("  - \(subgraph.key)")
+////                subgraph.finalNode?.log(with: "\t\t")
+////            }
+////
+////            print("max level: \(purged.maxLevel)")
+////            print("depth: \(purged.depth)")
+////
+////            if purged.contains(allocations: Set(allocations)) {
+////                fatalError()
+////            }
+////
+////            if purged.contains(textures: Set(texturesToPurge)) {
+////                fatalError()
+////            }
+////
+////            massert(purged.key == head.key)
+////
+////            store.commit(purged, process: false)
+////            DispatchQueue.global().async {
+////                store.vacuumSync(allocations: Set(allocations), texturesToPurge: Set(texturesToPurge))
+////            }
+////
+////            for committed in store.sortedExternalCommits {
+////                print("COMMITTED \(committed.key)")
+////                for subgraph in committed.allSubgraphs {
+////                    print("  - \(subgraph.key)")
+////                    subgraph.finalNode?.log(with: "\t\t")
+////                }
+////            }
+////
+////            print("\nSTORE EXTERNAL")
+////            for graph in store.sortedExternalCommits {
+////                print("graph \(graph) \(graph.key)")
+////                if graph.contains(allocations: Set(allocations)) {
+////                    print("wtf")
+////                }
+////
+////                if graph.contains(textures: Set(texturesToPurge)) {
+////                    print("wtf")
+////                }
+////            }
+////
+////            print("\nSTORE ALL")
+////            for graph in store.commits.values {
+////                print("graph \(graph) \(graph.key)")
+////                if graph.contains(allocations: Set(allocations)) {
+////                    print("wtf")
+////                }
+////
+////                if graph.contains(textures: Set(texturesToPurge)) {
+////                    print("wtf")
+////                }
+////            }
+////
+////            let tempKey = self!.layerManagers.values.first!.subgraphKey
+////            print("BEFORE:")
+////            head.subgraph(for: tempKey).finalNode!.log()
+////            print("AFTER:")
+////            purged.subgraph(for: tempKey).finalNode!.log()
+////
+////            DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
+////                self?.checkTextures(texturesToPurge, allocations)
+////            }
+////        }
+//
+//        return true
+//    }
+//
+//    func checkTextures(_ texturesToPurge: WeakSet<MetalTexture>, _ allocations: WeakSet<PayloadBufferAllocation>) {
+//
+//        var shouldReturn = false
+//        autoreleasepool {
+//            if allocations.count == 0, texturesToPurge.count == 0 {
+//                shouldReturn = true
+//            }
+//        }
+//        if shouldReturn { return }
+//
+//        autoreleasepool {
+//            if texturesToPurge.count > 0 {
+//                print("found lingering textures!")
+//
+//                for texture in texturesToPurge {
+//                    print(" - \(texture) \(texture.size)")
+//                }
+//            }
+//
+//            if allocations.count > 0 {
+//                print("found lingering allocations!")
+//
+//                for allocation in allocations {
+//                    print(" - \(allocation)")
+//                }
+//            }
+//
+//            print("\nSTORE EXTERNAL")
+//            for graph in store.sortedExternalCommits {
+//                print("graph \(graph) \(graph.key)")
+//                if graph.contains(allocations: Set(allocations)) {
+//                    print("wtf")
+//                }
+//
+//                if graph.contains(textures: Set(texturesToPurge)) {
+//                    print("wtf")
+//                }
+//            }
+//
+//            print("\nSTORE ALL")
+//            for graph in store.commits.values {
+//                print("graph \(graph) \(graph.key)")
+//                if graph.contains(allocations: Set(allocations)) {
+//                    print("wtf")
+//                }
+//
+//                if graph.contains(textures: Set(texturesToPurge)) {
+//                    print("wtf")
+//                }
+//            }
+//
+//            print("\nALT STORE EXTERNAL")
+//            for graph in tempAltStore?.sortedExternalCommits ?? [] {
+//                print("graph \(graph) \(graph.key)")
+//                if graph.contains(allocations: Set(allocations)) {
+//                    print("wtf")
+//                }
+//            }
+//
+//            print("\nALT STORE ALL")
+//            for graph in tempAltStore?.commits.values ?? [] {
+//                print("graph \(graph) \(graph.key)")
+//                if graph.contains(allocations: Set(allocations)) {
+//                    print("wtf")
+//                }
+//            }
+//
+//            print("\nEVERYTHING!")
+//            for graph in InternalDirectSnapshot.tempDict.values {
+//                print("graph \(graph) \(graph.key)")
+//                if graph.contains(allocations: Set(allocations)) {
+//                    print("wtf")
+//                }
+//
+//                for (key, type) in graph.typeMap {
+//                    guard type == .image else { continue }
+//                    let node = graph.node(for: key) as! ImageNode
+//                    let tex = node.texture
+//                    print("    - \(tex)")
+//                    if Set(texturesToPurge).contains(where: { $0 == tex }) {
+//                        print("        WOAH")
+//                    }
+//                }
+//            }
+//        }
+//
+//        print(" ")
+//
+//        autoreleasepool {
+//            guard allocations.count == 0, texturesToPurge.count == 0 else {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+//                    self?.checkTextures(texturesToPurge, allocations)
+//                }
+//
+//                shouldReturn = true
+//                return
+//            }
+//        }
+//        if shouldReturn {
+//            return
+//        }
+//
+//        autoreleasepool {
+//            allocations.removeAll { _ in true }
+//            texturesToPurge.removeAll { _ in true }
+//        }
+//
+//        print(" ")
+//    }
+//
+//}
+
+//extension PayloadBufferAllocation: CustomDebugStringConvertible {
+//
+//    var debugDescription: String {
+//        let unsafe = Unmanaged.passUnretained(self).toOpaque()
+//        return "PayloadBufferAllocation (\(unsafe))"
+//    }
+//
+//}
+
+//extension InternalDirectSnapshot: CustomDebugStringConvertible {
+//
+//    public var debugDescription: String {
+//        let unsafe = Unmanaged.passUnretained(self).toOpaque()
+//        return "InternalDirectSnapshot \(key) (\(unsafe))"
+//    }
+//
+//}
+
+//extension DNode {
+//
+//    func replacing(_ oldKey: NodeKey, with replacement: DNode) -> DNode {
+//        if key == oldKey { return replacement }
+//
+//        let graph = dag as! MutableDAG
+//        for (i, key) in edgeMap {
+//            let n = graph.node(for: key).replacing(oldKey, with: replacement)
+//            graph.setInput(for: self.key, index: i, to: n.key)
+//        }
+//
+//        return self
+//    }
+//
+//}

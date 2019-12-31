@@ -28,8 +28,11 @@ let package = Package(
         .target(name: "CanvasDAG",
                 dependencies: ["DAG", "MuzeMetal"]),
         
-        .target( name: "CanvasBase",
+        .target( name: "CanvasManager",
                  dependencies: ["CanvasDAG"]),
+        
+        .target( name: "CanvasBase",
+                 dependencies: ["CanvasManager"]),
         
         .testTarget( name: "CanvasBaseTests",
                      dependencies: ["CanvasBase"])
