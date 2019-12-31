@@ -132,7 +132,7 @@ public class DAGStore<Collection: NodeCollection> {
 //        if snapshot.depth > 20 {
 //            snapshot = snapshot.flattened
 //        }
-//        snapshot.verify()
+        snapshot.verify()
         
 //        if isLayer {
 //            print("commit \(snapshot.key) (processed: \(!process))")
