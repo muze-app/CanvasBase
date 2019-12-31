@@ -235,10 +235,17 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
     }
     
     public func nodes(thatDoNotContain keys: Set<NodeKey>) -> [NodeKey] {
-        if keys.contains(key) { return [] }
-        if !intersects(keys) { return [key] }
+        if keys.contains(key) {
+            return inputs.flatMap {
+                $0.nodes(thatDoNotContain: keys)
+            }
+        }
         
-        return inputs.flatMap { $0.nodes(thatDoNotContain: keys) }
+        if !intersects(keys) {
+            return [key]
+        }
+        
+        return []
     }
     
     public func first(where predicate: (GenericNode) -> Bool) -> GenericNode? {

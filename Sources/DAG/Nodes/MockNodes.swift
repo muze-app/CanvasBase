@@ -32,6 +32,16 @@ public class MockImageNode: GeneratorNode<MockNodeCollection, MockNodePayload> {
 
 public class MockBlendNode: PayloadNode<MockNodeCollection, MockNodePayload> {
     
+    public var source: Node? {
+        get { return nodeInputs[0] }
+        set { nodeInputs[0] = newValue }
+    }
+    
+    public var destination: Node? {
+        get { return nodeInputs[1] }
+        set { nodeInputs[1] = newValue }
+    }
+    
 }
 
 public class MockFilterNode: INode<MockNodeCollection, MockNodePayload> {

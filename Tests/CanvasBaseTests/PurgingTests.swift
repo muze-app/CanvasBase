@@ -13,7 +13,6 @@ import XCTest
 final class PurgingTests: XCTestCase, CanvasBaseTestCase {
     
     typealias Collection = CanvasNodeCollection
-    typealias Snapshot = DAGSnapshot<Collection>
     
     func addThreeLayers(to graph: inout Graph, subgraph: SubgraphKey) -> [Snapshot] {
         var snapshots = [DAGSnapshot<Collection>]()

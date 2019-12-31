@@ -24,6 +24,8 @@ extension CanvasBaseTestCase {
     typealias InternalSnapshot = InternalDirectSnapshot<Collection>
     typealias Subgraph = DAG.Subgraph<Collection>
     
+    typealias Snapshot = DAGSnapshot<Collection>
+    
 }
 
 extension CanvasBaseTestCase where Collection == CanvasNodeCollection {
