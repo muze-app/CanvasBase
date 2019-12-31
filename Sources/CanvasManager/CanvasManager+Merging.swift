@@ -79,20 +79,22 @@ extension CanvasManager {
             for (key, value) in renderReplacements(sortedCommits.head, oldNodes) {
                 guard let (texture, transform) = value else { fatalError() }
                 
-                replacements[key] = ImageNode(key, graph: graph, payload: .init(texture, transform, .identity))
+                replacements[key] = ImageNode(graph: graph, payload: .init(texture, transform, .identity))
 
             }
         }
         
         store.commit(newHead, setLatest: true)
         
-        for commit in store.sortedCommits {
+        for commit in store.sortedCommits.reversed() {
             let commit = commit.modify(as: commit.key) { graph in
                 for (old, new) in replacements {
                     graph.replace(old, with: new)
                 }
                 updateCanvasSubgraph(in: graph)
             }
+            
+            commit.forbid(keys: oldNodes)
             
             store.commit(commit, setLatest: true)
         }

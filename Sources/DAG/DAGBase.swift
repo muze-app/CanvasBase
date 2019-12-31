@@ -36,6 +36,12 @@ public class DAGBase<Collection: NodeCollection> {
     
     var payloadBuffers: PayloadBufferSet? { nil }
     
+    public func precondition(notForbidden key: NodeKey) {
+        if forbiddenKeys.contains(key) {
+            fatalError()
+        }
+    }
+    
     // MARK: - Subgraphs
     
     public var allSubgraphKeys: Set<SubgraphKey> { die }
@@ -61,6 +67,8 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     // MARK: - Nodes
+    
+    public var forbiddenKeys: Set<NodeKey> { die }
     
     //    func node(for key: NodeKey) -> Node { }
     public func type(for key: NodeKey) -> Collection? { die }
@@ -100,7 +108,8 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     public final func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-        payloadPointer(for: key)?.assumingMemoryBound(to: T.self).pointee
+        precondition(notForbidden: key)
+        return payloadPointer(for: key)?.assumingMemoryBound(to: T.self).pointee
     }
 
     var die: Never { fatalError() }
