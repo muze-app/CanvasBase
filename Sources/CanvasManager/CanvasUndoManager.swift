@@ -13,8 +13,8 @@ public class CanvasUndoManager {
     
     public typealias ActionType = CanvasAction
     
-    let undoList = LinkedList<ActionType>()
-    let redoList = LinkedList<ActionType>()
+    public let undoList = LinkedList<ActionType>()
+    public let redoList = LinkedList<ActionType>()
     
     public var undoCount: Int { return undoList.nodeCount }
     public var redoCount: Int { return redoList.nodeCount }

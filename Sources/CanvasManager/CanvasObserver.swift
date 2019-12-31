@@ -8,13 +8,13 @@
 
 import Foundation
 
-protocol BasicCanvasObserver: AnyObject {
+public protocol BasicCanvasObserver: AnyObject {
     
     func canvasChanged(_ canvas: One, needsRedraw: Bool)
     
 }
 
-protocol CanvasObserver: class {
+public protocol CanvasObserver: class {
     
     func canvasSelected(layer: LayerKey, at index: Int)
     func canvasInserted(layer: LayerKey, at index: Int)

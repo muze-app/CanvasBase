@@ -21,14 +21,14 @@ public protocol TempCanvasVC: class {
 public class CanvasManager {
     
 //    weak var canvasView: CanvasMetalView?
-    weak var delegate: CanvasManagerDelegate?
+    public weak var delegate: CanvasManagerDelegate?
     
-    weak var tempAltStore: DAGStore?
+    public weak var tempAltStore: DAGStore?
     
     public let store: DAGStore
     public let subgraphKey: SubgraphKey
     
-    let context = RenderContext()
+    public let context = RenderContext()
     
     public weak var canvasVC: TempCanvasVC?
     
@@ -68,8 +68,8 @@ public class CanvasManager {
     public typealias Graph = CanvasGraph
     public typealias Snapshot = CanvasDAG.DAGSnapshot<CanvasNodeCollection>
     
-    var current: Snapshot
-    private(set) var display: Snapshot {
+    public var current: Snapshot
+    public internal(set) var display: Snapshot {
         didSet {
 //            print("UPDATE DISPLAY")
 //
@@ -422,19 +422,19 @@ public class CanvasManager {
         return _basicObservers.allObjects.compactMap { $0 as? BasicCanvasObserver }
     }
     
-    func add(observer: CanvasObserver) {
+    public func add(observer: CanvasObserver) {
         _observers.add(observer)
     }
     
-    func remove(observer: CanvasObserver) {
+    public func remove(observer: CanvasObserver) {
         _observers.remove(observer)
     }
     
-    func add(observer: BasicCanvasObserver) {
+    public func add(observer: BasicCanvasObserver) {
         _basicObservers.add(observer)
     }
     
-    func remove(observer: BasicCanvasObserver) {
+    public func remove(observer: BasicCanvasObserver) {
         _basicObservers.remove(observer)
     }
     

@@ -9,9 +9,9 @@
 import Foundation
 import MuzeMetal
 
-class LinkedList<Element> {
+public class LinkedList<Element> {
     
-    class Node<Element> {
+    public class Node<Element> {
         var datum: Element
         var next: Node<Element>?
         var previous: Node<Element>?
@@ -31,8 +31,8 @@ class LinkedList<Element> {
     public var bottom: Node<Element>? { return bottomNode }
     public var top: Node<Element>? { return topNode }
     
-    init() {}
-    init(with item: Element)             { push(item) }
+    public init() {}
+    public init(with item: Element)             { push(item) }
 //    init(with list: LinkedList<Element>) { push(list) }
 //    
 //    public func push(_ list: LinkedList<Element>) {
@@ -129,7 +129,7 @@ class LinkedList<Element> {
         print("    list count is now \(count) (was \(originalCount))")
     }
     
-    func removeAll() {
+    public func removeAll() {
         var nodeToClean = topNode
         while let node = nodeToClean {
             nodeToClean = node.previous
@@ -157,13 +157,13 @@ class LinkedList<Element> {
 
 extension LinkedList: Sequence {
     
-    func makeIterator() -> LinkedListIterator<Element> {
+    public func makeIterator() -> LinkedListIterator<Element> {
         return LinkedListIterator<Element>(self)
     }
     
 }
 
-struct LinkedListIterator<Element>: IteratorProtocol {
+public struct LinkedListIterator<Element>: IteratorProtocol {
     
     var node: LinkedList<Element>.Node<Element>?
     
@@ -171,7 +171,7 @@ struct LinkedListIterator<Element>: IteratorProtocol {
         self.node = list.top
     }
     
-    mutating func next() -> Element? {
+    public mutating func next() -> Element? {
         if let current = node {
             node = node?.previous
             return current.datum
@@ -182,7 +182,7 @@ struct LinkedListIterator<Element>: IteratorProtocol {
     
 }
 
-extension LinkedList {
+public extension LinkedList {
     
     var lazyReversed: ReversedLinkedList<Element> {
         return ReversedLinkedList(self)
@@ -192,7 +192,7 @@ extension LinkedList {
 
 // MARK: Reverse Iteration
 
-struct ReversedLinkedList<Element>: Sequence {
+public struct ReversedLinkedList<Element>: Sequence {
     
     let list: LinkedList<Element>
     
@@ -200,13 +200,13 @@ struct ReversedLinkedList<Element>: Sequence {
         self.list = list
     }
     
-    func makeIterator() -> ReversedLinkedListIterator<Element> {
+    public func makeIterator() -> ReversedLinkedListIterator<Element> {
         return ReversedLinkedListIterator<Element>(self)
     }
     
 }
 
-struct ReversedLinkedListIterator<Element>: IteratorProtocol {
+public struct ReversedLinkedListIterator<Element>: IteratorProtocol {
     
     var node: LinkedList<Element>.Node<Element>?
     
@@ -214,7 +214,7 @@ struct ReversedLinkedListIterator<Element>: IteratorProtocol {
         self.node = list.list.bottom
     }
     
-    mutating func next() -> Element? {
+    public mutating func next() -> Element? {
         if let current = node {
             node = node?.next
             return current.datum
@@ -229,7 +229,7 @@ struct ReversedLinkedListIterator<Element>: IteratorProtocol {
 
 extension LinkedList: MemoryManagee where Element: MemoryManagee {
     
-    var memoryHash: MemoryHash {
+    public var memoryHash: MemoryHash {
         var hash = MemoryHash()
 
         for element in self {
