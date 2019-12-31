@@ -55,6 +55,7 @@ public class CanvasManager {
         
         self.store = store
         self.subgraphKey = subgraphKey
+        store.excludedSubgraphKeys = Set(subgraphKey)
         
         let ref = graph.externalReference
         self.current = ref
@@ -144,7 +145,13 @@ public class CanvasManager {
 //    }
     
     public var size: CGSize { return displayMetadata.size }
-    public var canvasScale: CGFloat { return size.width / CGRect.screen.width }
+    public var canvasScale: CGFloat {
+        #if os(iOS)
+        return size.width / CGRect.screen.width
+        #else
+        return 1
+        #endif
+    }
     
     public weak var currentTransaction: CanvasTransaction? = nil
 //    let transactionSemaphore = DispatchSemaphore(value: 1)
@@ -158,7 +165,15 @@ public class CanvasManager {
 //    var _mergeContext: RenderContext?
 //    var mergeContext: RenderContext! { return _mergeContext ?? canvasView?.context }
     
-    public convenience init(canvasSize: CGSize = UIScreen.main.nativeBounds.size) {
+    public static var defaultSize: CGSize {
+        #if os(iOS)
+        return UIScreen.main.nativeBounds.size
+        #else
+        return CGSize(2048)
+        #endif
+    }
+    
+    public convenience init(canvasSize: CGSize = CanvasManager.defaultSize) {
         let metadata = CanvasMetadata(width: Int(round(canvasSize.width)), height: Int(round(canvasSize.height)))
         self.init(metadata)
     }

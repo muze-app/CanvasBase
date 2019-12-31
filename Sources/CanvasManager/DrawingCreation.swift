@@ -6,8 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import Foundation
-import UIKit
+import MuzePrelude
 
 public typealias DrawingCreation = Drawing & SingleLayerCreation
 

@@ -20,9 +20,9 @@ public extension MetalTexture {
 public class MockTexture: NSObject, MTLTexture {
     
     #if os(macOS)
-    var remoteStorageTexture: MTLTexture? { fatalError() }
+    public var remoteStorageTexture: MTLTexture? { fatalError() }
     
-    func makeRemoteTextureView(_ device: MTLDevice) -> MTLTexture? {
+    public func makeRemoteTextureView(_ device: MTLDevice) -> MTLTexture? {
         fatalError()
     }
     #endif

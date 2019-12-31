@@ -6,13 +6,15 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 
+#if os(iOS)
 extension UIImage {
  
     static let clear = DrawingContext(width: 1, height: 1).uiImage
     
 }
+#endif
 
 extension Date {
     
@@ -22,13 +24,25 @@ extension Date {
 
 public struct LayerPreview {
 
-    public let contentHash: Int
-    public let image: UIImage
     public let date: Date
+    public let contentHash: Int
     
-    static public let clear = LayerPreview(contentHash: 0,
+    #if os(iOS)
+    public let image: UIImage
+    
+    static public let clear = LayerPreview(0,
                                     image: .clear,
                                     date: .now)
+    
+    init(_ contentHash: Int, image: UIImage, date: Date) {
+        self.date = date
+        self.contentHash = contentHash
+        self.image = image
+    }
+    
+    #endif
+    
+    
     
 }
 
@@ -46,7 +60,11 @@ class LayerPreviewRenderer {
         let graph = manager.display
         
         guard let hash = graph.subgraph(for: subgraphKey).finalNode?.contentHash else {
+            #if os(iOS)
             return .succeeded(.clear)
+            #else
+            fatalError()
+            #endif
         }
         
         return _renderPreview(layer: subgraphKey,
@@ -91,9 +109,12 @@ class LayerPreviewRenderer {
         return _renderImage(layer: subgraphKey,
                      graph: graph,
                      canvas: manager).map { texture -> LayerPreview in
-                        
+                        #if os(iOS)
                         let image = texture.uiImage
-                        return .init(contentHash: hash, image: image, date: date)
+                        return .init(hash, image: image, date: date)
+                        #else
+                        return .init(date: date, contentHash: hash)
+                        #endif
 //            let promise = FPromise<LayerPreview>()
 
 //            let orig = image.original!

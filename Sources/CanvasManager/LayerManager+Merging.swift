@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 import Metal
 import MuzeMetal
 
@@ -20,6 +20,7 @@ extension LayerManager {
    
 }
 
+#if os(iOS)
 extension UIImage {
     
     func save(to path: String) {
@@ -32,6 +33,7 @@ extension UIImage {
     }
     
 }
+#endif
 
 extension MTLTexture {
     

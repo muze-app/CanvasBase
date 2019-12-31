@@ -142,6 +142,11 @@ extension CanvasManager {
     private func determineNodesToRemove(_ sortedCommits: HeadAndTail<InternalSnapshot>) -> [NodeKey] {
         let changedNodes = Set( sortedCommits.tail.flatMap { $0.nodesTouchedSincePredecessor } )
         
+        for subgraph in sortedCommits.head.importantSubgraphs {
+            print("SUBGRAPH: \(subgraph.key)")
+            subgraph.finalNode?.log()
+        }
+        
         print("CHANGED NODES")
         for node in changedNodes {
             print("- \(node)")
@@ -149,10 +154,34 @@ extension CanvasManager {
         
         print("UNCHANGED NODES:")
         
-        let r = sortedCommits.head.allSubgraphs.flatMap { $0.finalNode?.nodes(thatDoNotContain: changedNodes) ?? [] }
+        let r = sortedCommits.head.importantSubgraphs.flatMap { $0.finalNode?.nodes(thatDoNotContain: changedNodes) ?? [] }
         for node in r {
             print("- \(node)")
         }
+        
+        #if DEBUG
+        
+        let nodes = r.map { sortedCommits.head.node(for: $0) }
+        
+        let intersection = changedNodes.intersection(r)
+        if !intersection.isEmpty {
+            print("uh oh")
+        }
+        
+        for a in nodes {
+            for b in nodes where b !== a {
+                if a.contains(b.key) {
+                    print("uh oh")
+                }
+                
+                if b.contains(a.key) {
+                    print("uh oh")
+                }
+            }
+        }
+        
+        
+        #endif
         
 //        if let first = r.last { return [first] } else { return [] }
         
@@ -205,6 +234,15 @@ extension CanvasManager {
 //        let graph = graph.optim
         
         #if targetEnvironment(simulator)
+        
+            let result = RenderManager.shared.mockRenderSync()
+            
+            print("rendered: \(result)")
+            print(" ")
+            
+            return result
+       
+        #elseif os(macOS)
         return (.mock, .identity)
         #else
         let node = graph.node(for: key)
@@ -377,7 +415,11 @@ extension CanvasManager {
         
         CanvasManager.mergeQueue.async { [weak self] in
             guard let self = self else { return }
-            self.store.sync { self._purge() }
+            self.store.sync {
+                self.store.modLock.lock()
+                self._purge()
+                self.store.modLock.unlock()
+            }
         }
         
         return
@@ -550,6 +592,23 @@ extension RenderManager {
         lock.lock()
         self.render(payload, options) { r in
             result = r
+            lock.unlock()
+        }
+        
+        lock.lock()
+        lock.unlock()
+        
+        return result!
+    }
+    
+    func mockRenderSync() -> TextureAndTransform {
+        let lock = RenderManager.tempLock
+        var result: TextureAndTransform?
+        
+        lock.lock()
+        
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+            result = (.mock, .identity)
             lock.unlock()
         }
         

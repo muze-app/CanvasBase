@@ -36,7 +36,6 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     override public var store: DAGStore<Collection> { _store! }
     let predecessor: DAGBase<Collection>?
     
-    var modLock: NSRecursiveLock? { return store.lock }
     
 //    deinit {
 //        print("InternalDirectSnapshot go byebye")
@@ -191,6 +190,13 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         if new != old /*|| old != alt*/ {
             subgraphs[key] = new
         }
+        
+//        #if DEBUG
+//        
+//        let subgraphCount = allSubgraphKeys.count
+//        assert(subgraphCount == 1)
+//    
+//        #endif
     }
     
     override public func finalKey(for subgraphKey: SubgraphKey) -> NodeKey? {
@@ -282,13 +288,13 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
 //    public var allNodes: Set<NodeKey> {
 //        var all = Set<NodeKey>()
-//        
+//
 //        for subgraph in allSubgraphs {
 //            if let final = subgraph.finalNode {
 //                all = all.union(final.allKeys)
 //            }
 //        }
-//        
+//
 //        return all
 //    }
     

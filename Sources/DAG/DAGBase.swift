@@ -19,6 +19,8 @@ public class DAGBase<Collection: NodeCollection> {
     public var store: DAGStore<Collection> { die }
     public var depth: Int { die }
     
+    public var modLock: NSRecursiveLock? { store.lock }
+    
     @available(*, deprecated)
     final var level: Int { 0 }
     
@@ -50,6 +52,14 @@ public class DAGBase<Collection: NodeCollection> {
         allSubgraphKeys.map { subgraph(for: $0) }
     }
     
+    public final var importantSubgraphs: [Subgraph<Collection>] {
+        allSubgraphKeys.filter { !excludedSubgraphKeys.contains($0) } .map { subgraph(for: $0) }
+    }
+    
+    public final var excludedSubgraphKeys: Set<SubgraphKey> {
+        store.excludedSubgraphKeys
+    }
+    
     // MARK: - Nodes
     
     //    func node(for key: NodeKey) -> Node { }
@@ -57,7 +67,10 @@ public class DAGBase<Collection: NodeCollection> {
     
     // PRECONDITION: node must exist in graph or will crash
     public func node(for key: NodeKey) -> Node {
-        guard let type = type(for: key) else { die }
+        guard let type = type(for: key) else {
+            print("missing node for \(key)")
+            die
+        }
         
         return type.node(for: key, graph: self)
     }
@@ -128,11 +141,11 @@ public class DAGBase<Collection: NodeCollection> {
                              _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         let snapshot = snapshotToModify
         
-        //        modLock?.lock()
+                modLock?.lock()
         let pred: DAGBase = snapshot
         let result = InternalDirectSnapshot(predecessor: pred, store: store, key: key ?? CommitKey())
         block(result)
-        //        modLock?.unlock()
+                modLock?.unlock()
         
         if !key.exists, !result.hasChanges, let me = snapshot as? InternalDirectSnapshot {
             return me

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 
 public class BlendCreation: SingleLayerCreation {
     
@@ -24,6 +24,7 @@ public class BlendCreation: SingleLayerCreation {
     }
     
     public func push(_ texture: MetalTexture, _ mode: BlendMode) {
+        canvasManager.store.modLock.lock()
         modify { subgraph in
             let graph = subgraph.mutableGraph
             
@@ -39,6 +40,7 @@ public class BlendCreation: SingleLayerCreation {
             
             subgraph.finalNode = blend
         }
+        canvasManager.store.modLock.unlock()
     }
     
 }

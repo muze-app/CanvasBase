@@ -6,7 +6,7 @@
 //  Copyright © 2018 MUZE LLC. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
 import MuzeMetal
 
 public class CanvasUndoManager {

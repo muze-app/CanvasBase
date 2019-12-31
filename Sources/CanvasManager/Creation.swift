@@ -6,7 +6,8 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
+import MuzePrelude
+import Metal
 
 open class SingleLayerCreation: Creation {
     
@@ -112,6 +113,7 @@ struct TColor: Equatable {
     //    }
     
     init(_ renderColor: RenderColor) {
+        #if os(iOS)
         let rgbaF = renderColor.ui.premultipliedComponents
         //        let rgba10: [UInt16] = rgbaF.map(TColor.float2Int)
         
@@ -125,6 +127,9 @@ struct TColor: Equatable {
         g = l(rgbaF[1])
         b = l(rgbaF[2])
         a = l(rgbaF[3])
+        #else
+        fatalError()
+        #endif
     }
     
     init(_ texture: MetalTexture) {

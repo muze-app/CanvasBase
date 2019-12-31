@@ -74,10 +74,6 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.metaKey(for: subgraph)
     }
     
-    var modLock: NSRecursiveLock? {
-        store.lock
-    }
-    
     override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
         internalSnapshot.payloadAllocation(for: key)
     }

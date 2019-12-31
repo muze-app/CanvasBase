@@ -6,6 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
 
 class BlackCoverView: UIView {
@@ -35,26 +36,54 @@ class BlackCoverView: UIView {
     }
     
 }
+#endif
 
 public struct NewCameraCanvasLayout {
     
     // set to MainVC.shared.view
+    #if os(iOS)
     public static var mainView: UIView!
+    #endif
     
-    public var isX: Bool { UIDevice.current.isX }
+    public var isX: Bool {
+        #if os(iOS)
+        return UIDevice.current.isX
+        #else
+        return false
+        #endif
+    }
     
     public var topMargin:    CGFloat { isX ?       44 : 0 }
     public var bottomMargin: CGFloat { isX ? 188 + 34 : 188 }
     
-    public var bottomSafety: CGFloat { NewCameraCanvasLayout.mainView!.safeAreaInsets.bottom }
+    public var bottomSafety: CGFloat {
+        #if os(iOS)
+        return NewCameraCanvasLayout.mainView!.safeAreaInsets.bottom
+        #else
+        return 0
+        #endif
+    }
     
-    public var rect: CGRect { CGRect.screen.inset(by: .init(top: topMargin, left: 0, bottom: bottomMargin, right: 0))}
+    public var rect: CGRect {
+        #if os(iOS)
+        return CGRect.screen.inset(by: .init(top: topMargin, left: 0, bottom: bottomMargin, right: 0))
+        #else
+        return CGRect(x: 0, y: 0, width: 2048, height: 2048)
+        fatalError();
+        #endif
+    }
     
     public var aspectRatio: CGFloat { rect.aspectRatio }
     
     public var cornerRadius: CGFloat { 16 }
     
-    public var nativeScale: CGFloat { UIScreen.main.nativeScale }
+    public var nativeScale: CGFloat {
+        #if os(iOS)
+        return UIScreen.main.nativeScale
+        #else
+        return 1
+        #endif
+    }
     
     public var canvasSize: CGSize {
         var size = rect.size * nativeScale
@@ -67,6 +96,7 @@ public struct NewCameraCanvasLayout {
     
 }
 
+#if os(iOS)
 public extension UIDevice {
     
     var mainView: UIView! { NewCameraCanvasLayout.mainView }
@@ -77,3 +107,4 @@ public extension UIDevice {
     }
     
 }
+#endif

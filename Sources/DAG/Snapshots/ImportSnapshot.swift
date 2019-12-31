@@ -69,10 +69,6 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 ////        fatalError()
 //    }
     
-    var modLock: NSRecursiveLock? {
-        die
-//        return predecessor.modLock
-    }
     
     override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
         if predecessor.contains(allocations: allocations) { return true }

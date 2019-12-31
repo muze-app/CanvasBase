@@ -6,8 +6,6 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-import UIKit
-
 public extension CGAffineTransform {
     
     init(mystery zeroZero: CGPoint, _ zeroOne: CGPoint, _ oneZero: CGPoint) {

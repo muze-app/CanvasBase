@@ -8,6 +8,7 @@
 
 import MuzePrelude
 import MuzeMetal
+import Metal
 
 public class LiveDrawCreation: DrawingCreation {
     
@@ -22,6 +23,7 @@ public class LiveDrawCreation: DrawingCreation {
         let spacing: CGFloat
         let format: MTLPixelFormat
         
+        #if os(iOS)
         if CGFloat.screenWidth == 320 {
             spacing = 0.1
             format = .rgba8Unorm_srgb
@@ -29,6 +31,10 @@ public class LiveDrawCreation: DrawingCreation {
             spacing = 0.05
             format = .rgba16Float
         }
+        #else
+        spacing = 0.05
+        format = .rgba16Float
+        #endif
         
         stroke = BrushStroke(defaultDab: dab, spacing: spacing)
         interpolator = DabInterpolator(stroke: stroke!)
@@ -67,7 +73,7 @@ public class LiveDrawCreation: DrawingCreation {
         let height = Float(self.texture!.size.height)
         let sizeBuffer = [width, height]
         
-        let clearColor = shouldClear ? UIColor.clear : nil
+        let clearColor = shouldClear ? Color.clear : nil
         shouldClear = false
         
         let pass = MetalPass(pipeline: .liveDrawPipeline,

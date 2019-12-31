@@ -11,8 +11,10 @@ import MuzePrelude
 
 public class DAGStore<Collection: NodeCollection> {
     
-    let lock = NSRecursiveLock()
-    var modLock: NSRecursiveLock { return lock }
+    public let lock = NSRecursiveLock()
+    public var modLock: NSRecursiveLock { return lock }
+    
+    public var excludedSubgraphKeys: Set<SubgraphKey> = Set()
     
     var tempSubgraphKey: SubgraphKey?
     
@@ -130,7 +132,7 @@ public class DAGStore<Collection: NodeCollection> {
 //        if snapshot.depth > 20 {
 //            snapshot = snapshot.flattened
 //        }
-        snapshot.verify()
+//        snapshot.verify()
         
 //        if isLayer {
 //            print("commit \(snapshot.key) (processed: \(!process))")

@@ -9,6 +9,8 @@
 import XCTest
 @testable import MuzePrelude
 
+typealias AffineTransform = MuzePrelude.AffineTransform
+
 class AffineMysteryTests: XCTestCase {
     
     func check(_ transform: AffineTransform) {
