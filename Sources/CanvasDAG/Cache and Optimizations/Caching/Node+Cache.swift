@@ -42,9 +42,8 @@ extension CanvasGraph {
                 
 //                print("rev edges: \(revEdges)")
                 
-                for x in revEdges.asSet {
-                    if x == cache.key { continue }
-                    
+                for x in revEdges.asSet where x != cache.key {
+                    guard graph.type(for: x).exists else { continue }
                     let node = graph.node(for: x)
                     
                     for (i, target) in node.edgeMap where target == original.key {
