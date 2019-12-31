@@ -41,7 +41,7 @@ extension CanvasManager {
         reduceMemory()
     }
     
-    var shouldReduceMemory: Bool {
+    public var shouldReduceMemory: Bool {
 //        return false
         return (undoManager.undoCount + undoManager.redoCount) > 5
 //        return (undoManager.undoCount > 60) || (memorySize > maxMemorySize)
@@ -360,13 +360,13 @@ extension CanvasManager {
         return manager(for: key)
     }
     
-    func tempReportHolder(_ holder: DAGSnapshot) {
+    func tempReportHolder(_ holder: Snapshot) {
         let unsafe = Unmanaged.passUnretained(holder).toOpaque()
         print("  - \(holder.key) \(unsafe)")
     }
 
 //    #warning("fix me")
-    func reduceMemory(force: Bool = false, _ callback: @escaping (Bool)->() = { _ in }) {
+    public func reduceMemory(force: Bool = false, _ callback: @escaping (Bool)->() = { _ in }) {
         if !force, memoryReductionDisabled || reducingMemory || !shouldReduceMemory {
             callback(false)
             return

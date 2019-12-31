@@ -65,11 +65,11 @@ public class CanvasManager {
     
     // Snapshots and Metadata
     
-    typealias DAG = CanvasGraph
-    typealias DAGSnapshot = CanvasDAG.DAGSnapshot<CanvasNodeCollection>
+    public typealias Graph = CanvasGraph
+    public typealias Snapshot = CanvasDAG.DAGSnapshot<CanvasNodeCollection>
     
-    var current: DAGSnapshot
-    private(set) var display: DAGSnapshot {
+    var current: Snapshot
+    private(set) var display: Snapshot {
         didSet {
 //            print("UPDATE DISPLAY")
 //
@@ -84,29 +84,29 @@ public class CanvasManager {
         }
     }
     
-    func metaNode(for commit: DAG) -> CanvasMetaNode {
+    public func metaNode(for commit: Graph) -> CanvasMetaNode {
         return commit.metaNode(for: subgraphKey) as! CanvasMetaNode
     }
     
-    func metadata(for commit: DAG) -> CanvasMetadata {
+    public func metadata(for commit: Graph) -> CanvasMetadata {
         return metaNode(for: commit).payload
     }
     
-    func set(_ metadata: CanvasMetadata, in graph: MutableGraph) {
+    public func set(_ metadata: CanvasMetadata, in graph: MutableGraph) {
         metaNode(for: graph).payload = metadata
     }
     
-    func modifyMetadata(in graph: MutableGraph,
+    public func modifyMetadata(in graph: MutableGraph,
                         _ f: (inout CanvasMetadata) -> ()) {
         var m = metadata(for: graph)
         f(&m)
         set(m, in: graph)
     }
     
-    var currentMetadata: CanvasMetadata { return metadata(for: current) }
-    var displayMetadata: CanvasMetadata { return metadata(for: display) }
+    public var currentMetadata: CanvasMetadata { return metadata(for: current) }
+    public var displayMetadata: CanvasMetadata { return metadata(for: display) }
     
-    var displayLayerKeys: [LayerKey] { return displayMetadata.layers }
+    public var displayLayerKeys: [LayerKey] { return displayMetadata.layers }
 //    @available(*, deprecated)
 //    var displayLayerDAGs: [DAGSnapshot] { return displayMetadata.sortedRawSnapshots }
 //    @available(*, deprecated)
@@ -450,11 +450,11 @@ public class CanvasManager {
 
 extension CanvasManager: CanvasTransactionParent {
     
-    var currentCanvas: DAGSnapshot {
+    var currentCanvas: Snapshot {
         return current
     }
     
-    var displayCanvas: DAGSnapshot {
+    var displayCanvas: Snapshot {
         get { return display }
         set { display = newValue.modify { updateCanvasSubgraph(in: $0) } .externalReference }
     }
