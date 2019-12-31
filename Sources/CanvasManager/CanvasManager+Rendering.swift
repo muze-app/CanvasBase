@@ -18,6 +18,8 @@ extension CanvasManager {
                      of commit: Graph? = nil,
                      format: RenderOptions.PixelFormat = .sRGB,
                      completion: @escaping (MetalTexture)->()) {
+        store.modLock.lock()
+        
         let subgraph = subgraph ?? self.subgraphKey
         let commit = (commit ?? current).optimizing(subgraph: subgraph)
         let canvasMetadata = metadata(for: commit)
@@ -35,6 +37,8 @@ extension CanvasManager {
             DispatchQueue.main.async {
                 completion(texture)
             }
+                        
+            self.store.modLock.unlock()
         }
     }
     
