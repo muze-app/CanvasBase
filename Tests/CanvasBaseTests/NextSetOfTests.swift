@@ -67,7 +67,6 @@ class SomethingTests: XCTestCase, CanvasBaseTestCase {
         
         store.sortedCommits.head.subgraph(for: subgraphKey).finalNode!.log()
         
-        
         print("head nodes: \(store.sortedCommits.head.allNodes)")
         print("new nodes: \(newNodes)")
         print("result: \(result)")
