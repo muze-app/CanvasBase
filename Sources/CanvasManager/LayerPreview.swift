@@ -60,39 +60,42 @@ class LayerPreviewRenderer {
                                 hash: Int,
                                 date: Date = .now,
                                 canvas manager: CanvasManager) -> Future<LayerPreview> {
-        fatalError()
+//        fatalError()
         
-//        let canvasSize = manager.metadata(for: graph).size
-//        let thumbSize = MainLayerCell.frames.image.size * UIScreen.main.nativeScale
-//
-//        let finalSize = thumbSize.sizeThatFills(canvasSize.aspectRatio)
-//        let scale = thumbSize.width / canvasSize.width
-//
-////        print(" canvas size: \(canvasSize)")
-////        print("  thumb size: \(thumbSize)")
-////        print("  final size: \(finalSize)")
-////        print("       scale: \(scale)")
-////        print(" native size: \(UIScreen.main.nativeBounds.size)")
-////        print("native scale: \(UIScreen.main.nativeScale)")
-//
-////        graph.subgraph(for: subgraphKey).finalNode?.log()
-//
-//        let graph = graph.modify { graph in
-//            manager.modifyMetadata(in: graph) { $0.size = finalSize }
-//
-//            let subgraph = graph.subgraph(for: subgraphKey)
-//
-//            let transform = TransformNode(graph: graph, payload: .scaling(scale))
-//            transform.input = subgraph.finalNode
-//
-//            subgraph.finalNode = transform
-//        }
-//
-//        return _renderImage(layer: subgraphKey,
-//                     graph: graph,
-//                     canvas: manager).flatMap { image -> Future<LayerPreview> in
+        let canvasSize = manager.metadata(for: graph).size
+        let thumbSize = CGSize(240) //MainLayerCell.frames.image.size * UIScreen.main.nativeScale
+
+        let finalSize = thumbSize.sizeThatFills(canvasSize.aspectRatio)
+        let scale = thumbSize.width / canvasSize.width
+
+//        print(" canvas size: \(canvasSize)")
+//        print("  thumb size: \(thumbSize)")
+//        print("  final size: \(finalSize)")
+//        print("       scale: \(scale)")
+//        print(" native size: \(UIScreen.main.nativeBounds.size)")
+//        print("native scale: \(UIScreen.main.nativeScale)")
+
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
+
+        let graph = graph.modify { graph in
+            manager.modifyMetadata(in: graph) { $0.size = finalSize }
+
+            let subgraph = graph.subgraph(for: subgraphKey)
+
+            let transform = TransformNode(graph: graph, payload: .scaling(scale))
+            transform.input = subgraph.finalNode
+
+            subgraph.finalNode = transform
+        }
+
+        return _renderImage(layer: subgraphKey,
+                     graph: graph,
+                     canvas: manager).map { texture -> LayerPreview in
+                        
+                        let image = texture.uiImage
+                        return .init(contentHash: hash, image: image, date: date)
 //            let promise = FPromise<LayerPreview>()
-//
+
 //            let orig = image.original!
 //            let handle = orig.bitmap.makeStrongHandle()
 //
@@ -106,21 +109,21 @@ class LayerPreviewRenderer {
 //
 //                handle.release()
 //            }
-//
+
 //            return promise.future
-//        }
+        }
     }
     
-//    private func _renderImage(layer subgraphKey: SubgraphKey,
-//                              graph: Graph,
-//                              canvas manager: CanvasManager) -> Future<Image> {
-//        let promise = FPromise<Image>(on: queue)
-//        manager.renderImage(for: subgraphKey,
-//                                  of: graph,
-//                                  format: .sRGB) {
-//            promise.succeed($0)
-//        }
-//        return promise.future
-//    }
+    private func _renderImage(layer subgraphKey: SubgraphKey,
+                              graph: Graph,
+                              canvas manager: CanvasManager) -> Future<MetalTexture> {
+        let promise = FPromise<MetalTexture>(on: queue)
+        manager.renderTexture(for: subgraphKey,
+                                  of: graph,
+                                  format: .sRGB) {
+            promise.succeed($0)
+        }
+        return promise.future
+    }
     
 }

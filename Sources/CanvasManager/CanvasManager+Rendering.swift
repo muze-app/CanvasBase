@@ -14,30 +14,29 @@ extension CanvasManager {
     
     // MARK: Offscreen Rendering
     
-//    func renderImage(for subgraph: SubgraphKey? = nil,
-//                     of commit: DAG? = nil,
-//                     format: RenderOptions.PixelFormat = .sRGB,
-//                     completion: @escaping (Image)->()) {
-//        let subgraph = subgraph ?? self.subgraphKey
-//        let commit = (commit ?? current).optimizing(subgraph: subgraph)
-//        let canvasMetadata = metadata(for: commit)
-//
-////        fatalError()
-//        context.render(graph: commit,
-//                       subgraph: subgraph,
-//                       canvasSize: canvasMetadata.size,
-//                       time: 0,
-//                       caching: [],
-//                       format: format,
-//                       colorSpace: .working) { (result) in
-//
-//            let (texture, _) = result
-//            let image = Image.with(texture)
-//            DispatchQueue.main.async {
-//                completion(image)
-//            }
-//        }
-//    }
+    func renderTexture(for subgraph: SubgraphKey? = nil,
+                     of commit: Graph? = nil,
+                     format: RenderOptions.PixelFormat = .sRGB,
+                     completion: @escaping (MetalTexture)->()) {
+        let subgraph = subgraph ?? self.subgraphKey
+        let commit = (commit ?? current).optimizing(subgraph: subgraph)
+        let canvasMetadata = metadata(for: commit)
+
+//        fatalError()
+        context.render(graph: commit,
+                       subgraph: subgraph,
+                       canvasSize: canvasMetadata.size,
+                       time: 0,
+                       caching: [],
+                       format: format,
+                       colorSpace: .working) { (result) in
+
+            let (texture, _) = result
+            DispatchQueue.main.async {
+                completion(texture)
+            }
+        }
+    }
     
     // MARK: - Unsorted
     

@@ -68,11 +68,11 @@ open class Creation {
                 colorSpace: RenderOptions.ColorSpace = .working,
                 _ callback: @escaping (MetalTexture)->()) {
         
-        fatalError()
-//        canvasManager.renderImage { image in
+//        fatalError()
+        canvasManager.renderTexture { texture in
 //            let texture = image.original!.metal.value!
-//            callback(texture)
-//        }
+            callback(texture)
+        }
     }
     
     var activeNode: NodePath? {
