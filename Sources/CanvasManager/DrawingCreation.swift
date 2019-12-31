@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-typealias DrawingCreation = Drawing & SingleLayerCreation
+public typealias DrawingCreation = Drawing & SingleLayerCreation
 
-protocol Drawing: Creation {
+public protocol Drawing: Creation {
     
     var stroke: BrushStroke?            { get }
     var interpolator: DabInterpolator?  { get }
@@ -31,7 +31,7 @@ protocol Drawing: Creation {
 
 
 
-extension Drawing {
+public extension Drawing {
     
   
 //    var currentLayer: Layer { return canvasManager.canvas.layers[0] }

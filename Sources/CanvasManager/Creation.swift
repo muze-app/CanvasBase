@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class SingleLayerCreation: Creation {
+open class SingleLayerCreation: Creation {
     
     let layerKey = LayerKey()
     var layerManager: LayerManager { return canvasManager.manager(for: layerKey) }
@@ -29,7 +29,7 @@ public class SingleLayerCreation: Creation {
         canvasManager.set(canvasMetadata, in: graph)
     }
     
-    func modify(_ block: (Subgraph) -> ()) {
+    public func modify(_ block: (Subgraph) -> ()) {
         canvasManager.newTransaction(identifier: "") { transaction in
             transaction.modify(description: "", layer: layerManager, with: block)
         }
@@ -39,14 +39,14 @@ public class SingleLayerCreation: Creation {
     
 }
 
-public class Creation {
+open class Creation {
     
-    typealias Subgraph = DAG.Subgraph<CanvasNodeCollection>
+    public typealias Subgraph = DAG.Subgraph<CanvasNodeCollection>
     
-    let canvasManager: CanvasManager
-    let context = RenderContext()
+    public let canvasManager: CanvasManager
+    public let context = RenderContext()
     
-    init(canvasSize: CGSize = NewCameraCanvasLayout().canvasSize) {
+    public init(canvasSize: CGSize = NewCameraCanvasLayout().canvasSize) {
         canvasManager = CanvasManager(canvasSize: canvasSize)
         
         let graph = canvasManager.store.latest.modify { graph in
@@ -64,7 +64,7 @@ public class Creation {
     
     // MARK: Rendering
     
-    func render(format: RenderOptions.PixelFormat = .float16,
+    public func render(format: RenderOptions.PixelFormat = .float16,
                 colorSpace: RenderOptions.ColorSpace = .working,
                 _ callback: @escaping (MetalTexture)->()) {
         
@@ -82,21 +82,21 @@ public class Creation {
     
     // MARK: Undo
     
-    var undoManager: CanvasUndoManager { return canvasManager.undoManager }
+    public var undoManager: CanvasUndoManager { return canvasManager.undoManager }
     
-    func undo() {
+    public func undo() {
         _ = canvasManager.undo()
     }
     
-    func redo() {
+    public func redo() {
         _ = canvasManager.redo()
     }
     
-    var canUndo: Bool {
+    public var canUndo: Bool {
         return undoManager.canUndo
     }
 
-    var canRedo: Bool {
+    public var canRedo: Bool {
         return undoManager.canRedo
     }
     

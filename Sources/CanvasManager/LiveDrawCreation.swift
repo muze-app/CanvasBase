@@ -9,16 +9,16 @@
 import MuzePrelude
 import MuzeMetal
 
-class LiveDrawCreation: DrawingCreation {
+public class LiveDrawCreation: DrawingCreation {
     
-    var stroke: BrushStroke?
-    var texture: MetalTexture?
-    var interpolator: DabInterpolator?
-    var realizer: DabRealizer?
+    public var stroke: BrushStroke?
+    public var texture: MetalTexture?
+    public var interpolator: DabInterpolator?
+    public var realizer: DabRealizer?
     
-    var shouldClear = true
+    public var shouldClear = true
  
-    func startStroke(dab: AbstractDab, point: CGPoint) {
+    public func startStroke(dab: AbstractDab, point: CGPoint) {
         let spacing: CGFloat
         let format: MTLPixelFormat
         
@@ -51,12 +51,12 @@ class LiveDrawCreation: DrawingCreation {
         }
     }
     
-    func cleanupStroke() {
+    public func cleanupStroke() {
         stroke = nil
         texture = nil
     }
     
-    func draw(texture: MetalTexture?) {
+    public func draw(texture: MetalTexture?) {
         guard let dabs = realizer?.getDabs(), dabs.count > 0, let t = texture else { return }
         
         let vertexBuffer = dabs.flatMap { $0.components }
@@ -97,7 +97,7 @@ class LiveDrawCreation: DrawingCreation {
 //    
 //}
 
-extension MetalTexture {
+public extension MetalTexture {
     
     var width: Int { return Int(size.width) }
     var height: Int { return Int(size.height) }

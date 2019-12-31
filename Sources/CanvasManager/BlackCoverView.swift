@@ -36,32 +36,34 @@ class BlackCoverView: UIView {
     
 }
 
-struct NewCameraCanvasLayout {
+public struct NewCameraCanvasLayout {
     
     // set to MainVC.shared.view
-    static var mainView: UIView!
+    public static var mainView: UIView!
     
-    var isX: Bool { UIDevice.current.isX }
+    public var isX: Bool { UIDevice.current.isX }
     
-    var topMargin:    CGFloat { isX ?       44 : 0 }
-    var bottomMargin: CGFloat { isX ? 188 + 34 : 188 }
+    public var topMargin:    CGFloat { isX ?       44 : 0 }
+    public var bottomMargin: CGFloat { isX ? 188 + 34 : 188 }
     
-    var bottomSafety: CGFloat { NewCameraCanvasLayout.mainView!.safeAreaInsets.bottom }
+    public var bottomSafety: CGFloat { NewCameraCanvasLayout.mainView!.safeAreaInsets.bottom }
     
-    var rect: CGRect { CGRect.screen.inset(by: .init(top: topMargin, left: 0, bottom: bottomMargin, right: 0))}
+    public var rect: CGRect { CGRect.screen.inset(by: .init(top: topMargin, left: 0, bottom: bottomMargin, right: 0))}
     
-    var aspectRatio: CGFloat { rect.aspectRatio }
+    public var aspectRatio: CGFloat { rect.aspectRatio }
     
-    var cornerRadius: CGFloat { 16 }
+    public var cornerRadius: CGFloat { 16 }
     
-    var nativeScale: CGFloat { UIScreen.main.nativeScale }
+    public var nativeScale: CGFloat { UIScreen.main.nativeScale }
     
-    var canvasSize: CGSize {
+    public var canvasSize: CGSize {
         var size = rect.size * nativeScale
         size.width = ceil(size.width)
         size.height = ceil(size.height)
         return size
     }
+    
+    public init() { }
     
 }
 

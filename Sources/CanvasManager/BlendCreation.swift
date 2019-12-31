@@ -10,7 +10,7 @@ import UIKit
 
 public class BlendCreation: SingleLayerCreation {
     
-    func transform(for texture: MetalTexture) -> AffineTransform {
+    public func transform(for texture: MetalTexture) -> AffineTransform {
         let canvasBounds = .zero & canvasManager.currentMetadata.size
         let aspect = texture.size.aspectRatio
         let frame = canvasBounds.rectThatFills(aspect)
@@ -18,12 +18,12 @@ public class BlendCreation: SingleLayerCreation {
         return AffineTransform(from: textureBounds, to: frame)
     }
     
-    func colorMatrix(for texture: MetalTexture) -> DMatrix3x3 {
+    public func colorMatrix(for texture: MetalTexture) -> DMatrix3x3 {
         let colorSpace = texture.colorSpace ?? .srgb
         return colorSpace.matrix(to: .working)
     }
     
-    func push(_ texture: MetalTexture, _ mode: BlendMode) {
+    public func push(_ texture: MetalTexture, _ mode: BlendMode) {
         modify { subgraph in
             let graph = subgraph.mutableGraph
             
@@ -43,7 +43,7 @@ public class BlendCreation: SingleLayerCreation {
     
 }
 
-extension CGRect {
+public extension CGRect {
     
     // not necessarily (maxX,maxY); always opposite origin
     var diagonalCorner: CGPoint {

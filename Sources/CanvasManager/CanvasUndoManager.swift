@@ -9,35 +9,35 @@
 import UIKit
 import MuzeMetal
 
-class CanvasUndoManager {
+public class CanvasUndoManager {
     
-    typealias ActionType = CanvasAction
+    public typealias ActionType = CanvasAction
     
     let undoList = LinkedList<ActionType>()
     let redoList = LinkedList<ActionType>()
     
-    var undoCount: Int { return undoList.nodeCount }
-    var redoCount: Int { return redoList.nodeCount }
+    public var undoCount: Int { return undoList.nodeCount }
+    public var redoCount: Int { return redoList.nodeCount }
     
-    var canUndo: Bool { return undoCount > 0 }
-    var canRedo: Bool { return redoCount > 0 }
+    public var canUndo: Bool { return undoCount > 0 }
+    public var canRedo: Bool { return redoCount > 0 }
     
-    func push(_ undo: ActionType) {
+    public func push(_ undo: ActionType) {
         undoList.push(undo)
         redoList.removeAll()
     }
     
-    func pop(keeping count: Int) {
+    public func pop(keeping count: Int) {
         while undoCount > count {
             undoList.poop()
         }
     }
     
-    func pop(where predicate: (ActionType)->Bool) {
+    public func pop(where predicate: (ActionType)->Bool) {
         undoList.pop(where: predicate)
     }
     
-    func undo() -> (ActionType, Snapshot)? {
+    public func undo() -> (ActionType, Snapshot)? {
         if let action = undoList.pull() {
             redoList.push(action)
 //            action.undo(&canvas)
@@ -47,7 +47,7 @@ class CanvasUndoManager {
         return nil
     }
     
-    func redo() -> (ActionType, Snapshot)? {
+    public func redo() -> (ActionType, Snapshot)? {
         if let action = redoList.pull() {
             undoList.push(action)
             return (action, action.after)
@@ -60,7 +60,7 @@ class CanvasUndoManager {
 
 extension CanvasUndoManager: MemoryManagee {
     
-    var memoryHash: MemoryHash {
+    public var memoryHash: MemoryHash {
         return MemoryHash()
 //        return undoList.memoryHash + redoList.memoryHash
     }
