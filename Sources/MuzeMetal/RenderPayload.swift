@@ -134,7 +134,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
     
     var r, g, b, a: Float
     
-    static func linearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
+    public static func linearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let u = channel
         if u <= 0.04045 {
             return u * 0.0773993808 // 1/12.92
@@ -143,7 +143,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
         }
     }
     
-    static func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
+    static public func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let u = channel
         if u <= 0 { return 0 }
         if u >= 1 { return 1 }
@@ -204,7 +204,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
         self = DMatrix3x3.cat16_to_dp3.inverse * p3_linear
     }
     
-    var ui: UIColor {
+    public var ui: UIColor {
         let p3_linear = DMatrix3x3.cat16_to_dp3 * self
         let rgba = p3_linear.floats.map {RenderColor.delinearize(sRGB: CGFloat($0))} + [CGFloat(a)]
         let cg = CGColor(colorSpace: .displayP3Space, components: rgba)

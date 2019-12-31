@@ -117,4 +117,12 @@ public extension CGFloat {
         let max = self + precision
         return a >= min && a <= max 
     }
+    
+}
+
+public extension CGFloat {
+    
+    static let screenWidth: CGFloat = UIScreen.main.bounds.width
+    static let screenHeight: CGFloat = UIScreen.main.bounds.height
+    
 }

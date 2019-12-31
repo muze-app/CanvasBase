@@ -8,17 +8,17 @@
 
 //import MuzePrelude
 
-struct ConcreteDab {
+public struct ConcreteDab {
     
-    var x: Float
-    var y: Float
-    var radius: Float
-    var exponent: Float
+    public var x: Float
+    public var y: Float
+    public var radius: Float
+    public var exponent: Float
     
-    var color: DabColor
-    var opacity: Float
+    public var color: DabColor
+    public var opacity: Float
     
-    var components: [Float] {
+    public var components: [Float] {
 //        float2 position;
 //        float radius, exponent;
 //        float4 color;

@@ -13,13 +13,13 @@ public class DabRealizer {
     
     public let interpolator: DabInterpolator
     
-    var adjustOpacityBasedOnSpacing = true
+    public var adjustOpacityBasedOnSpacing = true
     
     public init(interpolator: DabInterpolator) {
         self.interpolator = interpolator
     }
     
-    func getDabs() -> [ConcreteDab] {
+    public func getDabs() -> [ConcreteDab] {
         return interpolator.getDabs().map { convert($0) }
     }
     

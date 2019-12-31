@@ -178,3 +178,24 @@ public class DAGBase<Collection: NodeCollection> {
     public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool { die }
     
 }
+
+public extension DAGBase {
+    
+    var pointerString: String {
+        let unsafe = Unmanaged.passUnretained(self).toOpaque()
+        return "\(unsafe)"
+    }
+    
+    func verify() {
+        let allNodes = self.allNodes
+        for key in allNodes where !type(for: key).exists {
+            print("MISSING KEY: \(key)")
+            fatalError()
+        }
+    }
+    
+    var allNodes: Set<NodeKey> {
+        Set( allSubgraphs.flatMap { $0.finalNode?.allKeys ?? Set() } )
+    }
+    
+}

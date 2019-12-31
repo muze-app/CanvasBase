@@ -204,8 +204,9 @@ extension CanvasManager {
     private func renderReplacement(_ graph: Graph, _ key: NodeKey) -> TextureAndTransform? {
 //        let graph = graph.optim
         
-        
-        
+        #if targetEnvironment(simulator)
+        return (.mock, .identity)
+        #else
         let node = graph.node(for: key)
         let options = RenderOptions("purge", mode: .usingExtent, format: .float16, time: 0)
         if let payload = node.renderPayload(for: options) {
@@ -219,6 +220,7 @@ extension CanvasManager {
             print(" ")
             return nil
         }
+        #endif
     }
     
     private func cleanupDataStore() {
@@ -568,11 +570,5 @@ extension RenderManager {
     
 }
 
-extension DAGBase {
 
-    var pointerString: String {
-        let unsafe = Unmanaged.passUnretained(self).toOpaque()
-        return "\(unsafe)"
-    }
 
-}

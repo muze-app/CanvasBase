@@ -280,17 +280,17 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // Changes
     
-    public var allNodes: Set<NodeKey> {
-        var all = Set<NodeKey>()
-        
-        for subgraph in allSubgraphs {
-            if let final = subgraph.finalNode {
-                all = all.union(final.allKeys)
-            }
-        }
-        
-        return all
-    }
+//    public var allNodes: Set<NodeKey> {
+//        var all = Set<NodeKey>()
+//        
+//        for subgraph in allSubgraphs {
+//            if let final = subgraph.finalNode {
+//                all = all.union(final.allKeys)
+//            }
+//        }
+//        
+//        return all
+//    }
     
     public var nodesTouchedSincePredecessor: Set<NodeKey> {
         return Set(edgeMaps.keys) + Set(payloadMap.keys)
