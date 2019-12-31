@@ -365,6 +365,11 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     public func replace(_ key: NodeKey, with replacement: Node) {
         for subgraph in allSubgraphs {
             subgraph.finalNode = subgraph.finalNode?.replacing(key, with: replacement)
+            
+            if let x = subgraph.finalNode, x.contains(key) {
+                fatalError()
+            }
+            
         }
         
 //        guard let rev = self.reverseEdges(for: key)?.asSet else {
