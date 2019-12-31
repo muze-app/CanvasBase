@@ -78,7 +78,6 @@ open class RenderContext {
         let cache = self.cache(for: subgraph)
         let optimized = cache.march(graph).subgraph(for: subgraph)
         
-        store.modLock.unlock()
 //        let optimized = graph.optimized(throughCacheNodes: false)
         
 //        var finalNode: Node?
@@ -87,6 +86,8 @@ open class RenderContext {
 //        }
         
         let payload = optimized.finalNode?.renderPayload(for: options) ?? clearPayload
+        
+        store.modLock.unlock()
 
         let manager = RenderManager.shared
         manager.render(payload, options) { (result) in
