@@ -21,7 +21,7 @@ extension CanvasManager {
 //        store.modLock.lock()
         
         let subgraph = subgraph ?? self.subgraphKey
-        let commit = (commit ?? current).optimizing(subgraph: subgraph)
+        let commit = (commit ?? current).optimizing(subgraph: subgraph).flattened
         let canvasMetadata = metadata(for: commit)
 
 //        fatalError()

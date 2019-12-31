@@ -89,6 +89,7 @@ extension CanvasManager {
                 for (old, new) in replacements {
                     graph.replace(old, with: new)
                 }
+                updateCanvasSubgraph(in: graph)
             }
             
             store.commit(commit, setLatest: true)
