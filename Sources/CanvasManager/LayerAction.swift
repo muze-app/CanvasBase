@@ -8,12 +8,12 @@
 
 import Foundation
 
-class LayerAction: CanvasAction {
+public class LayerAction: CanvasAction {
     
-    init(_ description: String,
-         before: Snapshot,
-         layerManager: LayerManager,
-         _ block: (Subgraph<CanvasNodeCollection>)->()) {
+    public init(_ description: String,
+                before: Snapshot,
+                layerManager: LayerManager,
+                _ block: (Subgraph<CanvasNodeCollection>)->()) {
         super.init(description, before: before) { (graph) in
             let subgraph = Subgraph(key: layerManager.subgraphKey, graph: graph)
             block(subgraph)
