@@ -31,30 +31,30 @@ public class CacheAndOptimizer {
     // MARK: MARCH
     
     public func march(_ graph: Graph) -> Graph {
-        return graph
-        
-//        let store = graph.store
-//        store.modLock.lock()
-//        defer { store.modLock.unlock() }
-//
-//        let initial = graph
-//        var graph = graph
-//        var map1 = [NodeKey:NodeKey]()
-//
-////        print("BEFORE:")
-////        graph.subgraph(for: subgraphKey).finalNode?.log()
-//
-//        graph = insertPreExistingCaches(graph)
-//        graph = optimize(graph, &map1)
-//
-//        let map2 = map1.mapValues { initial.node(for: $0) }
-//        graph = placeNewCaches(graph, map2, initial)
-//        pruneOldCaches()
-//
-////        print("AFTER:")
-////        graph.subgraph(for: subgraphKey).finalNode?.log()
-//
 //        return graph
+        
+        let store = graph.store
+        store.modLock.lock()
+        defer { store.modLock.unlock() }
+
+        let initial = graph
+        var graph = graph
+        var map1 = [NodeKey:NodeKey]()
+
+//        print("BEFORE:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
+
+        graph = insertPreExistingCaches(graph)
+        graph = optimize(graph, &map1)
+
+        let map2 = map1.mapValues { initial.node(for: $0) }
+        graph = placeNewCaches(graph, map2, initial)
+        pruneOldCaches()
+
+//        print("AFTER:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
+
+        return graph
     }
     
     func insertPreExistingCaches(_ graph: Graph) -> Graph {

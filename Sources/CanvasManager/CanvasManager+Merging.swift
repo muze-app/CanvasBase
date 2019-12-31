@@ -42,8 +42,8 @@ extension CanvasManager {
     }
     
     public var shouldReduceMemory: Bool {
-        return false
-//        return (undoManager.undoCount + undoManager.redoCount) > 5
+//        return false
+        return (undoManager.undoCount + undoManager.redoCount) > 5
 //        return (undoManager.undoCount > 60) || (memorySize > maxMemorySize)
     }
     
@@ -440,9 +440,9 @@ extension CanvasManager {
         CanvasManager.mergeQueue.async { [weak self] in
             guard let self = self else { return }
             self.store.sync {
-//                self.store.modLock.lock()
+                self.store.modLock.lock()
                 self._purge()
-//                self.store.modLock.unlock()
+                self.store.modLock.unlock()
             }
         }
         
