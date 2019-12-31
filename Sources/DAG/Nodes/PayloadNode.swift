@@ -34,6 +34,8 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
     }
     
     public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: PayloadType? = nil, nodeType: Collection? = nil) {
+        graph.precondition(notForbidden: key)
+        
         if !graph.type(for: key).exists, let graph = graph as? MutableDAG {
             guard let payload = payload else { fatalError("Must provide initial payload when inserting node into graph") }
             guard let nodeType = nodeType else { fatalError("Must provide node type when inserting node into graph") }
