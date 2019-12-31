@@ -42,8 +42,8 @@ extension CanvasManager {
     }
     
     public var shouldReduceMemory: Bool {
-//        return false
-        return (undoManager.undoCount + undoManager.redoCount) > 5
+        return false
+//        return (undoManager.undoCount + undoManager.redoCount) > 5
 //        return (undoManager.undoCount > 60) || (memorySize > maxMemorySize)
     }
     
