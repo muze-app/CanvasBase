@@ -35,7 +35,7 @@ public class DAGStore<Collection: NodeCollection> {
         return internalRetainedCommitsBag.asSet + externalRetainedCommitsBag.asSet
     }
     var retainedCommits = ThreadSafeDict<CommitKey, Snapshot>()
-    private var commitTimes = [CommitKey: Date]() {
+    public var commitTimes = [CommitKey: Date]() {
         willSet { lock.lock() }
         didSet { lock.unlock() }
     }
@@ -79,7 +79,7 @@ public class DAGStore<Collection: NodeCollection> {
     public func simplifyTail() {
         autoreleasepool {
             let sorted = sortedCommits
-            let head = sorted.head.externalReference
+            let head = sorted.head.internalReference
             for commit in sorted.tail {
                 let diff = commit.diff(from: head)
                 self.commit(diff, setLatest: false)

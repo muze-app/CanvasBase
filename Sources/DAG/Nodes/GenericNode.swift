@@ -43,6 +43,10 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         self.graph = graph
     }
     
+    public var depth: Int {
+        1 + inputs.reduce(into: -1) { $0 = max($0, $1.depth) }
+    }
+    
     // MARK: - Edges
     
     @discardableResult

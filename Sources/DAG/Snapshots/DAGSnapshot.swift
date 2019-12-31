@@ -11,6 +11,9 @@ import MuzePrelude
 
 typealias SnapshotKey = CommitKey
 
+//fileprivate var i = 0
+//fileprivate var allSnapshots: WeakThreadSafeDict<Int, AnyObject> = [:]
+
 public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     
     enum Mode { case internalReference, externalReference }
@@ -27,7 +30,16 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 
         store.retain(commitFor: key, mode: mode)
         assert(isCommitted)
+        
+        print("snapshot of \(key) - \(pointerString)")
+        
+//        allSnapshots[i] = self
+//        i += 1
     }
+    
+//    public static func all() -> [DAGSnapshot<Collection>] {
+//        return allSnapshots.values.compactMap { $0 as? DAGSnapshot<Collection> }
+//    }
     
     deinit {
 //        let key = self.key

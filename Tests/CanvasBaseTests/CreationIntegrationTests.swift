@@ -21,6 +21,13 @@ final class CreationIntegrationTests: XCTestCase, CanvasBaseTestCase {
         
         for _ in 0...100 {
             creation.push(.mock, .normal)
+            
+//            let node = creation.canvasManager.current.subgraph(for: creation.canvasManager.subgraphKey).finalNode!
+//            
+//            guard node.depth < 20 else {
+//                fatalError()
+//            }
+            
         }
         
         XCTAssert(true)

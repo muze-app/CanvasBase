@@ -63,6 +63,25 @@ extension CanvasManager {
         print("simplifying tail")
         store.simplifyTail()
         let sortedCommits = store.sortedCommits
+        print("head: \(sortedCommits.head.pointerString)")
+        
+//        let snapshots = DAGSnapshot<CanvasNodeCollection>.all()
+        
+        let validCommits = Set(undoManager.undoList.flatMap {
+            [$0.before.key, $0.after.key]
+        })
+        
+        for commit in sortedCommits {
+            let time = store.commitTimes[commit.key]!
+            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
+            if !validCommits.contains(commit.key) {
+                print("    INVALID!")
+            }
+//            for snapshot in snapshots where snapshot.key == commit.key {
+//                print("   - \(snapshot.pointerString)")
+//            }
+        }
+        
         
         print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
         
@@ -130,7 +149,7 @@ extension CanvasManager {
 //        store.commit(newHead)
         
         store.simplifyHead()
-//        store.simplifyTail()
+        store.simplifyTail()
 //        store.simplifyTail() // to do: we can replace this by making the preds of the tail into snapshots
         
         reducingMemory = false
@@ -421,9 +440,9 @@ extension CanvasManager {
         CanvasManager.mergeQueue.async { [weak self] in
             guard let self = self else { return }
             self.store.sync {
-                self.store.modLock.lock()
+//                self.store.modLock.lock()
                 self._purge()
-                self.store.modLock.unlock()
+//                self.store.modLock.unlock()
             }
         }
         
