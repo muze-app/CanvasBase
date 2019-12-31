@@ -10,43 +10,43 @@ import UIKit
 
 public typealias Snapshot = DAG.DAGSnapshot<CanvasNodeCollection>
 
-class LayerManager {
+public class LayerManager {
     
-    weak var canvasManager: CanvasManager?
+    public weak var canvasManager: CanvasManager?
     
-    let key: LayerKey
-    let subgraphKey = SubgraphKey()
+    public let key: LayerKey
+    public let subgraphKey = SubgraphKey()
     
-    var preview: LayerPreview?
-    var previewFuture: Future<LayerPreview>?
+    public var preview: LayerPreview?
+    public var previewFuture: Future<LayerPreview>?
 //    var previewContentHash: Int?
     
     var needsToPurgeCaches = true
     
-    init(_ key: LayerKey = LayerKey(), canvasManager: CanvasManager) {
+    public init(_ key: LayerKey = LayerKey(), canvasManager: CanvasManager) {
         self.canvasManager = canvasManager
         self.key = key
     }
     
     // MARK: Layer
     
-    var current: Snapshot { canvasManager!.current }
-    var display: Snapshot { canvasManager!.display }
+    public var current: Snapshot { canvasManager!.current }
+    public var display: Snapshot { canvasManager!.display }
     
-    func metaNode(for commit: Graph) -> LayerMetaNode {
+    public func metaNode(for commit: Graph) -> LayerMetaNode {
         return commit.metaNode(for: subgraphKey) as! LayerMetaNode
     }
     
-    func metadata(for commit: Graph) -> LayerMetadata {
+    public func metadata(for commit: Graph) -> LayerMetadata {
         return metaNode(for: commit).payload
     }
     
-    func set(_ metadata: LayerMetadata, in graph: MutableGraph) {
+    public func set(_ metadata: LayerMetadata, in graph: MutableGraph) {
         metaNode(for: graph).payload = metadata
     }
     
-    var currentMetadata: LayerMetadata { return metadata(for: current) }
-    var displayMetadata: LayerMetadata { return metadata(for: display) }
+    public var currentMetadata: LayerMetadata { return metadata(for: current) }
+    public var displayMetadata: LayerMetadata { return metadata(for: display) }
     
     @available(*, deprecated)
     var displayLayer: LayerMetadata { return displayMetadata }
@@ -162,7 +162,7 @@ class LayerManager {
     var lastCacheKey: NodeKey? = nil
     
     // MARK: Preview
-    weak var previewDelegate: LayerPreviewDelegate? = nil
+    public weak var previewDelegate: LayerPreviewDelegate? = nil
 //    var preview: UIImage? = nil
 //    var previewState: Layer? = nil
 //    let previewContext = LayerPreviewContext()
@@ -172,7 +172,7 @@ class LayerManager {
 //    var caption: CaptionNode? { return _displayLayer.caption }
     
 //    var displayCanvas: Canvas { return canvasManager!.displayCanvas }
-    var layerIsSelected: Bool { return true }
-    var layerIndex: Int? { return 0 }
+    public var layerIsSelected: Bool { return true }
+    public var layerIndex: Int? { return 0 }
     
 }

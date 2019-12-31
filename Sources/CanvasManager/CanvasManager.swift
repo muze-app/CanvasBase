@@ -14,7 +14,7 @@ public typealias Graph = DAG.DAGBase<CanvasNodeCollection>
 public typealias MutableGraph = DAG.MutableDAG<CanvasNodeCollection>
 public typealias DAGStore = DAG.DAGStore<CanvasNodeCollection>
 
-protocol TempCanvasVC: class {
+public protocol TempCanvasVC: class {
     func updateUndoButtons()
 }
 
@@ -25,24 +25,24 @@ public class CanvasManager {
     
     weak var tempAltStore: DAGStore?
     
-    let store: DAGStore
-    let subgraphKey: SubgraphKey
+    public let store: DAGStore
+    public let subgraphKey: SubgraphKey
     
     let context = RenderContext()
     
-    weak var canvasVC: TempCanvasVC?
+    public weak var canvasVC: TempCanvasVC?
     
 //    @available(*, deprecated)
 //    lazy var tempLayerManager = LayerManager(canvasManager: self)
     
-    var selectedLayerManager: LayerManager {
+    public var selectedLayerManager: LayerManager {
         return manager(for: displayMetadata.selectedLayer)
     }
     
     let queue = DispatchQueue(label: "CanvasManager", qos: .userInteractive)
     static let mergeQueue = DispatchQueue(label: "CanvasManagerMerge", qos: .default)
     
-    init(_ metadata: CanvasMetadata) {
+    public init(_ metadata: CanvasMetadata) {
         let store = DAGStore()
         let subgraphKey = SubgraphKey()
         
@@ -143,14 +143,14 @@ public class CanvasManager {
 //        set { set(display: newValue) }
 //    }
     
-    var size: CGSize { return displayMetadata.size }
-    var canvasScale: CGFloat { return size.width / CGRect.screen.width }
+    public var size: CGSize { return displayMetadata.size }
+    public var canvasScale: CGFloat { return size.width / CGRect.screen.width }
     
-    weak var currentTransaction: CanvasTransaction? = nil
+    public weak var currentTransaction: CanvasTransaction? = nil
 //    let transactionSemaphore = DispatchSemaphore(value: 1)
 //    var semaphoreValue: Int = 1
     
-    let undoManager = CanvasUndoManager()
+    public let undoManager = CanvasUndoManager()
     
     var maxMemorySize: MemorySize = 500000000 // min(MemoryManager.shared.physicalMemory * 0.25, 500000000)
     var reducingMemory = false
@@ -158,7 +158,7 @@ public class CanvasManager {
 //    var _mergeContext: RenderContext?
 //    var mergeContext: RenderContext! { return _mergeContext ?? canvasView?.context }
     
-    convenience init(canvasSize: CGSize = UIScreen.main.nativeBounds.size) {
+    public convenience init(canvasSize: CGSize = UIScreen.main.nativeBounds.size) {
         let metadata = CanvasMetadata(width: Int(round(canvasSize.width)), height: Int(round(canvasSize.height)))
         self.init(metadata)
     }
@@ -174,7 +174,7 @@ public class CanvasManager {
     
     // MARK: Undo/Redo
     
-    func undo() -> CanvasAction? {
+    public func undo() -> CanvasAction? {
         if let action = currentTransaction?.undo() {
             print("UNDO \(action.description)")
             return action
@@ -188,7 +188,7 @@ public class CanvasManager {
         return nil
     }
     
-    func redo() -> CanvasAction? {
+    public func redo() -> CanvasAction? {
         print("REDO")
         if let (action, graph) = undoManager.redo() {
             current = graph
@@ -203,7 +203,7 @@ public class CanvasManager {
         return nil
     }
     
-    var undoCount: Int {
+    public var undoCount: Int {
         var count = undoManager.undoCount
         if let t = currentTransaction {
             count += t.undoCount
@@ -212,7 +212,7 @@ public class CanvasManager {
         return count
     }
     
-    var redoCount: Int {
+    public var redoCount: Int {
         var count = undoManager.redoCount
         if let t = currentTransaction {
             count += t.redoCount
@@ -221,7 +221,7 @@ public class CanvasManager {
         return count
     }
 
-    func clearRedos() {
+    public func clearRedos() {
         undoManager.redoList.removeAll()
         currentTransaction?.clearRedos()
     }
@@ -304,19 +304,19 @@ public class CanvasManager {
     
     private var layerManagers: [LayerKey:LayerManager] = [:]
     
-    var allLayerManagers: [LayerManager] {
+    public var allLayerManagers: [LayerManager] {
         var managers: [LayerManager] = []
         queue.sync { managers = Array(layerManagers.values) }
         return managers
     }
     
-    func existingManager(for key: LayerKey) -> LayerManager? {
+    public func existingManager(for key: LayerKey) -> LayerManager? {
         var manager: LayerManager? = nil
         queue.sync { manager = layerManagers[key] }
         return manager
     }
     
-    func manager(for key: LayerKey) -> LayerManager {
+    public func manager(for key: LayerKey) -> LayerManager {
         var manager: LayerManager? = nil
         
         queue.sync {
@@ -348,11 +348,11 @@ public class CanvasManager {
     
     // MARK: Transactions
     
-    func newTransaction(identifier: String) -> CanvasTransaction {
+    public func newTransaction(identifier: String) -> CanvasTransaction {
         return newTransactionBlocking(identifier: identifier)
     }
     
-    func newTransaction(identifier: String, commit: Bool = true, block: (CanvasTransaction)->()) {
+    public func newTransaction(identifier: String, commit: Bool = true, block: (CanvasTransaction)->()) {
         let transaction = self.newTransactionBlocking(identifier: identifier)
         block(transaction)
         
@@ -361,7 +361,7 @@ public class CanvasManager {
         }
     }
     
-    func newTransactionBlocking(identifier: String) -> CanvasTransaction {
+    public func newTransactionBlocking(identifier: String) -> CanvasTransaction {
 //        transactionSemaphore.wait()
 //        semaphoreValue -= 1
         
@@ -379,7 +379,7 @@ public class CanvasManager {
         return transaction
     }
     
-    func initializingTransaction() -> InitializingTransaction {
+    public func initializingTransaction() -> InitializingTransaction {
         guard currentTransaction == nil else {
             fatalError("Tried to create a new transaction, but one is already pending!")
         }
@@ -393,7 +393,7 @@ public class CanvasManager {
         return transaction
     }
     
-    func push(_ canvasAction: CanvasAction) {
+    public func push(_ canvasAction: CanvasAction) {
         let transaction = newTransaction(identifier: "\(canvasAction)")
         transaction.push(canvasAction)
         transaction.commit()
@@ -447,19 +447,19 @@ public class CanvasManager {
     }
     
 }
-
+ 
 extension CanvasManager: CanvasTransactionParent {
     
-    var currentCanvas: Snapshot {
+    public var currentCanvas: Snapshot {
         return current
     }
     
-    var displayCanvas: Snapshot {
+    public var displayCanvas: Snapshot {
         get { return display }
         set { display = newValue.modify { updateCanvasSubgraph(in: $0) } .externalReference }
     }
     
-    func commit(transaction: CanvasTransaction) {
+    public func commit(transaction: CanvasTransaction) {
         precondition(transaction === currentTransaction)
         
         activeNode = nil
@@ -497,7 +497,7 @@ extension CanvasManager: CanvasTransactionParent {
 //        semaphoreValue += 1
     }
     
-    func cancel(transaction: CanvasTransaction) {
+    public func cancel(transaction: CanvasTransaction) {
         precondition(transaction === currentTransaction)
         
         display = current
@@ -510,7 +510,7 @@ extension CanvasManager: CanvasTransactionParent {
 }
 
 
-protocol CanvasManagerDelegate: class {
+public protocol CanvasManagerDelegate: class {
     
     func canvas(changed canvas: CanvasMetadata)
     

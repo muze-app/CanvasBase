@@ -8,27 +8,27 @@
 
 import UIKit
 
-class CanvasTransaction {
+public class CanvasTransaction {
     
-    let identifier: String
+    public let identifier: String
     
-    weak var manager: CanvasTransactionParent! = nil
-    let initialCanvas: Snapshot
-    var currentCanvas: Snapshot
+    public weak var manager: CanvasTransactionParent! = nil
+    public let initialCanvas: Snapshot
+    public var currentCanvas: Snapshot
     
-    var currentTransaction: CanvasTransaction?
+    public var currentTransaction: CanvasTransaction?
     
-    var actions: [CanvasAction] = []
-    var redos = [CanvasAction]()
-    var numberOfActions: Int { return actions.count }
-    var undoCount: Int {
+    public internal(set) var actions: [CanvasAction] = []
+    public var redos = [CanvasAction]()
+    public var numberOfActions: Int { return actions.count }
+    public var undoCount: Int {
         if let t = currentTransaction, !t.isFrozen, t.actions.count > 0 {
             return actions.count + 1
         } else {
             return actions.count
         }
     }
-    var redoCount: Int {
+    public var redoCount: Int {
         if let t = currentTransaction, t.isFrozen {
             return redos.count + 1
         } else {
@@ -36,16 +36,16 @@ class CanvasTransaction {
         }
     }
     
-    var before: Snapshot? { actions.first?.before }
-    var after:  Snapshot? { actions.last?.after }
+    public var before: Snapshot? { actions.first?.before }
+    public var after:  Snapshot? { actions.last?.after }
     
-    var isFrozen = false
-    var freezingDelegate: CanvasTransactionFreezingDelegate?
+    public var isFrozen = false
+    public var freezingDelegate: CanvasTransactionFreezingDelegate?
     
     
     var superActionName: String? = nil
     
-    init(manager: CanvasTransactionParent, identifier: String) {
+    public init(manager: CanvasTransactionParent, identifier: String) {
         self.manager = manager
 
         let canvas: DAGSnapshot = manager.currentCanvas
@@ -67,31 +67,31 @@ class CanvasTransaction {
         }
     }
     
-    func modify(description: String, with block: (MutableGraph)->()) {
+    public func modify(description: String, with block: (MutableGraph)->()) {
         let action = CanvasAction(description, before: currentCanvas, block)
         push(action)
     }
     
-    func modify(description: String,
+    public func modify(description: String,
                 layer: LayerManager,
                 with block: (Subgraph<CanvasNodeCollection>)->()) {
         let action = LayerAction(description, before: currentCanvas, layerManager: layer, block)
         push(action)
     }
     
-    func modifyDisplay(layer: LayerManager,
+    public func modifyDisplay(layer: LayerManager,
                        with block: (Subgraph<CanvasNodeCollection>)->()) {
         let action = LayerAction("", before: currentCanvas, layerManager: layer, block)
         displayCanvas = action.after
     }
     
-    var hasCommitted = false
-    var hasCancelled = false
-    var hasCommittedOrCancelled: Bool { return hasCommitted || hasCancelled }
+    public var hasCommitted = false
+    public var hasCancelled = false
+    public var hasCommittedOrCancelled: Bool { return hasCommitted || hasCancelled }
     
-    var hasActions: Bool { return !actions.isEmpty }
+    public var hasActions: Bool { return !actions.isEmpty }
     
-    func commitOrCancel() {
+    public func commitOrCancel() {
         if hasActions {
             commit()
         } else {
@@ -99,7 +99,7 @@ class CanvasTransaction {
         }
     }
     
-    func commit() {
+    public func commit() {
         precondition(!currentTransaction.exists)
         
         print("COMMIT TRANSACTION")
@@ -112,19 +112,19 @@ class CanvasTransaction {
         }
         
         manager.commit(transaction: self)
-        manager.activeNode = nil
+//        manager.activeNode = nil
         hasCommitted = true
     }
     
-    func cancel() {
+    public func cancel() {
         precondition(!currentTransaction.exists)
         
         manager?.cancel(transaction: self)
-        manager?.activeNode = nil
+//        manager?.activeNode = nil
         hasCancelled = true
     }
     
-    var disableDisplayUpdates = false {
+    public var disableDisplayUpdates = false {
         didSet {
             if !disableDisplayUpdates {
 //                manager.displayCanvas = _currentCanvas.copy()
@@ -132,7 +132,7 @@ class CanvasTransaction {
         }
     }
     
-    func push(_ action: CanvasAction) {
+    public func push(_ action: CanvasAction) {
         precondition(!currentTransaction.exists)
         precondition(!hasCommittedOrCancelled)
         
@@ -232,15 +232,15 @@ class CanvasTransaction {
 //        self.dummy = nil
     }
     
-    func setUseSuperAction(withName name: String) {
+    public func setUseSuperAction(withName name: String) {
         superActionName = name
     }
     
 }
 
-class InitializingTransaction: CanvasTransaction {
+public class InitializingTransaction: CanvasTransaction {
     
-    init(manager: CanvasManager, identifier: String) {
+    public init(manager: CanvasManager, identifier: String) {
 //        guard manager.canvas.layerCount == 0 else {
 //            fatalError("Can only create an initializing transaction on an empty canvas")
 //        }
@@ -253,12 +253,12 @@ class InitializingTransaction: CanvasTransaction {
 //        set { _currentCanvas = newValue }
 //    }
     
-    override func commit() {
+    override public func commit() {
 //        massert(actions.isEmpty)
         super.commit()
     }
     
-    override func push(_ action: CanvasAction) {
+    override public func push(_ action: CanvasAction) {
 //        fatalError()
     }
     

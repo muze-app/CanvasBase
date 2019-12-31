@@ -9,7 +9,7 @@
 
 import Foundation
 
-extension CanvasTransaction {
+public extension CanvasTransaction {
     
     func freeze() -> CanvasAction {
         precondition(!isFrozen)
@@ -49,7 +49,7 @@ extension CanvasTransaction {
     
 }
 
-protocol CanvasTransactionFreezingDelegate {
+public protocol CanvasTransactionFreezingDelegate {
     
     func freeze(subtransaction: CanvasTransaction) -> String
     func unfreeze(subtransaction: CanvasTransaction) -> String

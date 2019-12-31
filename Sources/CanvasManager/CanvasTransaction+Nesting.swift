@@ -10,12 +10,12 @@ import Foundation
 
 extension CanvasTransaction: CanvasTransactionParent {
     
-    var displayCanvas: Snapshot {
+    public var displayCanvas: Snapshot {
         get { manager.displayCanvas }
         set { manager.displayCanvas = newValue }
     }
     
-    func newTransaction(identifier: String) -> CanvasTransaction {
+    public func newTransaction(identifier: String) -> CanvasTransaction {
         guard !currentTransaction.exists else {
             fatalError("tried creating a transaction when one already exists")
         }
@@ -26,7 +26,7 @@ extension CanvasTransaction: CanvasTransactionParent {
         return transaction
     }
     
-    func commit(transaction: CanvasTransaction) {
+    public func commit(transaction: CanvasTransaction) {
         precondition(currentTransaction === transaction)
         currentTransaction = nil
         
@@ -39,22 +39,22 @@ extension CanvasTransaction: CanvasTransactionParent {
         disableDisplayUpdates = false
     }
     
-    func cancel(transaction: CanvasTransaction) {
+    public func cancel(transaction: CanvasTransaction) {
         precondition(currentTransaction === transaction)
         currentTransaction = nil
     }
     
-    var activeNode: NodePath? {
-        get { return manager.activeNode }
-        set { manager.activeNode = newValue }
-    }
+//    var activeNode: NodePath? {
+//        get { return manager.activeNode }
+//        set { manager.activeNode = newValue }
+//    }
     
 //    var displayCanvas: Canvas {
 //        get { return manager.displayCanvas }
 //        set { manager.displayCanvas = newValue }
 //    }
     
-    func undo() -> CanvasAction? {
+    public func undo() -> CanvasAction? {
         if let transaction = currentTransaction, !transaction.isFrozen {
             return transaction.freeze()
         }
@@ -70,7 +70,7 @@ extension CanvasTransaction: CanvasTransactionParent {
         return action
     }
     
-    func redo() -> CanvasAction? {
+    public func redo() -> CanvasAction? {
         if redos.isEmpty {
             if let transaction = currentTransaction, transaction.isFrozen {
                 return transaction.unfreeze()
@@ -88,7 +88,7 @@ extension CanvasTransaction: CanvasTransactionParent {
         return action
     }
     
-    func clearRedos() {
+    public func clearRedos() {
         redos = []
         
         if let t = currentTransaction {
@@ -102,7 +102,7 @@ extension CanvasTransaction: CanvasTransactionParent {
     
 }
 
-extension CanvasAction {
+public extension CanvasAction {
     
     var pointer: UnsafeMutableRawPointer {
         return Unmanaged.passUnretained(self).toOpaque()

@@ -20,13 +20,13 @@ extension Date {
     
 }
 
-struct LayerPreview {
+public struct LayerPreview {
 
-    let contentHash: Int
-    let image: UIImage
-    let date: Date
+    public let contentHash: Int
+    public let image: UIImage
+    public let date: Date
     
-    static let clear = LayerPreview(contentHash: 0,
+    static public let clear = LayerPreview(contentHash: 0,
                                     image: .clear,
                                     date: .now)
     

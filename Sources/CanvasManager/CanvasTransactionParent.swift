@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CanvasTransactionParent: class {
+public protocol CanvasTransactionParent: class {
     
     var currentTransaction: CanvasTransaction? { get }
     func newTransaction(identifier: String) -> CanvasTransaction
@@ -16,7 +16,7 @@ protocol CanvasTransactionParent: class {
     func commit(transaction: CanvasTransaction)
     func cancel(transaction: CanvasTransaction)
     
-    var activeNode: NodePath? { get set }
+//    var activeNode: NodePath? { get set }
     
     func undo() -> CanvasAction?
     func redo() -> CanvasAction?

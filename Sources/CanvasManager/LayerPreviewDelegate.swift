@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol LayerPreviewDelegate: class {
+public protocol LayerPreviewDelegate: class {
     
     func layer(updated: LayerPreview)
     
