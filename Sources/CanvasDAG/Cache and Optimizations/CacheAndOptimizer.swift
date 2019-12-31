@@ -31,6 +31,10 @@ public class CacheAndOptimizer {
     // MARK: MARCH
     
     public func march(_ graph: Graph) -> Graph {
+        let store = graph.store
+        store.modLock.lock()
+        defer { store.modLock.unlock() }
+        
         let initial = graph
         var graph = graph
         var map1 = [NodeKey:NodeKey]()
