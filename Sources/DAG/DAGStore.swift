@@ -79,7 +79,7 @@ public class DAGStore<Collection: NodeCollection> {
     public func simplifyTail() {
         autoreleasepool {
             let sorted = sortedCommits
-            let head = sorted.head.internalReference
+            let head = sorted.head
             for commit in sorted.tail {
                 let diff = commit.diff(from: head)
                 self.commit(diff, setLatest: false)
