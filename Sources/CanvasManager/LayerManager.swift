@@ -13,6 +13,7 @@ public typealias Snapshot = DAG.DAGSnapshot<CanvasNodeCollection>
 public class LayerManager {
     
     public weak var canvasManager: CanvasManager?
+    var store: DAGStore! { canvasManager?.store }
     
     public let key: LayerKey
     public let subgraphKey = SubgraphKey()
@@ -34,11 +35,11 @@ public class LayerManager {
     public var display: Snapshot { canvasManager!.display }
     
     public func metaNode(for commit: Graph) -> LayerMetaNode {
-        return commit.metaNode(for: subgraphKey) as! LayerMetaNode
+        store.read { commit.metaNode(for: subgraphKey) as! LayerMetaNode }
     }
     
     public func metadata(for commit: Graph) -> LayerMetadata {
-        return metaNode(for: commit).payload
+        store.read { metaNode(for: commit).payload }
     }
     
     public func set(_ metadata: LayerMetadata, in graph: MutableGraph) {

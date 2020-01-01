@@ -81,18 +81,18 @@ public class CanvasManager {
 //            }
             
             store.read {
-            informObservers(old: metadata(for: oldValue),
-                            new: metadata(for: display))
+                informObservers(old: metadata(for: oldValue),
+                                new: metadata(for: display))
             }
         }
     }
     
     public func metaNode(for commit: Graph) -> CanvasMetaNode {
-        return commit.metaNode(for: subgraphKey) as! CanvasMetaNode
+        store.read { commit.metaNode(for: subgraphKey) as! CanvasMetaNode }
     }
     
     public func metadata(for commit: Graph) -> CanvasMetadata {
-        return metaNode(for: commit).payload
+        store.read { metaNode(for: commit).payload }
     }
     
     public func set(_ metadata: CanvasMetadata, in graph: MutableGraph) {
