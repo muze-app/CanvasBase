@@ -33,7 +33,7 @@ public class CanvasUndoManager {
         }
     }
     
-    public func pop(where predicate: (ActionType)->Bool) {
+    public func pop(where predicate: (ActionType) -> Bool) {
         undoList.pop(where: predicate)
     }
     

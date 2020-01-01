@@ -41,7 +41,6 @@ extension LayerManager {
         return previewDelegate?.wantsUpdate ?? false
     }
     
-    
     public func previewRequested() {
         if let preview = preview, previewIsUpToDate {
             previewDelegate?.layer(updated: preview)
@@ -78,6 +77,5 @@ extension LayerManager {
         previewDelegate?.layer(updated: newPreview)
         preview = newPreview
     }
-    
     
 }

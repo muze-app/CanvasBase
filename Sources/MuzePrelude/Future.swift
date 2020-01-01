@@ -53,7 +53,7 @@ public class Future<Value> {
         }
     }
     
-    public func cascade(to promise: FPromise<Value>) {
+    public func cascade(to promise: Promise<Value>) {
         await { promise.complete($0) }
     }
     
@@ -68,7 +68,7 @@ public class Future<Value> {
     
     @inlinable
     public func flatMap<T>(_ f: @escaping (Value) -> Future<T>) -> Future<T> {
-        let promise = FPromise<T>(on: queue)
+        let promise = Promise<T>(on: queue)
         
         self.onSuccess { f($0).cascade(to: promise) }
         self.onFailure { promise.fail($0) }
@@ -78,7 +78,7 @@ public class Future<Value> {
     
     @inlinable
     public func map<T>(_ f: @escaping (Value) throws -> (T)) -> Future<T> {
-        let promise = FPromise<T>(on: queue)
+        let promise = Promise<T>(on: queue)
         
         self.onSuccess {
             do {
@@ -95,7 +95,7 @@ public class Future<Value> {
     
     @inlinable
     public func mapResult<T>(_ f: @escaping (R) throws -> T) -> Future<T> {
-        let promise = FPromise<T>(on: queue)
+        let promise = Promise<T>(on: queue)
         await {
             do {
                 promise.succeed(try f($0))
@@ -145,7 +145,7 @@ public extension Result {
 // once we get rid of the promises, the Future becomes immutable
 // generally, you keep promises to yourself and pass around futures
 // the preferred way of creating futures if you have one already is to use a function like flatmap
-public struct FPromise<Value> {
+public struct Promise<Value> {
     
     public let future: Future<Value>
     
@@ -172,19 +172,19 @@ public struct FPromise<Value> {
 public extension Future {
     
     func hop(to queue: DispatchQueue) -> Future<Value> {
-        let promise = FPromise<Value>(on: queue)
+        let promise = Promise<Value>(on: queue)
         cascade(to: promise)
         return promise.future
     }
     
     static func succeeded<Value>(_ value: Value) -> Future<Value> {
-        let p = FPromise<Value>()
+        let p = Promise<Value>()
         p.succeed(value)
         return p.future
     }
     
     static func failed<Value>(_ error: Error) -> Future<Value> {
-        let p = FPromise<Value>()
+        let p = Promise<Value>()
         p.fail(error)
         return p.future
     }
@@ -231,7 +231,7 @@ public extension Future {
     
     // WARNING: currently produces results out of order
     static func reducing<Value>(_ futures: [Future<Value>]) -> Future<[Value]> {
-        let promise = FPromise<[Value]>()
+        let promise = Promise<[Value]>()
         
         let tempLock = NSLock() // this will go soon but here for now
         var remaining = futures.count

@@ -10,5 +10,4 @@ import Foundation
 
 class LayerPreviewContext: RenderContext {
     
-    
 }

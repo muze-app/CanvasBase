@@ -30,7 +30,7 @@ public struct LayerPreview {
     #if os(iOS)
     public let image: UIImage
     
-    static public let clear = LayerPreview(0,
+    public static let clear = LayerPreview(0,
                                     image: .clear,
                                     date: .now)
     
@@ -39,10 +39,7 @@ public struct LayerPreview {
         self.contentHash = contentHash
         self.image = image
     }
-    
     #endif
-    
-    
     
 }
 
@@ -115,7 +112,7 @@ class LayerPreviewRenderer {
                         #else
                         return .init(date: date, contentHash: hash)
                         #endif
-//            let promise = FPromise<LayerPreview>()
+//            let promise = Promise<LayerPreview>()
 
 //            let orig = image.original!
 //            let handle = orig.bitmap.makeStrongHandle()
@@ -138,7 +135,7 @@ class LayerPreviewRenderer {
     private func _renderImage(layer subgraphKey: SubgraphKey,
                               graph: Graph,
                               canvas manager: CanvasManager) -> Future<MetalTexture> {
-        let promise = FPromise<MetalTexture>(on: queue)
+        let promise = Promise<MetalTexture>(on: queue)
         manager.renderTexture(for: subgraphKey,
                                   of: graph,
                                   format: .sRGB) {

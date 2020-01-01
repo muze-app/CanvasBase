@@ -10,16 +10,6 @@ import MuzePrelude
 import Metal
 import MuzeMetal
 
-extension LayerManager {
-    
-//    var currentLayer: Layer {
-//        fatalError("")
-////        return canvasManager!.canvas[key]
-//    }
-    
-   
-}
-
 #if os(iOS)
 extension UIImage {
     
@@ -39,8 +29,6 @@ extension MTLTexture {
     
     @available(*, deprecated)
     var immutableCopy: MetalTexture {
-        
-        
         let device = MetalHeapManager.shared
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat,
                                                                   width: width,
@@ -53,7 +41,15 @@ extension MTLTexture {
         let commandBuffer = MetalDevice.commandQueue.makeCommandBuffer()
         let encoder = commandBuffer?.makeBlitCommandEncoder()
         
-        encoder?.copy(from: self, sourceSlice: 0, sourceLevel: 0, sourceOrigin: .zero, sourceSize: MTLSize(width: width, height: height, depth: 1), to: copy._texture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: .zero)
+        encoder?.copy(from: self,
+                      sourceSlice: 0,
+                      sourceLevel: 0,
+                      sourceOrigin: .zero,
+                      sourceSize: MTLSize(width: width, height: height, depth: 1),
+                      to: copy._texture,
+                      destinationSlice: 0,
+                      destinationLevel: 0,
+                      destinationOrigin: .zero)
         
         encoder?.endEncoding()
         

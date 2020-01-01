@@ -6,6 +6,7 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+// swiftlint:disable shorthand_operator
 import MuzePrelude
 import MuzeMetal
 import CanvasDAG
@@ -82,7 +83,6 @@ extension CanvasManager {
 //            }
         }
         
-        
         print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
         
         print("COMMITS: \(sortedCommits.count)")
@@ -117,8 +117,6 @@ extension CanvasManager {
             
             store.commit(commit, setLatest: true)
         }
-        
-        
         
 //        let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
 ////            print("BEFORE:")
@@ -204,7 +202,6 @@ extension CanvasManager {
             }
         }
         
-        
         #endif
         
 //        if let first = r.last { return [first] } else { return [] }
@@ -250,8 +247,6 @@ extension CanvasManager {
 //        }
         
         return .init(keys) { renderReplacement(graph, $0) }
-        
-//        context.render(graph: <#T##Graph#>, subgraph: <#T##SubgraphKey#>, canvasSize: <#T##CGSize#>, time: <#T##TimeInterval#>, format: <#T##RenderOptions.PixelFormat#>, colorSpace: <#T##RenderOptions.ColorSpace#>, completion: <#T##RenderContext.CompletionType##RenderContext.CompletionType##(RenderManager.ResultType) -> ()#>)
     }
     
     private func renderReplacement(_ graph: Graph, _ key: NodeKey) -> TextureAndTransform? {
@@ -400,7 +395,6 @@ extension CanvasManager {
 ////        }
 //    }
     
-    
     // MARK: - OLD AND UNSORTED
     
     @available(*, deprecated)
@@ -437,19 +431,18 @@ extension CanvasManager {
         print("reducing!")
         reducingMemory = true
         
-        CanvasManager.mergeQueue.async { [weak self] in
-            guard let self = self else { return }
-            self.store.sync {
-                self.store.modLock.lock()
-                self._purge()
-                self.store.modLock.unlock()
-            }
-        }
+        store.write { self._purge() }
         
-        return
+//        CanvasManager.mergeQueue.async { [weak self] in
+//            guard let self = self else { return }
+//            self.store.sync {
+//                self._purge()
+//            }
+//        }
+//
+//        return
         
 //        fatalError()
-        
         
 //        CanvasManager.mergeQueue.async { [weak self] in
 //            guard let self = self else { return }
@@ -652,6 +645,3 @@ extension RenderManager {
 //    }
     
 }
-
-
-

@@ -9,9 +9,85 @@
 import Foundation
 import MuzePrelude
 
+public typealias StoreKey = Key<DAGStore<MockNodeCollection>>
+
+private let keyKey = DispatchSpecificKey<StoreKey>()
+
 public class DAGStore<Collection: NodeCollection> {
     
+    // MARK: THREADING (CLEAN ME UP SOON)
+    
+    public let key = StoreKey()
+    public let queue = DispatchQueue(label: "DAG",
+                                     qos: .userInteractive,
+                                     attributes: .concurrent,
+                                     autoreleaseFrequency: .workItem,
+                                     target: nil)
+    
+    private var _isWriting = false
+    
+    public var isOnQueue: Bool { key == currentKey }
+    public var isReading: Bool { isOnQueue }
+    public var isWriting: Bool { _isWriting && isOnQueue }
+    
+    var currentKey: StoreKey? { DispatchQueue.getSpecific(key: keyKey) }
+    
+    public func read<T>(_ f: () -> T) -> T {
+        if isReading { return f() }
+        
+        return queue.sync(execute: f)
+    }
+    
+    @discardableResult
+    public func readAsync<T>(_ f: @escaping () -> T) -> Future<T> {
+        let promise = Promise<T>()
+        queue.async { promise.succeed(f()) }
+        return promise.future
+    }
+    
+    public func write<T>(_ f: () -> T) -> T {
+        if isOnQueue {
+            guard _isWriting else {
+                fatalError("cannot promote read access to write access")
+            }
+            
+            return f()
+        }
+        
+        return queue.sync(flags: .barrier) {
+            _isWriting = true
+            let t = f()
+            _isWriting = false
+            return t
+        }
+    }
+    
+    @discardableResult
+    public func writeAsync<T>(_ f: @escaping () -> T) -> Future<T> {
+        let promise = Promise<T>()
+        queue.async(flags: .barrier) {
+            self._isWriting = true
+            promise.succeed(f())
+            self._isWriting = false
+        }
+        return promise.future
+    }
+    
+    func preconditionReading() {
+        dispatchPrecondition(condition: .onQueue(queue))
+    }
+    
+    func preconditionWriting() {
+        dispatchPrecondition(condition: .onQueue(queue))
+        precondition(_isWriting)
+    }
+    
+    // MARK: THE ACTUAL START
+    
+    @available(*, deprecated)
     public let lock = NSRecursiveLock()
+    
+    @available(*, deprecated)
     public var modLock: NSRecursiveLock { return lock }
     
     public var excludedSubgraphKeys: Set<SubgraphKey> = Set()
@@ -24,24 +100,21 @@ public class DAGStore<Collection: NodeCollection> {
     var commits = WeakDict<CommitKey, Snapshot>()
     
     private var internalRetainedCommitsBag = Bag<CommitKey>() {
-        willSet { lock.lock() }
-        didSet { lock.unlock() }
+        willSet { preconditionWriting() }
     }
     private var externalRetainedCommitsBag = Bag<CommitKey>() {
-        willSet { lock.lock() }
-        didSet { lock.unlock() }
+        willSet { preconditionWriting() }
     }
     var retainedCommitsSet: Set<CommitKey> {
         return internalRetainedCommitsBag.asSet + externalRetainedCommitsBag.asSet
     }
     var retainedCommits = ThreadSafeDict<CommitKey, Snapshot>()
     public var commitTimes = [CommitKey: Date]() {
-        willSet { lock.lock() }
-        didSet { lock.unlock() }
+        willSet { preconditionWriting() }
     }
 
     var externalCommits: [Snapshot] {
-        sync {
+        read {
             externalRetainedCommitsBag.asSet.map {
                 let key = $0
                 let commit = commits[key]!
@@ -60,7 +133,7 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     var sortedExternalCommits: [Snapshot] {
-        sync {
+        read {
         var pairs = externalCommits.map { ($0, commitTimes[$0.key]!) }
         pairs.sort { $0.1 < $1.1 }
         return pairs.map { $0.0 }
@@ -70,6 +143,7 @@ public class DAGStore<Collection: NodeCollection> {
     public var sortedCommits: HeadAndTail<Snapshot> { HeadAndTail(sortedExternalCommits)! }
     
     public func simplifyHead() {
+        preconditionWriting()
         autoreleasepool {
             let head = sortedCommits.head.flattened
             self.commit(head, setLatest: false)
@@ -77,6 +151,7 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     public func simplifyTail() {
+        preconditionWriting()
         autoreleasepool {
             let sorted = sortedCommits
             let head = sorted.head.internalReference
@@ -92,6 +167,8 @@ public class DAGStore<Collection: NodeCollection> {
     public init(delegate: AnyObject? = nil) {
         self.delegate = delegate
         
+        queue.setSpecific(key: keyKey, value: key)
+        
         let graph = Snapshot(store: self)
         commit(graph)
     }
@@ -102,6 +179,7 @@ public class DAGStore<Collection: NodeCollection> {
     
     // MARK: - Threading
     
+    @available(*, deprecated)
     public func sync<T>(_ f: () -> T) -> T {
         lock.lock()
         defer { lock.unlock() }
@@ -109,6 +187,7 @@ public class DAGStore<Collection: NodeCollection> {
         return f()
     }
     
+    @available(*, deprecated)
     public func async(_ block: @escaping ()->()) {
         DispatchQueue.global().async { self.sync(block) }
     }
@@ -116,7 +195,7 @@ public class DAGStore<Collection: NodeCollection> {
     // MARK: - Commits
     
     public func commit(for key: CommitKey) -> Snapshot? {
-        sync { commits[key] }
+        read { commits[key] }
     }
     
     @discardableResult
@@ -132,13 +211,14 @@ public class DAGStore<Collection: NodeCollection> {
 //        if snapshot.depth > 20 {
 //            snapshot = snapshot.flattened
 //        }
-        snapshot.verify()
         
 //        if isLayer {
 //            print("commit \(snapshot.key) (processed: \(!process))")
 //        }
         
-        sync {
+        write {
+            snapshot.verify()
+            
             let snapshotToCommit = snapshot
 //            if process, let processed = self.process(commit: snapshot) {
 //                snapshotToCommit = processed
@@ -171,7 +251,7 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     func retain(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
-        sync {
+        write {
             guard let commit = commits[key] else { fatalError() }
             guard commitTimes[key].exists else { fatalError() }
             
@@ -185,7 +265,7 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     func release(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
-        sync {
+        write {
             switch mode {
                 case .externalReference: externalRetainedCommitsBag.remove(key)
                 case .internalReference: internalRetainedCommitsBag.remove(key)

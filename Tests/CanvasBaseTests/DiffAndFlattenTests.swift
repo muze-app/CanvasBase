@@ -66,7 +66,9 @@ final class DiffAndFlattenTests: XCTestCase, CanvasBaseTestCase {
         
         addTenLayers(to: &graph, subgraph: subgraphKey)
         
-        XCTAssert(self.graph(graph, equals: graph))
+        store.read {
+            XCTAssert(self.graph(graph, equals: graph))
+        }
     }
     
     func testThatFlattenWorks() {
@@ -83,14 +85,16 @@ final class DiffAndFlattenTests: XCTestCase, CanvasBaseTestCase {
         addTenLayers(to: &graph, subgraph: subgraphKey)
         let newer = graph
         
-        let olderFlattened = older.flattened
-        let newerFlattened = newer.flattened
-        
-        XCTAssert(olderFlattened.depth == 0)
-        XCTAssert(newerFlattened.depth == 0)
-        
-        XCTAssert(self.graph(olderFlattened, equals: older))
-        XCTAssert(self.graph(newerFlattened, equals: newer))
+        store.write {
+            let olderFlattened = older.flattened
+            let newerFlattened = newer.flattened
+            
+            XCTAssert(olderFlattened.depth == 0)
+            XCTAssert(newerFlattened.depth == 0)
+            
+            XCTAssert(self.graph(olderFlattened, equals: older))
+            XCTAssert(self.graph(newerFlattened, equals: newer))
+        }
     }
     
     func testThatDiffWorks() {
@@ -107,11 +111,13 @@ final class DiffAndFlattenTests: XCTestCase, CanvasBaseTestCase {
         addTenLayers(to: &graph, subgraph: subgraphKey)
         let newer = graph
         
-        let diff = newer.diff(from: older.internalReference.internalSnapshot)
-        
-        XCTAssert(diff.depth == older.depth + 1)
-        
-        XCTAssert(self.graph(diff, equals: newer))
+        store.write {
+            let diff = newer.diff(from: older.internalReference.internalSnapshot)
+            
+            XCTAssert(diff.depth == older.depth + 1)
+            
+            XCTAssert(self.graph(diff, equals: newer))
+        }
     }
     
 }

@@ -32,7 +32,7 @@ public class LinkedList<Element> {
     public var top: Node<Element>? { return topNode }
     
     public init() {}
-    public init(with item: Element)             { push(item) }
+    public init(with item: Element) { push(item) }
 //    init(with list: LinkedList<Element>) { push(list) }
 //    
 //    public func push(_ list: LinkedList<Element>) {
@@ -94,9 +94,9 @@ public class LinkedList<Element> {
         return oldBottomNode.datum
     }
     
-    public func pop(where predicate: (Element)->Bool) {
+    public func pop(where predicate: (Element) -> Bool) {
         print("popping!")
-        var lastNode: Node<Element>? = nil
+        var lastNode: Node<Element>?
         var currentNode: Node<Element>? = topNode
         let originalCount = count
         

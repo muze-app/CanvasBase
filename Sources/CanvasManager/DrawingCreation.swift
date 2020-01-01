@@ -6,6 +6,8 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
+// swiftlint:disable opening_brace
+
 import MuzePrelude
 
 public typealias DrawingCreation = Drawing & SingleLayerCreation
@@ -28,10 +30,7 @@ public protocol Drawing: Creation {
     func transform(for texture: MetalTexture, flip: Bool) -> AffineTransform
 }
 
-
-
 public extension Drawing {
-    
   
 //    var currentLayer: Layer { return canvasManager.canvas.layers[0] }
 //    var currentCanvas: Canvas { return canvasManager.canvas }

@@ -40,10 +40,9 @@ public class CanvasTransaction {
     public var after:  Snapshot? { actions.last?.after }
     
     public var isFrozen = false
-    public var freezingDelegate: CanvasTransactionFreezingDelegate?
+    public weak var freezingDelegate: CanvasTransactionFreezingDelegate?
     
-    
-    var superActionName: String? = nil
+    var superActionName: String?
     
     public init(manager: CanvasTransactionParent, identifier: String) {
         self.manager = manager
@@ -59,7 +58,6 @@ public class CanvasTransaction {
         if !hasCommittedOrCancelled {
             print("transaction \(identifier) deallocated without being committed or cancelled!")
             
-            
             print(" ")
             DispatchQueue.global().sync {
                 self.cancel()
@@ -73,14 +71,14 @@ public class CanvasTransaction {
     }
     
     public func modify(description: String,
-                layer: LayerManager,
-                with block: (Subgraph<CanvasNodeCollection>)->()) {
+                       layer: LayerManager,
+                       with block: (Subgraph<CanvasNodeCollection>)->()) {
         let action = LayerAction(description, before: currentCanvas, layerManager: layer, block)
         push(action)
     }
     
     public func modifyDisplay(layer: LayerManager,
-                       with block: (Subgraph<CanvasNodeCollection>)->()) {
+                              with block: (Subgraph<CanvasNodeCollection>)->()) {
         let action = LayerAction("", before: currentCanvas, layerManager: layer, block)
         displayCanvas = action.after
     }
@@ -165,7 +163,6 @@ public class CanvasTransaction {
         if !disableDisplayUpdates {
             manager.displayCanvas = newCanvas
         }
-        
         
 //        
 //        let oldCanvas = _currentCanvas
@@ -263,4 +260,3 @@ public class InitializingTransaction: CanvasTransaction {
     }
     
 }
-

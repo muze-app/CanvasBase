@@ -27,4 +27,3 @@ public protocol CanvasObserver: class {
     func canvas(layerSublayersChanged: LayerKey, at index: Int)
     
 }
-

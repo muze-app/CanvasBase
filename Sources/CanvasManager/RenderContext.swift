@@ -72,7 +72,7 @@ open class RenderContext {
 //        let finalNode = node.finalNode
 //        finalNode.log()
 
-        let store = graph.store
+//        let store = graph.store
 //        store.modLock.lock()
         
         let cache = self.cache(for: subgraph)

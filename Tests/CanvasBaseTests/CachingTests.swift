@@ -48,7 +48,9 @@ final class CachingTests: XCTestCase {
             addLayer(to: graph, subgraph: subgraphKey)
         }
         
-        final.subgraph(for: subgraphKey).finalNode!.log()
+        store.read {
+            final.subgraph(for: subgraphKey).finalNode!.log()
+        }
         XCTAssert(true)
     }
     
@@ -67,11 +69,13 @@ final class CachingTests: XCTestCase {
                          subgraph: subgraphKey)
             }
             
-            let node = current.subgraph(for: subgraphKey).finalNode!
-            let cost: Int = node.cost
-            
-            XCTAssert(cost > lastCost)
-            lastCost = cost
+            store.read {
+                let node = current.subgraph(for: subgraphKey).finalNode!
+                let cost: Int = node.cost
+                
+                XCTAssert(cost > lastCost)
+                lastCost = cost
+            }
         }
     }
     
@@ -93,17 +97,19 @@ final class CachingTests: XCTestCase {
 //            print("CURRENT:")
 //            current.subgraph(for: subgraphKey).finalNode!.log()
             
-            let optimized = cache.march(current)
-        
-            let node = optimized.subgraph(for: subgraphKey).finalNode!
-            let cost: Int = node.cost
+            store.write {
+                let optimized = cache.march(current)
             
-//            print("OPTIMIZED:")
-//            node.log()
-            
-//            print("COST: \(cost)")
-            
-            XCTAssert(cost < 5)
+                let node = optimized.subgraph(for: subgraphKey).finalNode!
+                let cost: Int = node.cost
+                
+    //            print("OPTIMIZED:")
+    //            node.log()
+                
+    //            print("COST: \(cost)")
+                
+                XCTAssert(cost < 5)
+            }
         }
     }
     

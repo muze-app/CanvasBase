@@ -159,10 +159,10 @@ public class LayerManager {
     // MARK: Outputs
     
     var hideActiveNode = false
-    var lastCacheKey: NodeKey? = nil
+    var lastCacheKey: NodeKey?
     
     // MARK: Preview
-    public weak var previewDelegate: LayerPreviewDelegate? = nil
+    public weak var previewDelegate: LayerPreviewDelegate?
 //    var preview: UIImage? = nil
 //    var previewState: Layer? = nil
 //    let previewContext = LayerPreviewContext()

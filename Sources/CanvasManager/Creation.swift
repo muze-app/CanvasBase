@@ -66,8 +66,8 @@ open class Creation {
     // MARK: Rendering
     
     public func render(format: RenderOptions.PixelFormat = .float16,
-                colorSpace: RenderOptions.ColorSpace = .working,
-                _ callback: @escaping (MetalTexture)->()) {
+                       colorSpace: RenderOptions.ColorSpace = .working,
+                       _ callback: @escaping (MetalTexture)->()) {
         
 //        fatalError()
         canvasManager.renderTexture { texture in
@@ -117,7 +117,7 @@ struct TColor: Equatable {
         let rgbaF = renderColor.ui.premultipliedComponents
         //        let rgba10: [UInt16] = rgbaF.map(TColor.float2Int)
         
-        let l: (Float)->Float = RenderColor.linearize
+        let l: (Float) -> Float = RenderColor.linearize
         //        RenderColor.linearize(sRGB: <#T##BinaryFloatingPoint#>)
         
         print("rgbaF: \(rgbaF)")

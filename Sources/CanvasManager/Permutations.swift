@@ -94,7 +94,7 @@ public struct Permutations<Element: Hashable> {
         let intersectionCount = 12
         let insertCount = 6
         
-        let intersection = Array<Int>.random(length: intersectionCount)
+        let intersection = [Int].random(length: intersectionCount)
         
         var original = intersection
         for _ in 0..<removeCount {
@@ -123,7 +123,6 @@ public struct Permutations<Element: Hashable> {
         
         print("Target: \(target)")
         print("Result: \(target)")
-        
         
         assert(result == target)
         print(" ")
@@ -187,15 +186,15 @@ public struct MovePermutation<Element: Hashable>: Permutation {
 
 public extension Array where Element: Hashable {
     
-    func intersection(_ other: Array<Element>) -> Set<Element> {
+    func intersection(_ other: [Element]) -> Set<Element> {
         return Set(self).intersection(other)
     }
     
-    static func -(lhs: Array<Element>, rhs: Array<Element>) -> Set<Element> {
+    static func - (lhs: [Element], rhs: [Element]) -> Set<Element> {
         return Set(lhs).subtracting(rhs)
     }
     
-    static func -(lhs: Array<Element>, rhs: Set<Element>) -> Set<Element> {
+    static func - (lhs: [Element], rhs: Set<Element>) -> Set<Element> {
         return Set(lhs).subtracting(rhs)
     }
     
@@ -208,9 +207,9 @@ public extension Array where Element: Hashable {
         return remove(at: index)
     }
     
-    var randomized: Array<Element> {
+    var randomized: [Element] {
         var copy = self
-        var result: Array<Element> = []
+        var result: [Element] = []
         
         while !copy.isEmpty {
             result.append(copy.removeRandom())
@@ -233,7 +232,7 @@ public extension Set {
     
     // assumes that order contains every element in self
     // also assumes array contains no duplicates
-    func sorted(using order: Array<Element>) -> Array<Element> {
+    func sorted(using order: [Element]) -> [Element] {
         let result = order.filter { self.contains($0) }
         //        assert(result.count == count)
         return result

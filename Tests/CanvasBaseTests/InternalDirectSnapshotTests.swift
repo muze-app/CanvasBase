@@ -60,9 +60,11 @@ final class InternalDirectSnapshotTests: XCTestCase {
             print("node: \(node)")
         }
         
-        let node = final.node(for: nodeKey)
-        print("node: \(node)")
-        XCTAssert(node is MockImageNode)
+        store.read {
+            let node = final.node(for: nodeKey)
+            print("node: \(node)")
+            XCTAssert(node is MockImageNode)
+        }
     }
     
     func testFilterNode() {
@@ -80,10 +82,12 @@ final class InternalDirectSnapshotTests: XCTestCase {
             filter.input = image
         }
         
-        let image = final.node(for: imageKey) as! ImageNode
-        let filter = final.node(for: filterKey) as! FilterNode
-        
-        XCTAssert(filter.input?.key == image.key)
+        store.read {
+            let image = final.node(for: imageKey) as! ImageNode
+            let filter = final.node(for: filterKey) as! FilterNode
+            
+            XCTAssert(filter.input?.key == image.key)
+        }
     }
     
     func testRevEdgesNode() {

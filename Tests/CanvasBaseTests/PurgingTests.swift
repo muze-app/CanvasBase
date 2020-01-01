@@ -42,13 +42,14 @@ final class PurgingTests: XCTestCase, CanvasBaseTestCase {
         return addThreeLayers(to: &graph, subgraph: subgraphKey)
     }
     
+    // swiftlint:disable:next function_body_length
     func testPurge() {
         let store = Store()
         let subgraphKey = SubgraphKey()
         
         var first: [Snapshot] = autoreleasepool { setupFirstTen(store, subgraphKey) }
         let second: [Snapshot] = autoreleasepool { setupSecondTen(store, subgraphKey) }
-     
+        
         let commitCount = store.sortedCommits.count
         print("first.count: \(first.count)")
         print("second.count: \(second.count)")
@@ -60,10 +61,10 @@ final class PurgingTests: XCTestCase, CanvasBaseTestCase {
         
         XCTAssert(store.sortedCommits.count == 3)
         
-        store.simplifyTail()
-        let commits = store.sortedCommits
-        let changed = Set( commits.tail.flatMap { $0.nodesTouchedSincePredecessor } )
-        let unchanged = commits.head.allSubgraphs.flatMap { $0.finalNode?.nodes(thatDoNotContain: changed) ?? [] }
+        store.write { store.simplifyTail() }
+        let commits = store.read { store.sortedCommits }
+        let changed = store.read { Set( commits.tail.flatMap { $0.nodesTouchedSincePredecessor } ) }
+        let unchanged = store.read { commits.head.allSubgraphs.flatMap { $0.finalNode?.nodes(thatDoNotContain: changed) ?? [] } }
         
         for n in unchanged {
             print("- \(n)")
@@ -83,37 +84,31 @@ final class PurgingTests: XCTestCase, CanvasBaseTestCase {
             store.commit(commit)
         }
         
-        store.simplifyHead()
+        store.write { store.simplifyHead() }
         
-//        let newHead = commits.head.alias { graph in
-//            let replacement = SolidColorNode(newKey, graph: graph, payload: RenderColor2.red)
-//                graph.replace(oldKey, with: replacement)
-//        } .flattened
-//
-//        store.commit(newHead)
-//        store.simplifyTail()
-        
-        print("head key: \(commits.head.key)")
-        print(" old key: \(oldKey)")
-        print(" new key: \(newKey)")
-        
-        print("CHECKING...")
-        
-        for commit in store.sortedCommits {
-            print("COMMIT \(commit.key)")
+        store.read {
+            print("head key: \(commits.head.key)")
+            print(" old key: \(oldKey)")
+            print(" new key: \(newKey)")
             
-            let final = commit.subgraph(for: subgraphKey).finalNode!
+            print("CHECKING...")
             
-            let containsOld = final.contains(oldKey)
-            let containsNew = final.contains(newKey)
-            
-            final.log()
-            
-            print("contains old: \(containsOld)")
-            print("contains new: \(containsNew)")
-            
-            XCTAssert(!containsOld)
-            XCTAssert(containsNew)
+            for commit in store.sortedCommits {
+                print("COMMIT \(commit.key)")
+                
+                let final = commit.subgraph(for: subgraphKey).finalNode!
+                
+                let containsOld = final.contains(oldKey)
+                let containsNew = final.contains(newKey)
+                
+                final.log()
+                
+                print("contains old: \(containsOld)")
+                print("contains new: \(containsNew)")
+                
+                XCTAssert(!containsOld)
+                XCTAssert(containsNew)
+            }
         }
     }
 

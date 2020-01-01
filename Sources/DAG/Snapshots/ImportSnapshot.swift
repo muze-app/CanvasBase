@@ -73,7 +73,6 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 ////        fatalError()
 //    }
     
-    
     override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
         if predecessor.contains(allocations: allocations) { return true }
         if    imported.contains(allocations: allocations) { return true }

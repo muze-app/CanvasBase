@@ -28,8 +28,10 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
             addLayer(to: graph, subgraph: subgraphKey)
         }
         
-        final.subgraph(for: subgraphKey).finalNode!.log()
-        XCTAssert(true)
+        store.read {
+            final.subgraph(for: subgraphKey).finalNode!.log()
+            XCTAssert(true)
+        }
     }
     
     func testAddBrush() {
@@ -44,8 +46,10 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
             addBrush(to: graph, subgraph: subgraphKey)
         }
         
+        store.read {
         final.subgraph(for: subgraphKey).finalNode!.log()
         XCTAssert(true)
+        }
     }
     
     func testAddEraser() {
@@ -60,8 +64,10 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
             addEraser(to: graph, subgraph: subgraphKey)
         }
         
-        final.subgraph(for: subgraphKey).finalNode!.log()
-        XCTAssert(true)
+        store.read {
+            final.subgraph(for: subgraphKey).finalNode!.log()
+            XCTAssert(true)
+        }
     }
     
     func testCompositeOptimization() {
@@ -78,19 +84,21 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         
         let optimized = final.optimizing(subgraph: subgraphKey)
         
-        optimized.subgraph(for: subgraphKey).finalNode!.log()
-        
-        guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
-            XCTAssert(false)
-            return
+        store.read {
+            optimized.subgraph(for: subgraphKey).finalNode!.log()
+            
+            guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
+                XCTAssert(false)
+                return
+            }
+            
+            guard let images = comp.inputs as? [ImageNode] else {
+                XCTAssert(false)
+                return
+            }
+            
+            XCTAssert(images.count == 2)
         }
-        
-        guard let images = comp.inputs as? [ImageNode] else {
-            XCTAssert(false)
-            return
-        }
-        
-        XCTAssert(images.count == 2)
     }
     
     func testCompositeOptimization2() {
@@ -107,6 +115,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         
         let optimized = final.optimizing(subgraph: subgraphKey)
         
+        store.read {
         optimized.subgraph(for: subgraphKey).finalNode!.log()
         
         guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
@@ -120,6 +129,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         XCTAssert(images.count == 2)
+        }
     }
     
     func testCompositeOptimizationThree() {
@@ -137,6 +147,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         
         let optimized = final.optimizing(subgraph: subgraphKey)
         
+        store.read {
         optimized.subgraph(for: subgraphKey).finalNode!.log()
         
         guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
@@ -150,6 +161,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         XCTAssert(images.count == 3)
+        }
     }
     
     func testBrushOptimization() {
@@ -167,24 +179,16 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         
         let optimized = final.optimizing(subgraph: subgraphKey)
         
-        optimized.subgraph(for: subgraphKey).finalNode!.log()
-        
-        guard optimized.subgraph(for: subgraphKey).finalNode is CompositeNode else {
-            XCTAssert(false)
-            return
+        store.read {
+            optimized.subgraph(for: subgraphKey).finalNode!.log()
+            
+            guard optimized.subgraph(for: subgraphKey).finalNode is CompositeNode else {
+                XCTAssert(false)
+                return
+            }
+            
+            XCTAssert(true)
         }
-        
-        /// actually, I don't think we can optimize this further
-        /// without creating some more nodes...
-        
-        XCTAssert(true)
-        
-//        guard let images = comp.inputs as? [ImageNode] else {
-//            XCTAssert(false)
-//            return
-//        }
-//
-//        XCTAssert(images.count == 3)
     }
     
     func testEraseOptimization() {
@@ -206,6 +210,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
             addEraser(to: graph, subgraph: subgraphKey)
         }
         
+        store.write {
           final.subgraph(for: subgraphKey).finalNode!.log()
         
         let optimized = final.optimizing(subgraph: subgraphKey)
@@ -229,6 +234,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         
         XCTAssert(background.key == backgroundKey)
         XCTAssert(series.inputCount == 3)
+        }
     }
     
 //    func perform(_ times: Int, )

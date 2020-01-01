@@ -19,27 +19,27 @@ public class DAGBase<Collection: NodeCollection> {
     public var store: DAGStore<Collection> { die }
     public var depth: Int { die }
     
+    @available(*, deprecated)
     public var modLock: NSRecursiveLock? { store.lock }
-    
-    @available(*, deprecated)
-    final var level: Int { 0 }
-    
-    @available(*, deprecated)
-    final var maxLevel: Int { 0 }
     
     init(_ key: CommitKey = .init()) {
         self.key = key
     }
     
-    @available(*, deprecated)
-    public func parent(at level: Int) -> DAGBase? { die }
-    
     var payloadBuffers: PayloadBufferSet? { nil }
     
-    public func precondition(notForbidden key: NodeKey) {
+    public func preconditionNotForbidden(_ key: NodeKey) {
         if forbiddenKeys.contains(key) {
             fatalError()
         }
+    }
+    
+    func preconditionReading() {
+        store.preconditionReading()
+    }
+    
+    func preconditionWriting() {
+        store.preconditionWriting()
     }
     
     // MARK: - Subgraphs
@@ -75,6 +75,8 @@ public class DAGBase<Collection: NodeCollection> {
     
     // PRECONDITION: node must exist in graph or will crash
     public func node(for key: NodeKey) -> Node {
+        preconditionReading()
+        
         guard let type = type(for: key) else {
             print("missing node for \(key)")
             die
@@ -108,7 +110,7 @@ public class DAGBase<Collection: NodeCollection> {
     }
     
     public final func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         return payloadPointer(for: key)?.assumingMemoryBound(to: T.self).pointee
     }
 
@@ -148,21 +150,21 @@ public class DAGBase<Collection: NodeCollection> {
 //    @inlinable
     public final func modify(as key: CommitKey?,
                              _ block: (MutableDAG<Collection>)->()) -> Snapshot {
-        let snapshot = snapshotToModify
-        
-                modLock?.lock()
-        let pred: DAGBase = snapshot
-        let result = InternalDirectSnapshot(predecessor: pred, store: store, key: key ?? CommitKey())
-        block(result)
-                modLock?.unlock()
-        
-        if !key.exists, !result.hasChanges, let me = snapshot as? InternalDirectSnapshot {
-            return me
-        } else {
-            result.becomeImmutable()
-            return result
+        store.write {
+            let snapshot = snapshotToModify
+            
+            let result = InternalDirectSnapshot(predecessor: snapshot,
+                                                store: store,
+                                                key: key ?? CommitKey())
+            block(result)
+            
+            if !key.exists, !result.hasChanges, let me = snapshot as? InternalDirectSnapshot {
+                return me
+            } else {
+                result.becomeImmutable()
+                return result
+            }
         }
-        
     }
     
     // MARK: - UNSORTED

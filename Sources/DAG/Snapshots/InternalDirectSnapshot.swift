@@ -36,7 +36,6 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     override public var store: DAGStore<Collection> { _store! }
     let predecessor: DAGBase<Collection>?
     
-    
 //    deinit {
 //        print("InternalDirectSnapshot go byebye")
 //    }
@@ -128,13 +127,14 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     // MARK: Types
     
     override public func type(for key: NodeKey) -> Collection? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         
         return typeMap[key] ?? predecessor?.type(for: key)
     }
     
     func setType(_ type: Collection, for key: NodeKey) {
-        precondition(notForbidden: key)
+        preconditionWriting()
+        preconditionNotForbidden(key)
         assert(isMutable)
         if self.type(for: key) == type { return }
         typeMap[key] = type
@@ -143,7 +143,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     // MARK: Edges
     
     override public func edgeMap(for key: NodeKey) -> [Int:NodeKey]? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         if let edgeMap = edgeMaps[key] {
             return edgeMap
         }
@@ -152,15 +152,17 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     public func setEdgeMap(_ edgeMap: [Int:NodeKey], for key: NodeKey) {
-        precondition(notForbidden: key)
-        assert(isMutable)
+        preconditionWriting()
+        preconditionNotForbidden(key)
+        precondition(isMutable)
+        
         edgeMaps[key] = edgeMap
     }
     
     public func setInput(for parent: NodeKey, index: Int, to child: NodeKey?) {
-        precondition(notForbidden: parent)
-        assert(isMutable)
-        assert(child != parent)
+        preconditionNotForbidden(parent)
+        precondition(isMutable)
+        precondition(child != parent)
         
         let oldChild = self.input(for: parent, index: index)
         
@@ -245,12 +247,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     // MARK: Payloads
     
     override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         return payloadMap[key] ?? predecessor?.payloadAllocation(for: key)
     }
     
     func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey) {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         assert(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
@@ -275,12 +277,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     // MARK: Reverse Edges
     
     override public func reverseEdges(for key: NodeKey) -> Bag<NodeKey>? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         return reverseEdges[key] ?? predecessor?.reverseEdges(for: key)
     }
     
     func setReverseEdges(_ bag: Bag<NodeKey>, for key: NodeKey) {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         assert(isMutable)
         
         if self.reverseEdges(for: key) == bag { return }
@@ -289,12 +291,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     func receivers(of key: NodeKey) -> Set<NodeKey> {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         return reverseEdges(for: key)?.asSet ?? Set<NodeKey>()
     }
     
     func invalidateRevData(for key: NodeKey) {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         revData[key] = NodeRevData()
         
         for receiver in receivers(of: key) {
@@ -303,12 +305,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     override func revData(for key: NodeKey) -> NodeRevData? {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         return revData[key] ?? predecessor?.revData(for: key)
     }
     
     func setRevData(_ data: NodeRevData, for key: NodeKey) {
-        precondition(notForbidden: key)
+        preconditionNotForbidden(key)
         revData[key] = data
     }
     

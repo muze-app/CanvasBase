@@ -143,7 +143,7 @@ public struct RenderColor: Equatable, ExpressibleByArrayLiteral {
         }
     }
     
-    static public func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
+    public static func delinearize<N: BinaryFloatingPoint>(sRGB channel: N) -> N {
         let u = channel
         if u <= 0 { return 0 }
         if u >= 1 { return 1 }

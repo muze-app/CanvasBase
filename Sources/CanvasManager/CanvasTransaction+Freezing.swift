@@ -1,4 +1,3 @@
-
 //
 //  CanvasTransaction+Freezing.swift
 //  muze
@@ -49,7 +48,7 @@ public extension CanvasTransaction {
     
 }
 
-public protocol CanvasTransactionFreezingDelegate {
+public protocol CanvasTransactionFreezingDelegate: class {
     
     func freeze(subtransaction: CanvasTransaction) -> String
     func unfreeze(subtransaction: CanvasTransaction) -> String

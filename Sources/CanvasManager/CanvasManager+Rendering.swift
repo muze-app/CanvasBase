@@ -6,7 +6,6 @@
 //  Copyright © 2019 Ergo Sum. All rights reserved.
 //
 
-
 @available(*, deprecated)
 typealias MutableDAG = MutableGraph
 
@@ -15,9 +14,9 @@ extension CanvasManager {
     // MARK: Offscreen Rendering
     
     func renderTexture(for subgraph: SubgraphKey? = nil,
-                     of commit: Graph? = nil,
-                     format: RenderOptions.PixelFormat = .sRGB,
-                     completion: @escaping (MetalTexture)->()) {
+                       of commit: Graph? = nil,
+                       format: RenderOptions.PixelFormat = .sRGB,
+                       completion: @escaping (MetalTexture)->()) {
         store.modLock.lock()
         
         let subgraph = subgraph ?? self.subgraphKey

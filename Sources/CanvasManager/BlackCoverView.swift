@@ -69,7 +69,6 @@ public struct NewCameraCanvasLayout {
         return CGRect.screen.inset(by: .init(top: topMargin, left: 0, bottom: bottomMargin, right: 0))
         #else
         return CGRect(x: 0, y: 0, width: 2048, height: 2048)
-        fatalError();
         #endif
     }
     
