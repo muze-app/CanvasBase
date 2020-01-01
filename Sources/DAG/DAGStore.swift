@@ -12,7 +12,6 @@ import MuzePrelude
 public typealias StoreKey = Key<DAGStore<MockNodeCollection>>
 
 private let keyKey = DispatchSpecificKey<StoreKey>()
-private var storeCount = 0
 
 public class DAGStore<Collection: NodeCollection> {
     
@@ -33,13 +32,7 @@ public class DAGStore<Collection: NodeCollection> {
     
     public var isOnAnotherQueue: Bool {
         guard let currentKey = currentKey else { return false }
-//        return currentKey != key
-        if currentKey == key { return false }
-        
-        print("key: \(key)")
-        print("current: \(currentKey)")
-            
-        fatalError()
+        return currentKey != key
     }
     
     var currentKey: StoreKey? { DispatchQueue.getSpecific(key: keyKey) }
@@ -47,7 +40,7 @@ public class DAGStore<Collection: NodeCollection> {
     public func read<T>(_ f: () -> T) -> T {
         if isReading { return f() }
         
-        precondition(isOnAnotherQueue, "You can't comingle different stores")
+        precondition(!isOnAnotherQueue, "You can't comingle different stores")
         
         return queue.sync(execute: f)
     }
@@ -71,7 +64,7 @@ public class DAGStore<Collection: NodeCollection> {
             return f()
         }
         
-        precondition(isOnAnotherQueue, "You can't comingle different stores")
+        precondition(!isOnAnotherQueue, "You can't comingle different stores")
         
         return queue.sync(flags: .barrier) {
             _isWriting = true
@@ -184,9 +177,6 @@ public class DAGStore<Collection: NodeCollection> {
     weak var delegate: AnyObject?
     
     public init(delegate: AnyObject? = nil) {
-        print("storeCount: \(storeCount)")
-        storeCount += 1
-        
         self.delegate = delegate
         
         queue.setSpecific(key: keyKey, value: key)
