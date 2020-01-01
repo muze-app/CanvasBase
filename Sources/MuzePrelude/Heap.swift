@@ -119,7 +119,7 @@ open class Heap: CustomDebugStringConvertible {
         //        print("    address: \(address)")
         
         let chunksNeeded = layout.chunkCount(for: size)
-        guard let chunkRange = smallestChunkRange(forCount: chunksNeeded) else { return nil }
+        guard let chunkRange = firstChunkRange(for: chunksNeeded) else { return nil }
         guard let index = freeChunks.firstIndex(of: chunkRange) else { fatalError() }
         
         let start = chunkRange.startIndex
@@ -144,9 +144,14 @@ open class Heap: CustomDebugStringConvertible {
         return p
     }
     
-    public func smallestChunkRange(forCount count: Int) -> ChunkRange? {
-        let availableChunks = freeChunks.filter { $0.length >= count }
-        return (availableChunks.sorted { $0.length < $1.length }).first
+    func firstChunkRange(for count: Int) -> ChunkRange? {
+        for chunk in freeChunks where chunk.length >= count {
+            return chunk
+        }
+        
+        return nil
+//        let availableChunks = freeChunks.filter { $0.length >= count }
+//        return (availableChunks.sorted { $0.length < $1.length }).first
     }
     
     // MARK: Free
