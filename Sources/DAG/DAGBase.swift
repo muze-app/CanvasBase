@@ -23,8 +23,6 @@ public class DAGBase<Collection: NodeCollection> {
         self.key = key
     }
     
-    var payloadBuffers: PayloadBufferSet? { nil }
-    
     public func preconditionNotForbidden(_ key: NodeKey) {
         if forbiddenKeys.contains(key) {
             fatalError()

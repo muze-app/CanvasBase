@@ -25,29 +25,19 @@ public struct NodeRevData {
     
 }
 
-//private let tempDict = WeakThreadSafeDict<Int, InternalDirectSnapshot<MockNodeCollection>>()
-//private var i = 0
-
 public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
-    
-//    class var tempDict
     
     weak var _store: DAGStore<Collection>?
     override public var store: DAGStore<Collection> { _store! }
     let predecessor: DAGBase<Collection>?
     
-//    deinit {
-//        print("InternalDirectSnapshot go byebye")
-//    }
+    var payloadBuffers: PayloadBufferSet { store.payloadBuffers }
     
     public init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
         self._store = store
         
         super.init(key)
-        
-//        tempDict[i] = (self as! InternalDirectSnapshot<Collection>)
-//        i += 1
     }
     
     public func with(key: CommitKey) -> InternalDirectSnapshot {
@@ -56,30 +46,9 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return snapshot
     }
     
-//    @available(*, deprecated)
-//    override public func parent(at level: Int = 0) -> DAGBase<Collection>? {
-//        return predecessor
-//        if let pred = predecessor as? InternalDirectSnapshot {
-//            if pred.level == level {
-//                return pred
-//            } else {
-//                return pred.parent(at: level)
-//            }
-//        }
-//
-//        return nil
-//    }
-    
-    var _payloadBuffers: PayloadBufferSet?
-    override var payloadBuffers: PayloadBufferSet? { _payloadBuffers }
     var payloadMap: [NodeKey:PayloadBufferAllocation] = [:]
     
-//    deinit {
-//        let unsafe = Unmanaged.passUnretained(self).toOpaque()
-//        print("InternalSnapshot \(key) \(unsafe) deinit")
-//    }
-    
-    var hotSubgraphs = Set<SubgraphKey>() // 'hot' more or less means retained
+//    var hotSubgraphs = Set<SubgraphKey>() // 'hot' more or less means retained
     var subgraphs: [SubgraphKey:SubgraphData] = [:]
     var typeMap: [NodeKey:Collection] = [:]
     var edgeMaps: [NodeKey:[Int:NodeKey]] = [:]
@@ -263,11 +232,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
             return
         }
         
-        if !payloadBuffers.exists {
-            _payloadBuffers = predecessor?.payloadBuffers ?? PayloadBufferSet()
-        }
-        
-        guard let allocation = payloadBuffers!.new(payload) else {
+        guard let allocation = payloadBuffers.new(payload) else {
             fatalError("out of memory")
         }
         

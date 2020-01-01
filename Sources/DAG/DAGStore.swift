@@ -15,6 +15,8 @@ private let keyKey = DispatchSpecificKey<StoreKey>()
 
 public class DAGStore<Collection: NodeCollection> {
     
+    var payloadBuffers = PayloadBufferSet()
+    
     let key = StoreKey()
     let queue = DispatchQueue(label: "DAG",
                               qos: .userInteractive,
