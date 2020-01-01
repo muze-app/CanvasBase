@@ -30,10 +30,17 @@ public class DAGStore<Collection: NodeCollection> {
     public var isReading: Bool { isOnQueue }
     public var isWriting: Bool { _isWriting && isOnQueue }
     
+    public var isOnAnotherQueue: Bool {
+        guard let currentKey = currentKey else { return false }
+        return currentKey != key
+    }
+    
     var currentKey: StoreKey? { DispatchQueue.getSpecific(key: keyKey) }
     
     public func read<T>(_ f: () -> T) -> T {
         if isReading { return f() }
+        
+        precondition(isOnAnotherQueue, "You can't comingle different stores")
         
         return queue.sync(execute: f)
     }
@@ -41,7 +48,10 @@ public class DAGStore<Collection: NodeCollection> {
     @discardableResult
     public func readAsync<T>(_ f: @escaping () -> T) -> Future<T> {
         let promise = Promise<T>()
-        queue.async { promise.succeed(f()) }
+        queue.async {
+            promise.succeed(f())
+        }
+        
         return promise.future
     }
     
@@ -53,6 +63,8 @@ public class DAGStore<Collection: NodeCollection> {
             
             return f()
         }
+        
+        precondition(isOnAnotherQueue, "You can't comingle different stores")
         
         return queue.sync(flags: .barrier) {
             _isWriting = true
