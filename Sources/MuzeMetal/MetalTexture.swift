@@ -127,11 +127,11 @@ public class MetalTexture: Equatable {
     }
     
     public func makeAliasable() {
-        assert(!isAliasable)
-        isAliasable = true
-        
-        heap?.forget(self)
-        _texture.makeAliasable()
+//        assert(!isAliasable)
+//        isAliasable = true
+//        
+//        heap?.forget(self)
+//        _texture.makeAliasable()
     }
     
     var usage: MTLTextureUsage {
