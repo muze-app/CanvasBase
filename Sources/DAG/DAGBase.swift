@@ -19,9 +19,6 @@ public class DAGBase<Collection: NodeCollection> {
     public var store: DAGStore<Collection> { die }
     public var depth: Int { die }
     
-    @available(*, deprecated)
-    public var modLock: NSRecursiveLock? { store.lock }
-    
     init(_ key: CommitKey = .init()) {
         self.key = key
     }

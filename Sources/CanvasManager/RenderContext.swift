@@ -75,8 +75,8 @@ open class RenderContext {
 //        let store = graph.store
 //        store.modLock.lock()
         
+        let store = graph.store
         let cache = self.cache(for: subgraph)
-        let optimized = cache.march(graph).subgraph(for: subgraph)
         
 //        let optimized = graph.optimized(throughCacheNodes: false)
         
@@ -85,7 +85,10 @@ open class RenderContext {
 //            finalNode = graph.finalNode(for: subgraph) //?.optimize(throughCacheNodes: false)
 //        }
         
-        let payload = optimized.finalNode?.renderPayload(for: options) ?? clearPayload
+        let payload = store.write { () -> RenderPayload in
+            let optimized = cache.march(graph).subgraph(for: subgraph)
+            return optimized.finalNode?.renderPayload(for: options) ?? clearPayload
+        }
         
 //        store.modLock.unlock()
 

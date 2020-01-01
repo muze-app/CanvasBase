@@ -8,99 +8,21 @@
 
 import Foundation
 import MuzePrelude
-
-public typealias StoreKey = Key<DAGStore<MockNodeCollection>>
+ 
+typealias StoreKey = Key<DAGStore<MockNodeCollection>>
 
 private let keyKey = DispatchSpecificKey<StoreKey>()
 
 public class DAGStore<Collection: NodeCollection> {
     
-    // MARK: THREADING (CLEAN ME UP SOON)
-    
-    public let key = StoreKey()
-    public let queue = DispatchQueue(label: "DAG",
-                                     qos: .userInteractive,
-                                     attributes: .concurrent,
-                                     autoreleaseFrequency: .workItem,
-                                     target: nil)
+    let key = StoreKey()
+    let queue = DispatchQueue(label: "DAG",
+                              qos: .userInteractive,
+                              attributes: .concurrent,
+                              autoreleaseFrequency: .workItem,
+                              target: nil)
     
     private var _isWriting = false
-    
-    public var isOnQueue: Bool { key == currentKey }
-    public var isReading: Bool { isOnQueue }
-    public var isWriting: Bool { _isWriting && isOnQueue }
-    
-    public var isOnAnotherQueue: Bool {
-        guard let currentKey = currentKey else { return false }
-        return currentKey != key
-    }
-    
-    var currentKey: StoreKey? { DispatchQueue.getSpecific(key: keyKey) }
-    
-    public func read<T>(_ f: () -> T) -> T {
-        if isReading { return f() }
-        
-        precondition(!isOnAnotherQueue, "You can't comingle different stores")
-        
-        return queue.sync(execute: f)
-    }
-    
-    @discardableResult
-    public func readAsync<T>(_ f: @escaping () -> T) -> Future<T> {
-        let promise = Promise<T>()
-        queue.async {
-            promise.succeed(f())
-        }
-        
-        return promise.future
-    }
-    
-    public func write<T>(_ f: () -> T) -> T {
-        if isOnQueue {
-            guard _isWriting else {
-                fatalError("cannot promote read access to write access")
-            }
-            
-            return f()
-        }
-        
-        precondition(!isOnAnotherQueue, "You can't comingle different stores")
-        
-        return queue.sync(flags: .barrier) {
-            _isWriting = true
-            let t = f()
-            _isWriting = false
-            return t
-        }
-    }
-    
-    @discardableResult
-    public func writeAsync<T>(_ f: @escaping () -> T) -> Future<T> {
-        let promise = Promise<T>()
-        queue.async(flags: .barrier) {
-            self._isWriting = true
-            promise.succeed(f())
-            self._isWriting = false
-        }
-        return promise.future
-    }
-    
-    func preconditionReading() {
-        dispatchPrecondition(condition: .onQueue(queue))
-    }
-    
-    func preconditionWriting() {
-        dispatchPrecondition(condition: .onQueue(queue))
-        precondition(_isWriting)
-    }
-    
-    // MARK: THE ACTUAL START
-    
-    @available(*, deprecated)
-    public let lock = NSRecursiveLock()
-    
-    @available(*, deprecated)
-    public var modLock: NSRecursiveLock { return lock }
     
     public var excludedSubgraphKeys: Set<SubgraphKey> = Set()
     
@@ -191,17 +113,72 @@ public class DAGStore<Collection: NodeCollection> {
     
     // MARK: - Threading
     
-    @available(*, deprecated)
-    public func sync<T>(_ f: () -> T) -> T {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        return f()
+    public var isOnQueue: Bool { key == currentKey }
+    public var isReading: Bool { isOnQueue }
+    public var isWriting: Bool { _isWriting && isOnQueue }
+    
+    public var isOnAnotherQueue: Bool {
+        guard let currentKey = currentKey else { return false }
+        return currentKey != key
     }
     
-    @available(*, deprecated)
-    public func async(_ block: @escaping ()->()) {
-        DispatchQueue.global().async { self.sync(block) }
+    var currentKey: StoreKey? { DispatchQueue.getSpecific(key: keyKey) }
+    
+    public func read<T>(_ f: () -> T) -> T {
+        if isReading { return f() }
+        
+        precondition(!isOnAnotherQueue, "You can't comingle different stores")
+        
+        return queue.sync(execute: f)
+    }
+    
+    @discardableResult
+    public func readAsync<T>(_ f: @escaping () -> T) -> Future<T> {
+        let promise = Promise<T>()
+        queue.async {
+            promise.succeed(f())
+        }
+        
+        return promise.future
+    }
+    
+    public func write<T>(_ f: () -> T) -> T {
+        if isOnQueue {
+            guard _isWriting else {
+                fatalError("cannot promote read access to write access")
+            }
+            
+            return f()
+        }
+        
+        precondition(!isOnAnotherQueue, "You can't comingle different stores")
+        
+        return queue.sync(flags: .barrier) {
+            _isWriting = true
+            let t = f()
+            _isWriting = false
+            return t
+        }
+    }
+    
+    @discardableResult
+    public func writeAsync<T>(_ f: @escaping () -> T) -> Future<T> {
+        let promise = Promise<T>()
+        queue.async(flags: .barrier) {
+            self._isWriting = true
+            promise.succeed(f())
+            self._isWriting = false
+        }
+        return promise.future
+    }
+    
+    func preconditionReading() {
+        dispatchPrecondition(condition: .onQueue(queue))
+    }
+    
+    func preconditionWriting() {
+        dispatchPrecondition(condition: .onQueue(queue))
+        precondition(_isWriting)
     }
     
     // MARK: - Commits

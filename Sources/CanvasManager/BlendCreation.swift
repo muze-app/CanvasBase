@@ -24,7 +24,6 @@ public class BlendCreation: SingleLayerCreation {
     }
     
     public func push(_ texture: MetalTexture, _ mode: BlendMode) {
-        canvasManager.store.modLock.lock()
         modify { subgraph in
             let graph = subgraph.mutableGraph
             
@@ -40,7 +39,6 @@ public class BlendCreation: SingleLayerCreation {
             
             subgraph.finalNode = blend
         }
-        canvasManager.store.modLock.unlock()
     }
     
 }
