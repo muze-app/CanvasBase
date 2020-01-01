@@ -38,15 +38,15 @@ public extension DAGBase {
     }
     
     var duplicated: InternalDirectSnapshot<Collection> {
-        return copy(usingFreshKeys: true)
+        store.write { copy(usingFreshKeys: true) }
     }
     
     var flattened: InternalDirectSnapshot<Collection> {
-       return copy(usingFreshKeys: false)
+        store.write { copy(usingFreshKeys: false) }
     }
     
     func flattened(with hotlist: Set<SubgraphKey>?) -> InternalDirectSnapshot<Collection> {
-       return copy(usingFreshKeys: false, hotlist: hotlist)
+        store.write { copy(usingFreshKeys: false, hotlist: hotlist) }
     }
     
     func diff(from parent: DAGBase<Collection>, hotlist: Set<SubgraphKey>? = nil) -> InternalDirectSnapshot<Collection> {
