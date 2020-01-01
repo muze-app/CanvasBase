@@ -23,7 +23,7 @@ public class CanvasManager {
 //    weak var canvasView: CanvasMetalView?
     public weak var delegate: CanvasManagerDelegate?
     
-    public weak var tempAltStore: DAGStore?
+//    public weak var tempAltStore: DAGStore?
     
     public let store: DAGStore
     public let subgraphKey: SubgraphKey
