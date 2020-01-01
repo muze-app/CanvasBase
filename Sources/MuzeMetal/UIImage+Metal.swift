@@ -54,7 +54,7 @@ public extension MTLTexture {
     
 }
 
-extension UIImage {
+public extension UIImage {
     
     @available(*, deprecated)
     var texture: MTLTexture {
@@ -71,7 +71,7 @@ extension UIImage {
     
 }
 
-extension CGImage {
+public extension CGImage {
     
     @available(*, deprecated)
     var texture: MTLTexture {
@@ -88,7 +88,7 @@ extension CGImage {
     
 }
 
-extension CGBitmapInfo {
+public extension CGBitmapInfo {
     
     init(_ alphaInfo: CGImageAlphaInfo) {
         self.init(rawValue: alphaInfo.rawValue)
