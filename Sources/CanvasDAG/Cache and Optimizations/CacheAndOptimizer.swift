@@ -103,7 +103,8 @@ public class CacheAndOptimizer {
     }
     
     public func store(_ payload: RenderPayload, for cacheNode: CacheNode) {
-        store(payload, for: cacheNode.originalKey, hash: cacheNode.payload.contentHash)
+        store(payload, for: cacheNode.originalKey,
+              hash: cacheNode.payload.contentHash)
     }
     
     func store(_ payload: RenderPayload, for key: NodeKey, hash: Int) {

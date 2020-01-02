@@ -83,7 +83,10 @@ public extension RenderPayload {
             case .intermediate(let p):
                 guard let t = p.output.texture else { return nil }
                 
-                return .cropAndTransform(.texture(t), t.size, .identity)
+//                let o = p.output
+//                let e = p.basicExtent.transform
+                
+                return .cropAndTransform(.texture(t), t.size, p.basicExtent.transform)
                 
             case .alpha(let p, let a):
                 guard let wo = p.withoutPass else { return nil }
