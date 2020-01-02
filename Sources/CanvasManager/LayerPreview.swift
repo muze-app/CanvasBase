@@ -55,8 +55,10 @@ class LayerPreviewRenderer {
                 canvas manager: CanvasManager) -> Future<LayerPreview> {
         
         let graph = manager.display
+        let store = manager.store
         
-        guard let hash = graph.subgraph(for: subgraphKey).finalNode?.contentHash else {
+        let hashOptional = store.read { graph.subgraph(for: subgraphKey).finalNode?.contentHash }
+        guard let hash = hashOptional else {
             #if os(iOS)
             return .succeeded(.clear)
             #else
