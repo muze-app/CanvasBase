@@ -18,7 +18,7 @@ struct MiscError: Error {
 extension LayerManager {
     
     func contentHash(for graph: Graph) -> Int? {
-        return graph.subgraph(for: subgraphKey).finalNode?.contentHash
+        store.read { graph.subgraph(for: subgraphKey).finalNode?.contentHash }
     }
     
     var previewIsUpToDate: Bool {
