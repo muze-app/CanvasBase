@@ -52,8 +52,8 @@ public class RenderInstance {
                 print("        \(pass.inputExtent)")
                 print("        \(pass.inputExtent?.corners)")
                 
-                let rect = pass.inputExtent!.corners.containingRect
-                if let goal = RenderInstance.tempRect {
+                if let rect = pass.inputExtent?.corners.containingRect,
+                   let goal = RenderInstance.tempRect {
                     if rect ~= goal {
                         print("    GOOD!")
                     } else {
