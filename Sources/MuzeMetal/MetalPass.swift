@@ -132,8 +132,8 @@ public class MetalPass<DrawableType: SimpleMetalDrawable> {
         }
 
         if encoder.target !== drawable._texture {
-            print("encoder.target: \(encoder.target!) \(encoder.target!.pointerString)")
-            print("drawable.texture: \(drawable._texture) \(drawable._texture.pointerString)")
+//            print("encoder.target: \(encoder.target!) \(encoder.target!.pointerString)")
+//            print("drawable.texture: \(drawable._texture) \(drawable._texture.pointerString)")
             return false
         }
         

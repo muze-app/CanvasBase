@@ -69,7 +69,7 @@ extension CanvasNode {
                              og: Graph,
                              addedNodes: inout Set<CacheEntry>) -> CanvasNode {
         if self is CacheNode { return self }
-        if cost < 3 { return self }
+        if cost < 2 { return self }
         
         let original = map[key] ?? og.node(for: key)
         
