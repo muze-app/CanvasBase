@@ -47,7 +47,8 @@ class RenderInstance {
             print("PASSES")
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
-                print("        \(pass.inputExtent)")
+                print("        \(pass.inputExtent!)")
+                print("        \(pass.inputExtent!.corners)")
             }
         }
         
