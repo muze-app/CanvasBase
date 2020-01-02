@@ -93,44 +93,31 @@ class LayerPreviewRenderer {
 //        print("native scale: \(UIScreen.main.nativeScale)")
 
 //        graph.subgraph(for: subgraphKey).finalNode?.log()
-
-        let graph = graph.modify { graph in
-            manager.modifyMetadata(in: graph) { $0.size = finalSize }
-
-            let subgraph = graph.subgraph(for: subgraphKey)
-
-            let transform = TransformNode(graph: graph, payload: .scaling(scale))
-            transform.input = subgraph.finalNode
-
-            subgraph.finalNode = transform
+        
+        let graph = graph.store.writeAsync {
+            graph.modify { graph in
+                manager.modifyMetadata(in: graph) { $0.size = finalSize }
+                
+                let subgraph = graph.subgraph(for: subgraphKey)
+                
+                let transform = TransformNode(graph: graph, payload: .scaling(scale))
+                transform.input = subgraph.finalNode
+                
+                subgraph.finalNode = transform
+            }
         }
-
-        return _renderImage(layer: subgraphKey,
-                     graph: graph,
-                     canvas: manager).map { texture -> LayerPreview in
-                        #if os(iOS)
-                        let image = texture.uiImage
-                        return .init(hash, image: image, date: date)
-                        #else
-                        return .init(date: date, contentHash: hash)
-                        #endif
-//            let promise = Promise<LayerPreview>()
-
-//            let orig = image.original!
-//            let handle = orig.bitmap.makeStrongHandle()
-//
-//            handle.await { _ in
-//                if let ui = orig.bitmap.value?.uiImage {
-////                    print("ui size: \(ui.size)")
-//                    promise.succeed(.init(contentHash: hash, image: ui, date: date))
-//                } else {
-//                    promise.fail(MiscError(""))
-//                }
-//
-//                handle.release()
-//            }
-
-//            return promise.future
+        
+        return graph.hop(to: queue).flatMap { graph  in
+            self._renderImage(layer: subgraphKey,
+                         graph: graph,
+                         canvas: manager).map { texture -> LayerPreview in
+                #if os(iOS)
+                let image = texture.uiImage
+                return .init(hash, image: image, date: date)
+                #else
+                return .init(date: date, contentHash: hash)
+                #endif
+            }
         }
     }
     
