@@ -38,18 +38,20 @@ extension CanvasGraph {
                                                  original: original,
                                                  optimized: original)
                 
-                guard let revEdges = graph.reverseEdges(for: original.key) else { continue }
+                graph.replace(original.key, with: cache)
                 
-//                print("rev edges: \(revEdges)")
-                
-                for x in revEdges.asSet where x != cache.key {
-                    guard graph.type(for: x).exists else { continue }
-                    let node = graph.node(for: x)
-                    
-                    for (i, target) in node.edgeMap where target == original.key {
-                        node.nodeInputs[i] = cache
-                    }
-                }
+//                guard let revEdges = graph.reverseEdges(for: original.key) else { continue }
+//
+////                print("rev edges: \(revEdges)")
+//
+//                for x in revEdges.asSet where x != cache.key {
+//                    guard graph.type(for: x).exists else { continue }
+//                    let node = graph.node(for: x)
+//
+//                    for (i, target) in node.edgeMap where target == original.key {
+//                        node.nodeInputs[i] = cache
+//                    }
+//                }
             }
         }
     }
