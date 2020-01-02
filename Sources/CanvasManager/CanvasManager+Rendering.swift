@@ -19,7 +19,7 @@ extension CanvasManager {
                        completion: @escaping (MetalTexture)->()) {
 
         let subgraph = subgraph ?? self.subgraphKey
-        let commit = (commit ?? current).optimizing(subgraph: subgraph)
+        let commit = commit ?? current //.optimizing(subgraph: subgraph)
         let canvasMetadata = metadata(for: commit)
         
         context.render(graph: commit,

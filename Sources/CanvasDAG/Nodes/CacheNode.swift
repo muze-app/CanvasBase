@@ -33,7 +33,7 @@ public struct CachePayload: NodePayload {
 
 public class CacheNode: InputNode<CachePayload> {
     
-    var cachingEnabled: Bool { false }
+    var cachingEnabled: Bool { true }
     override public var cost: Int { 1 }
     
     var originalKey: NodeKey { payload.originalKey }

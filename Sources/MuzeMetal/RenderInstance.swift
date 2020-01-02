@@ -9,7 +9,9 @@
 import MuzePrelude
 import Metal
 
-class RenderInstance {
+public class RenderInstance {
+    
+    public static var tempRect: CGRect?
     
     typealias CompletionType = RenderManager.CompletionType
     
@@ -49,6 +51,17 @@ class RenderInstance {
                 print(" - \(pass) \(pass.identifier)")
                 print("        \(pass.inputExtent!)")
                 print("        \(pass.inputExtent!.corners)")
+                
+                let rect = pass.inputExtent!.corners.containingRect
+                if let goal = RenderInstance.tempRect {
+                    if rect ~= goal {
+                        print("    GOOD!")
+                    } else {
+                        print("    BAD!")
+                        print("    expected \(goal), got \(rect)")
+                        print(" ")
+                    }
+                }
             }
         }
         
