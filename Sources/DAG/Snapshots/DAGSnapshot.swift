@@ -66,8 +66,8 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.depth
     }
     
-    override public func type(for key: NodeKey) -> Collection? {
-        internalSnapshot.type(for: key)
+    override var typeMap: [NodeKey : Collection] {
+        internalSnapshot.typeMap
     }
     
     override public var allSubgraphKeys: Set<SubgraphKey> {

@@ -43,8 +43,8 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         return subgraphData(for: subgraphKey)?.metaKey
     }
     
-    override public func type(for key: NodeKey) -> Collection? {
-        return predecessor.type(for: key) ?? imported.type(for: key)
+    override var typeMap: [NodeKey : Collection] {
+        predecessor.typeMap.merging(imported.typeMap) { (a, _) in a }
     }
     
     override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {

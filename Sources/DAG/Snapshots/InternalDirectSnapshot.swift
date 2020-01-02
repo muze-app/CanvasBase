@@ -37,6 +37,8 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         self.predecessor = predecessor
         self._store = store
         
+        self.pTypeMap = predecessor?.typeMap ?? [:]
+            
         super.init(key)
     }
     
@@ -50,7 +52,8 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
 //    var hotSubgraphs = Set<SubgraphKey>() // 'hot' more or less means retained
     var subgraphs: [SubgraphKey:SubgraphData] = [:]
-    var typeMap: [NodeKey:Collection] = [:]
+    var _typeMap: [NodeKey:Collection] = [:]
+    let pTypeMap: [NodeKey:Collection] 
     var edgeMaps: [NodeKey:[Int:NodeKey]] = [:]
     var reverseEdges: [NodeKey:Bag<NodeKey>] = [:]
     var revData: [NodeKey:NodeRevData] = [:]
@@ -64,7 +67,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     var hasChanges: Bool {
-        if typeMap.isEmpty,
+        if _typeMap.isEmpty,
            edgeMaps.isEmpty,
            payloadMap.isEmpty,
            subgraphs.isEmpty /*,
@@ -81,16 +84,15 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Types
     
-    override public func type(for key: NodeKey) -> Collection? {
-        
-        return typeMap[key] ?? predecessor?.type(for: key)
+    override var typeMap: [NodeKey:Collection] {
+        return _typeMap.merging(pTypeMap) { (_, b) in b }
     }
     
     func setType(_ type: Collection, for key: NodeKey) {
         preconditionWriting()
         assert(isMutable)
         if self.type(for: key) == type { return }
-        typeMap[key] = type
+        _typeMap[key] = type
     }
     
     // MARK: Edges
@@ -303,13 +305,16 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // todo: use rev edges
     public func replace(_ key: NodeKey, with replacement: Node) {
+        replacement.add(to: self, useFreshKeys: false)
+        
         for subgraph in allSubgraphs {
             subgraph.finalNode = subgraph.finalNode?.replacing(key, with: replacement)
             
-            if let x = subgraph.finalNode, x.contains(key) {
-                fatalError()
-            }
-            
+//            #if DEBUG
+//            if let x = subgraph.finalNode, x.contains(key) {
+//                fatalError()
+//            }
+//            #endif
         }
         
 //        guard let rev = self.reverseEdges(for: key)?.asSet else {
