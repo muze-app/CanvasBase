@@ -39,7 +39,7 @@ public class CacheAndOptimizer {
 //        graph.subgraph(for: subgraphKey).finalNode?.log()
 
         graph = insertPreExistingCaches(graph)
-        graph = optimize(graph, &map1)
+//        graph = optimize(graph, &map1)
 
         let map2 = map1.mapValues { initial.node(for: $0) }
         graph = placeNewCaches(graph, map2, initial)
