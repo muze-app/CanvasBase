@@ -63,12 +63,16 @@ public class CacheNode: InputNode<CachePayload> {
     }
 
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-        guard let input = input else { return nil }
         if let payload = cachedPayload { return payload }
+        
+        guard let payload = input?.renderPayload(for: options) else {
+            return nil
+        }
 
-        let payload = input.renderPayload(for: options)
-
-        if let payload = payload, let intermediate = payload.intermediate, !intermediate.isCache {
+        if cachingEnabled,
+            let intermediate = payload.intermediate,
+            !intermediate.isCache {
+            
             intermediate.canAlias = false
             intermediate.isCache = true
 
