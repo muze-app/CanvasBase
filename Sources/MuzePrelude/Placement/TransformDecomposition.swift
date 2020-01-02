@@ -279,7 +279,7 @@ public extension CGAffineTransform {
 public extension CGFloat {
     
     static var random: CGFloat {
-        return CGFloat(arc4random_uniform(20000)) - 10000
+        return (CGFloat(arc4random_uniform(20000)) - 10000) / 100
     }
     
     static var formatter: NumberFormatter = NumberFormatter()

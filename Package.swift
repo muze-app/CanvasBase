@@ -34,6 +34,9 @@ let package = Package(
         .target( name: "CanvasBase",
                  dependencies: ["CanvasManager"]),
         
+        .testTarget( name: "MuzePreludeTests",
+                     dependencies: ["MuzePrelude"]),
+            
         .testTarget( name: "CanvasBaseTests",
                      dependencies: ["CanvasBase"])
         

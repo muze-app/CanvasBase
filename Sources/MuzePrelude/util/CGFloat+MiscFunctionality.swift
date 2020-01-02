@@ -12,6 +12,35 @@ import AppKit
 import UIKit
 #endif
 
+public extension BinaryFloatingPoint {
+    
+    func clamp(min: Self = 0, max: Self = 1) -> Self {
+        if self < min { return min }
+        if self > max { return max }
+        return self
+    }
+    
+}
+
+public extension BinaryInteger {
+    
+    func clamp(min: Self = 0, max: Self = 1) -> Self {
+        if self < min { return min }
+        if self > max { return max }
+        return self
+    }
+    
+}
+
+public extension Float {
+
+    static func ^ (lhs: Float, rhs: Float) -> Float {
+        return pow(lhs, rhs)
+    }
+    
+}
+
+
 public extension CGFloat {
     
     var asFloat: Float {
@@ -73,12 +102,12 @@ public extension CGFloat {
     //===========================================
     
     /// This is like the normal clamp function, but it doesn't presume which of the two inputs is the min or max and instead determines that for you.
+    @available(*, deprecated)
     func clamp(withinRange range: (CGFloat, CGFloat)) -> CGFloat {
-        fatalError()
-//        let min = CGFloat.minimum(range.0, range.1)
-//        let max = CGFloat.maximum(range.0, range.1)
-//
-//        return self.clamp(min: min, max: max)
+        let min = CGFloat.minimum(range.0, range.1)
+        let max = CGFloat.maximum(range.0, range.1)
+
+        return self.clamp(min: min, max: max)
     }
     
 //    func clamp(withinRange range: AnimationRange) -> CGFloat {
@@ -126,5 +155,15 @@ public extension CGFloat {
     static let screenWidth: CGFloat = UIScreen.main.bounds.width
     static let screenHeight: CGFloat = UIScreen.main.bounds.height
     #endif
+    
+}
+
+public extension CGFloat {
+    
+    static func ~ (lhs: CGFloat, rhs: CGFloat) -> Bool {
+        let d = lhs - rhs
+        let v = d.abs
+        return v < 0.0000001
+    }
     
 }

@@ -13,10 +13,14 @@ import UIKit
 
 public extension CGRect {
     
+    @inlinable
     var corners: [CGPoint] {
-        let xs = [minX, maxX]
-        let ys = [minY, maxY]
-        return (xs ** ys).map { CGPoint(x: $0, y: $1) }
+        let w = width
+        let h = height
+        return [.init(x: 0, y: 0),
+                .init(x: w, y: 0),
+                .init(x: 0, y: h),
+                .init(x: w, y: h)]
     }
     
 }

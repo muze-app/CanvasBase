@@ -45,6 +45,7 @@ public struct SizeAndTransform: Equatable {
         return SizeAndTransform(rect: bounds.inset(by: -amount * scale), transform: transform)
     }
     
+    @inlinable
     public var corners: [CGPoint] {
         return bounds.corners.map { $0.applying(transform.cg) }
     }

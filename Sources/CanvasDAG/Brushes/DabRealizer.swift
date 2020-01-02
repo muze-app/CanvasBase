@@ -59,17 +59,3 @@ public class DabRealizer {
     }
     
 }
-
-public extension Float {
-    
-    func clamp(min: Float = 0, max: Float = 1) -> Float {
-        if self < min { return min }
-        if self > max { return max }
-        return self
-    }
-    
-    static func ^ (lhs: Float, rhs: Float) -> Float {
-        return pow(lhs, rhs)
-    }
-    
-}
