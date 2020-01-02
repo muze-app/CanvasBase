@@ -17,6 +17,6 @@ class DAGHeap: Heap {
                    queue: queue)
     }
     
-    deinit { free(address) }
+    deinit { Darwin.free(address) }
     
 }

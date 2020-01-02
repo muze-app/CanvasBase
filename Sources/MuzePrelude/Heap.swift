@@ -161,13 +161,13 @@ open class Heap: CustomDebugStringConvertible {
     }
     
     func _free(_ pointer: UnsafeMutableRawPointer) {
-//        let chunkIndex = self.chunkIndex(for: pointer)
-//        guard let rangeIndex = usedChunks.firstIndex(where: { $0.startIndex == chunkIndex }) else { fatalError() }
-//        
-//        let range = usedChunks.remove(at: rangeIndex)
-//        freeChunks.append(range)
-//        
-//        _coalesceFreeChunks()
+        let chunkIndex = self.chunkIndex(for: pointer)
+        guard let rangeIndex = usedChunks.firstIndex(where: { $0.startIndex == chunkIndex }) else { fatalError() }
+        
+        let range = usedChunks.remove(at: rangeIndex)
+        freeChunks.append(range)
+        
+        _coalesceFreeChunks()
     }
     
     // MARK: Sorting and Coalescing
