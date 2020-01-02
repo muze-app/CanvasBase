@@ -32,7 +32,7 @@ class PayloadBufferSet: HeapSet<DAGHeap> {
     
     init() {
         super.init(layout: .init(heapSize: HeapLayout.pageSize * 4,
-                                 chunkSize: 16))
+                                 chunkSize: 64))
     }
     
     var buffers = WeakSet<PayloadBuffer>()
