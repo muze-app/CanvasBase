@@ -46,7 +46,7 @@ public final class MaskedColorNode: InputNode<MaskedColorPayload> {
 
         let colorBuffer = color
 
-        let masked = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+        let masked = RenderIntermediate(identifier: "Color", options: options, extent: renderExtent)
         masked << RenderPassDescriptor(identifier: "Mask",
                                        pipeline: pipeline,
                                        fragmentBuffers: [colorBuffer],

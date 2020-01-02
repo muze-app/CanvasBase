@@ -27,7 +27,7 @@ public class CompositeNode: ListNode<Float> {
     }
 
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+        let composite = RenderIntermediate(identifier: "Composite", options: options, extent: renderExtent)
 
         if !composite.extent.basic.exists {
             print(" no basic extent? \(composite.extent)")

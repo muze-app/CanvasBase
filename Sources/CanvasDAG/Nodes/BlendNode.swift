@@ -109,7 +109,7 @@ public final class BlendNode: PayloadNode<BlendPayload> {
     // MARK: Composite
     
     public func composite(source: RenderPayload, destination: RenderPayload?, options: RenderOptions) -> RenderPayload {
-        let composite = RenderIntermediate(identifier: "\(self)", options: options, extent: renderExtent)
+        let composite = RenderIntermediate(identifier: "Blend", options: options, extent: renderExtent)
 
         if let destination = destination {
             composite << RenderPassDescriptor(identifier: "Destination",
