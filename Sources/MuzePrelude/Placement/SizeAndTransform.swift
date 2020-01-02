@@ -12,6 +12,20 @@ import AppKit
 import UIKit
 #endif
 
+public extension CGAffineTransform {
+    
+    var isNaN: Bool {
+        a.isNaN || b.isNaN || c.isNaN || d.isNaN || tx.isNaN || ty.isNaN
+    }
+    
+}
+
+public extension AffineTransform {
+    
+    var isNaN: Bool { cg.isNaN }
+    
+}
+
 public struct SizeAndTransform: Equatable {
     
     public var size: CGSize
@@ -19,11 +33,13 @@ public struct SizeAndTransform: Equatable {
     public var bounds: CGRect { return CGRect(origin: .zero, size: size) }
     
     public init(size: CGSize, transform: AffineTransform = .identity) {
+        precondition(!transform.isNaN)
         self.size = size
         self.transform = transform
     }
     
     public init(rect: CGRect, transform: AffineTransform = .identity) {
+        precondition(!transform.isNaN)
         self.size = rect.size
         self.transform = .translating(x: rect.origin.x, y: rect.origin.y) * transform
     }
