@@ -45,8 +45,8 @@ public class CacheAndOptimizer {
         graph = placeNewCaches(graph, map2, initial)
         pruneOldCaches()
 
-//        print("AFTER:")
-//        graph.subgraph(for: subgraphKey).finalNode?.log()
+        print("AFTER:")
+        graph.subgraph(for: subgraphKey).finalNode?.log()
 
         return graph
     }
