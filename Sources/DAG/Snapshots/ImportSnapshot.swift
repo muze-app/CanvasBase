@@ -26,10 +26,6 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     
     override public var store: DAGStore<Collection> { predecessor.store }
     
-    override public var forbiddenKeys: Set<NodeKey> {
-        predecessor.forbiddenKeys + imported.forbiddenKeys
-    }
-    
     override public var allSubgraphKeys: Set<SubgraphKey> {
         return predecessor.allSubgraphKeys + imported.allSubgraphKeys
     }

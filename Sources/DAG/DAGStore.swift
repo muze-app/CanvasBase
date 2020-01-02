@@ -198,12 +198,6 @@ public class DAGStore<Collection: NodeCollection> {
     public func commit(_ snapshot: Snapshot, setLatest: Bool, process: Bool = true) -> CommitKey {
         let key: CommitKey = snapshot.key
         
-        
-        
-//        if isLayer {
-//            print("commit \(snapshot.key) (processed: \(!process))")
-//        }
-        
         write {
             var snapshot = snapshot
             if snapshot.depth > 20 {

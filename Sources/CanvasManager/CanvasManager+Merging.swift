@@ -113,8 +113,6 @@ extension CanvasManager {
                 updateCanvasSubgraph(in: graph)
             }
             
-            commit.forbid(keys: oldNodes)
-            
             store.commit(commit, setLatest: true)
         }
         

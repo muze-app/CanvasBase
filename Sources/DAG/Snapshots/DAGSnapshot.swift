@@ -66,8 +66,6 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.depth
     }
     
-    override public var forbiddenKeys: Set<NodeKey> { internalSnapshot.forbiddenKeys }
-    
     override public func type(for key: NodeKey) -> Collection? {
         internalSnapshot.type(for: key)
     }
