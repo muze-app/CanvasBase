@@ -67,12 +67,16 @@ extension IntAffineTransform: MetalBuffer {
     public var array: [Int16] { [a,b,c,d,x,y] }
     public var padded: [Int16] { array + [0,0] }
     
+    public func transformed(by transform: AffineTransform) -> Self { self }
+    
 }
 
 extension Int16: MetalBuffer {
     
     public var length: Int { 2 }
     public var asData: Data { Data(from: self) }
+    
+    public func transformed(by transform: AffineTransform) -> Self { self }
     
 }
 

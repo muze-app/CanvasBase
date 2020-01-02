@@ -408,4 +408,8 @@ extension Matrix3x3: MetalBuffer {
         return ([a1,a2,a3,b1,b2,b3,c1,c2,c3].map { Float($0) }).asData
     }
     
+    public func transformed(by transform: AffineTransform) -> Matrix3x3<N> {
+        return self
+    }
+    
 }

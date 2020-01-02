@@ -19,11 +19,11 @@ public protocol MetalBuffer {
     
 }
 
-extension MetalBuffer {
-    
-    public func transformed(by transform: AffineTransform) -> Self { return self }
-    
-}
+//extension MetalBuffer {
+//
+//    public func transformed(by transform: AffineTransform) -> Self { return self }
+//
+//}
 
 extension Data: MetalBuffer {
     
@@ -34,6 +34,8 @@ extension Data: MetalBuffer {
     public var asData: Data {
         return self
     }
+    
+    public func transformed(by transform: AffineTransform) -> Self { self }
     
 }
 

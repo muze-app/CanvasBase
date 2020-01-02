@@ -83,24 +83,24 @@ public extension RenderPayload {
 //            case .texture(let t): return .texture(t)
 //            case .intermediate(let p):
 //                guard let t = p.output.texture else { return nil }
-//                
+//
 ////                let o = p.output
 ////                let e = p.basicExtent.transform
-//                
-//                return .cropAndTransform(.texture(t), t.size, p.basicExtent.transform)
-//                
+//
+//                return .cropAndTransform(.texture(t), t.size, .identity)
+//
 //            case .alpha(let p, let a):
 //                guard let wo = p.withoutPass else { return nil }
 //                return .alpha(wo, a)
-//                
+//
 //            case .colorMatrix(let p, let m):
 //                guard let wo = p.withoutPass else { return nil }
 //                return .colorMatrix(wo, m)
-//                
+//
 //            case .transforming(let p, let t):
 //                guard let wo = p.withoutPass else { return nil }
 //                return .transforming(wo, t)
-//                
+//
 //            case .cropAndTransform(let p, let s, let t):
 //                guard let wo = p.withoutPass else { return nil }
 //                return .cropAndTransform(wo, s, t)

@@ -213,6 +213,12 @@ struct RenderDrawParams: MetalBuffer {
         }
     }
     
+    public func transformed(by transform: AffineTransform) -> Self {
+        var copy = self
+        copy.transform *= transform
+        return copy
+    }
+    
 }
 
 extension RenderPayload {

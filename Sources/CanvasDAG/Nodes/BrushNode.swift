@@ -14,7 +14,12 @@ public struct BrushNodePayload: NodePayload {
     public let brushContext: BrushContext
     public let transform: AffineTransform
     
-    public var readyToShow = false
+    public var i = 0
+    public var status = Status.hidden
+    
+    public enum Status {
+        case hidden, visible, done
+    }
     
     public init(defaultDab: AbstractDab, canvasSize: CGSize, spacing: CGFloat = BrushStroke.defaultSpacing) {
         texture = MetalHeapManager.shared.makeTexture(canvasSize, .r8Unorm, type: .longTerm)!
@@ -31,16 +36,24 @@ public struct BrushNodePayload: NodePayload {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(texture.pointerString)
         hasher.combine(transform)
+        hasher.combine(i)
+        hasher.combine(status)
     }
     
-    private init(_ d: MetalTexture, _ c: BrushContext, _ t: AffineTransform) {
+    private init(_ d: MetalTexture, _ c: BrushContext, _ t: AffineTransform, _ i: Int, _ s: Status) {
         texture = d
         brushContext = c
         transform = t
+        status = s
+        self.i = i
     }
     
     public func transformed(by transform: AffineTransform) -> BrushNodePayload {
-        return BrushNodePayload(texture, brushContext, self.transform * transform)
+        return BrushNodePayload(texture,
+                                brushContext,
+                                self.transform * transform,
+                                i,
+                                status)
     }
     
 }
@@ -67,12 +80,19 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     public var stroke: BrushStroke { return payload.stroke }
     public var realizer: DabRealizer { return payload.realizer }
     
-    public var readyToShow: Bool {
-        get { return payload.readyToShow }
-        set { payload.readyToShow = newValue }
+    public var i: Int {
+        get { payload.i }
+        set { payload.i = newValue }
+    }
+    
+    public var status: BrushNodePayload.Status {
+        get { payload.status }
+        set { payload.status = newValue }
     }
     
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        guard status != .hidden else { return nil }
+        
         texture.identifier = texture.identifier ?? "Brush"
         
         let t: RenderPayload = .texture(texture)
@@ -106,6 +126,8 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
                              vertexBuffers: [vertexBuffer, sizeBuffer])
         
         pass.commit()
+        
+        i += 1
     }
     
 //    var possibleOptimizations: [OptFunc] {
@@ -114,7 +136,7 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     
 //    var brushToImage: OptFunc { return { BrushToImageOpt($0) } }
     
-    override public var isInvisible: Bool { !readyToShow }
+    override public var isInvisible: Bool { status != .hidden }
     
 //    override var cacheable: Bool {
 //        return readyToShow
@@ -136,9 +158,7 @@ class BrushToImageOpt: Optimization {
         let brushNode = self.brushNode!
         let graph = brushNode.graph
         
-        // leave these 'comments' in for now please
-//        if true {
-        if brushNode.readyToShow {
+        if brushNode.status != .hidden {
             right = ImageNode(texture: brushNode.texture, transform: brushNode.transform, graph: graph)
         } else {
             right = nil
