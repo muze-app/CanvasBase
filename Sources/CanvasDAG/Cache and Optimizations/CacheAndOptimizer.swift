@@ -11,7 +11,7 @@ import DAG
 struct CacheEntry: Hashable {
     let key: NodeKey
     let contentHash: Int
-//    let
+    
 }
 
 public class CacheAndOptimizer {
@@ -106,20 +106,35 @@ public class CacheAndOptimizer {
         return cache
     }
     
-    public func store(_ payload: RenderPayload, for cacheNode: CacheNode) {
+    public func store(_ payload: RenderPayload, for cacheNode: CacheNode, iExtent: RenderExtent, pExtent: RenderExtent) {
         store(payload, for: cacheNode.originalKey,
-              hash: cacheNode.payload.contentHash)
+              hash: cacheNode.payload.contentHash, iExtent: iExtent, pExtent: pExtent)
     }
     
-    func store(_ payload: RenderPayload, for key: NodeKey, hash: Int) {
+    func store(_ payload: RenderPayload, for key: NodeKey, hash: Int, iExtent: RenderExtent, pExtent: RenderExtent) {
         let cache = self.cache(for: key)
         
         cache.hash = hash
         cache.payload = payload
+        cache.iExtent = iExtent
+        cache.pExtent = pExtent
     }
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
-        lookup(key: cacheNode.originalKey, hash: cacheNode.payload.contentHash)
+        let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.contentHash)
+        
+        if let cExtent = payload?.extent {
+            let cache = self.cache(for: cacheNode.originalKey)
+            let pExtent = cache.pExtent
+            let iExtent = cache.iExtent
+            
+            print("cExtent: \(cExtent)")
+            print("pExtent: \(pExtent)")
+            print("iExtent: \(iExtent)")
+            print(" ")
+        }
+        
+        return payload
     }
     
     func lookup(key: NodeKey, hash: Int) -> RenderPayload? {
@@ -154,6 +169,9 @@ class DAGCache {
     
     var hash: Int?
     var payload: RenderPayload?
+    
+    var pExtent: RenderExtent = .nothing
+    var iExtent: RenderExtent = .nothing
     
     init(_ key: NodeKey) {
         self.key = key
