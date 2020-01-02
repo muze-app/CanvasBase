@@ -70,6 +70,10 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.typeMap
     }
     
+    override public func type(for key: NodeKey) -> Collection? {
+        internalSnapshot.type(for: key)
+    }
+    
     override public var allSubgraphKeys: Set<SubgraphKey> {
         internalSnapshot.allSubgraphKeys
     }

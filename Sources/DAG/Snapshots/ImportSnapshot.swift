@@ -47,6 +47,10 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         predecessor.typeMap.merging(imported.typeMap) { (a, _) in a }
     }
     
+    override public func type(for key: NodeKey) -> Collection? {
+        predecessor.type(for: key) ?? imported.type(for: key)
+    }
+    
     override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
         return predecessor.payloadAllocation(for: key)
             ??    imported.payloadAllocation(for: key)

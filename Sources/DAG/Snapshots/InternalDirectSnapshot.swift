@@ -85,9 +85,13 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     // MARK: Types
     
     override var typeMap: [NodeKey:Collection] {
-        return _typeMap.merging(pTypeMap) { (_, b) in b }
+        return pTypeMap.merging(_typeMap) { (a, _) in a }
     }
     
+    override public func type(for key: NodeKey) -> Collection? {
+        return _typeMap[key] ?? pTypeMap[key]
+    }
+
     func setType(_ type: Collection, for key: NodeKey) {
         preconditionWriting()
         assert(isMutable)

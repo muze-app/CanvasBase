@@ -60,8 +60,8 @@ public class DAGBase<Collection: NodeCollection> {
     var typeMap: [NodeKey:Collection] { die }
     
     //    func node(for key: NodeKey) -> Node { }
-    public final func type(for key: NodeKey) -> Collection? {
-        typeMap[key]
+    public func type(for key: NodeKey) -> Collection? {
+        die
     }
     
     // PRECONDITION: node must exist in graph or will crash
