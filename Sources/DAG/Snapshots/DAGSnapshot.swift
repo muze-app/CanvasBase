@@ -19,8 +19,8 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     enum Mode { case internalReference, externalReference }
     let mode: Mode
     
-    var _store: DAGStore<Collection>
-    override public var store: DAGStore<Collection> { _store }
+    weak var _store: DAGStore<Collection>?
+    override public var store: DAGStore<Collection> { _store! }
     
     init(store: DAGStore<Collection>, key: SnapshotKey, _ mode: Mode) {
         self.mode = mode
@@ -42,13 +42,11 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 //    }
     
     deinit {
-//        let key = self.key
-//        let mode = self.mode
-//        if let store = store {
-//            DispatchQueue.global().async {
-                store.release(commitFor: key, mode: mode)
-//            }
-//        }
+        if let store = _store {
+            let key = self.key
+            let mode = self.mode
+            store.writeAsync { store.release(commitFor: key, mode: mode) }
+        }
     }
     
     public var internalSnapshot: InternalDirectSnapshot<Collection> {
