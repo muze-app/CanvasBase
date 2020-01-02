@@ -20,15 +20,8 @@ open class INode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadN
 //    override var worthCaching: Bool {
 //        return input?.worthCaching ?? false
 //    }
-//
-//    override var calculatedRenderExtent: RenderExtent {
-//        return input?.renderExtent ?? .nothing
-//    }
-//
-//    override var calculatedUserExtent: UserExtent {
-//        return input?.userExtent ?? .nothing
-//    }
-    
+
+   
 }
 
 open class GeneratorNode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {

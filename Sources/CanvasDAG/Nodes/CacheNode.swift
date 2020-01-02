@@ -122,3 +122,25 @@ public class CacheNode: InputNode<CachePayload> {
     }
 
 }
+
+public class CacheBlocker: InputNode<One> {
+    
+    override public var calculatedCacheable: Bool { false }
+    
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        return input?.renderPayload(for: options)
+    }
+    
+    override public var calculatedRenderExtent: RenderExtent {
+        return input?.renderExtent ?? .nothing
+    }
+    
+    override public var calculatedUserExtent: UserExtent {
+        return input?.userExtent ?? .nothing
+    }
+    
+    public init(_ key: NodeKey = NodeKey(), graph: Graph) {
+        super.init(key, graph: graph, payload: .one, nodeType: .blocker)
+    }
+    
+}

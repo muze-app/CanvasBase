@@ -80,10 +80,15 @@ extension CanvasManager {
             let metadata = metaNode.payload
             if metadata.isHidden { continue }
             if metadata.alpha == 0 { continue }
-
-            let blend = BlendNode(graph: graph, payload: metadata.blendPayload)
+            
+            let layerKey = NodeKey(subgraphKey)
+            
+            let blocker = CacheBlocker(layerKey.with("blocker"), graph: graph)
+            blocker.input = graph.node(for: finalKey)
+            
+            let blend = BlendNode(layerKey.with("blend"), graph: graph, payload: metadata.blendPayload)
             blend.destination = lastBlend
-            blend.source = graph.node(for: finalKey)
+            blend.source = blocker
             blend.alpha = metadata.alpha
             blend.blendMode = metadata.blendMode
 

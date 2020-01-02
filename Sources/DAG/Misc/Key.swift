@@ -21,6 +21,10 @@ public struct Key<Universe>: Hashable, CustomDebugStringConvertible {
     public init(_ value: UInt64) { self.value = value }
     public init() { self.value = UInt64(arc4random()) }
     
+    public init<T>(_ key: Key<T>) {
+        self.init(key.value)
+    }
+    
     public var debugDescription: String {
         return String(String(value, radix: 16, uppercase: true).prefix(8))
     }

@@ -60,6 +60,8 @@ public struct BrushNodePayload: NodePayload {
 
 public class BrushNode: GeneratorNode<BrushNodePayload> {
     
+    override public var calculatedCacheable: Bool { status == .done }
+    
     public convenience init(_ key: NodeKey = NodeKey(),
                             graph: Graph,
                             defaultDab: AbstractDab,

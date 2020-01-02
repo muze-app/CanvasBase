@@ -66,6 +66,8 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     //    case caption
     case cache
+    case blocker
+    
     case effect
     //    case crop
     case canvasOverlay
@@ -98,6 +100,8 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
             case .maskSeries: return MaskSeriesNode(key, graph: graph)
             
             case .checkerboard: return CheckerboardNode(key, graph: graph)
+            
+            case .blocker: return CacheBlocker(key, graph: graph)
             
             default:
                 print("type: \(self)")

@@ -33,12 +33,53 @@ final class CreationIntegrationTests: XCTestCase, CanvasBaseTestCase {
         XCTAssert(true)
     }
     
+    func flatten(_ node: BlendNode) -> [BlendNode] {
+        var current = node
+        var nodes = [node]
+        
+        while true {
+            guard let next = current.destination as? BlendNode else { break }
+            
+            nodes.append(next)
+            current = next
+        }
+
+        return nodes
+    }
+    
+//    func testThatBlendUsesSameKeysConsistently() {
+//        let size = CGSize(width: 414, height: 630)
+//        let creation = BlendCreation(canvasSize: size)
+//        let manager = creation.canvasManager
+//        let store = manager.store
+//
+//        let cache = CacheAndOptimizer(manager.subgraphKey)
+//
+//        for _ in 0...100 {
+//            creation.push(.mock, .normal)
+//
+//            store.write {
+//                let subgraph = manager.display.subgraph(for: creation.layerSubgraphKey)
+//                let finalNode = subgraph.finalNode as! BlendNode
+//
+//                let flat = flatten(finalNode)
+//
+//                finalNode.log()
+//
+//                print("flat: \(flat)")
+//                print("")
+//            }
+//        }
+//
+//
+//    }
+    
 //    func testBlendExtents() {
 //        let size = CGSize(width: 414, height: 630)
 //        let creation = BlendCreation(canvasSize: size)
 //        let manager = creation.canvasManager
 //        let store = manager.store
-//        
+//
 //        let cache = CacheAndOptimizer(manager.subgraphKey)
 //        
 //        for _ in 0...100 {

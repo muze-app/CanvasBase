@@ -73,6 +73,19 @@ extension CanvasNode {
         if self is CacheNode { return self }
         if cost < 2 { return self }
         
+        if !cacheable {
+            for (i, k) in edgeMap {
+                let node = graph.node(for: k)
+                let cached = node.addingNewCacheNodes(to: graph,
+                                                      optimizer: optimizer,
+                                                      map: map,
+                                                      og: og,
+                                                      addedNodes: &addedNodes)
+                nodeInputs[i] = cached
+            }
+            return self
+        }
+        
         let original = map[key] ?? og.node(for: key)
         
         let cacheNode = CacheNode(graph,

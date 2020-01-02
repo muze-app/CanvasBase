@@ -283,17 +283,28 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
         fatalError()
     }
     
-    open var renderExtent: Collection.RenderExtentType { calculatedRenderExtent }
+    public final var renderExtent: Collection.RenderExtentType { calculatedRenderExtent }
     open var calculatedRenderExtent: Collection.RenderExtentType {
         print("\(self) doesn't implement calculatedRenderExtent")
         fatalError()
     }
     
-    open var userExtent: Collection.UserExtentType { calculatedUserExtent }
+    public final var userExtent: Collection.UserExtentType { calculatedUserExtent }
     open var calculatedUserExtent: Collection.UserExtentType {
         print("\(self) doesn't implement calculatedUserExtent")
         fatalError()
     }
+    
+    public final var cacheable: Bool {
+        if !calculatedCacheable { return false }
+        
+        for input in inputs where !input.cacheable {
+            return false
+        }
+        
+        return true
+    }
+    open var calculatedCacheable: Bool { true }
     
     // MARK: Other
     

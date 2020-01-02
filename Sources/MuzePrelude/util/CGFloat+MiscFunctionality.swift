@@ -40,7 +40,6 @@ public extension Float {
     
 }
 
-
 public extension CGFloat {
     
     var asFloat: Float {
