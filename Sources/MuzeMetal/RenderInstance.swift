@@ -49,8 +49,8 @@ public class RenderInstance {
             print("PASSES")
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
-                print("        \(pass.inputExtent!)")
-                print("        \(pass.inputExtent!.corners)")
+                print("        \(pass.inputExtent)")
+                print("        \(pass.inputExtent?.corners)")
                 
                 let rect = pass.inputExtent!.corners.containingRect
                 if let goal = RenderInstance.tempRect {
