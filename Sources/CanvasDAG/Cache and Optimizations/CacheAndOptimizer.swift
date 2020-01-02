@@ -47,7 +47,11 @@ public class CacheAndOptimizer {
 
         print("AFTER:")
         graph.subgraph(for: subgraphKey).finalNode?.log()
+        
+        let e =  graph.subgraph(for: subgraphKey).finalNode?.calculatedRenderExtent ?? .nothing
 
+        print("extent: \(e)")
+        
         return graph
     }
     

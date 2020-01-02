@@ -89,7 +89,7 @@ public class ImageNode: GeneratorNode<ImagePayload> {
     
 }
 
-public struct ImagePayload: NodePayload {
+public struct ImagePayload: NodePayload, CustomDebugStringConvertible {
     
     public var texture: MetalTexture
     public var transform: AffineTransform
@@ -105,6 +105,12 @@ public struct ImagePayload: NodePayload {
 
     public func transformed(by transform: AffineTransform) -> ImagePayload {
         return ImagePayload(texture, transform * transform, colorMatrix)
+    }
+    
+    public var debugDescription: String {
+        let textureString = texture.identifier ?? texture.pointerString
+        let transformString = "\(transform.cg.asFloats)"
+        return "ImagePayload(\(textureString), \(transformString))"
     }
     
 }

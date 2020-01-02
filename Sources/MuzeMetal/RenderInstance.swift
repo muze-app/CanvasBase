@@ -47,6 +47,7 @@ class RenderInstance {
             print("PASSES")
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
+                print("        \(pass.inputExtent)")
             }
         }
         
@@ -209,7 +210,7 @@ class RenderInstance {
 //        }
     }
     
-    let isDebugging: Bool = false
+    let isDebugging: Bool = true
     
 }
 
