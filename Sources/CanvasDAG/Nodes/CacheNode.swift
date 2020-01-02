@@ -82,7 +82,7 @@ public class CacheNode: InputNode<CachePayload> {
             print("iextent: \(iextent)")
             print("pextent: \(pextent)")
 
-            cache.store(payload, for: self, iExtent: iextent, pExtent: pextent)
+            cache.store(payload, for: self, extent: pextent)
         }
 
         return payload

@@ -106,31 +106,33 @@ public class CacheAndOptimizer {
         return cache
     }
     
-    public func store(_ payload: RenderPayload, for cacheNode: CacheNode, iExtent: RenderExtent, pExtent: RenderExtent) {
+    public func store(_ payload: RenderPayload,
+                      for cacheNode: CacheNode,
+                      extent: RenderExtent) {
         store(payload, for: cacheNode.originalKey,
-              hash: cacheNode.payload.contentHash, iExtent: iExtent, pExtent: pExtent)
+              hash: cacheNode.payload.contentHash, extent: extent)
     }
     
-    func store(_ payload: RenderPayload, for key: NodeKey, hash: Int, iExtent: RenderExtent, pExtent: RenderExtent) {
+    func store(_ payload: RenderPayload,
+               for key: NodeKey,
+               hash: Int,
+               extent: RenderExtent) {
         let cache = self.cache(for: key)
         
         cache.hash = hash
         cache.payload = payload
-        cache.iExtent = iExtent
-        cache.pExtent = pExtent
+        cache.extent = extent
     }
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
         let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.contentHash)
         
-        if let cExtent = payload?.extent {
+        if let pExtent = payload?.extent {
             let cache = self.cache(for: cacheNode.originalKey)
-            let pExtent = cache.pExtent
-            let iExtent = cache.iExtent
+            let cExtent = cache.extent
             
             print("cExtent: \(cExtent)")
             print("pExtent: \(pExtent)")
-            print("iExtent: \(iExtent)")
             print(" ")
         }
         
@@ -170,8 +172,7 @@ class DAGCache {
     var hash: Int?
     var payload: RenderPayload?
     
-    var pExtent: RenderExtent = .nothing
-    var iExtent: RenderExtent = .nothing
+    var extent: RenderExtent = .nothing
     
     init(_ key: NodeKey) {
         self.key = key
