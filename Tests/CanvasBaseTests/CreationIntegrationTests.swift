@@ -33,4 +33,24 @@ final class CreationIntegrationTests: XCTestCase, CanvasBaseTestCase {
         XCTAssert(true)
     }
     
+    func testBlendExtents() {
+        let size = CGSize(width: 414, height: 630)
+        let creation = BlendCreation(canvasSize: size)
+        let manager = creation.canvasManager
+        let store = manager.store
+        
+        for _ in 0...100 {
+            creation.push(.mock, .normal)
+            
+            store.read {
+                let subgraph = manager.displayCanvas.subgraph(for: manager.subgraphKey)
+                
+                let finalNode = subgraph.finalNode!
+                
+                print("- \(finalNode.calculatedRenderExtent)")
+            }
+        }
+        
+    }
+    
 }

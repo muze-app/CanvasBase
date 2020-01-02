@@ -73,7 +73,7 @@ public class MockTexture: NSObject, MTLTexture {
         self.init(width: Int(size.width), height: Int(size.height))
     }
     
-    init(width: Int = 8, height: Int = 8) {
+    init(width: Int = 828, height: Int = 1260) {
         self.width = width
         self.height = height
         super.init()
