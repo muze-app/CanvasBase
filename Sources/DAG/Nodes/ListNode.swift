@@ -9,6 +9,10 @@ import Foundation
 
 extension Array: NodePayload where Element: NodePayload {
     
+//    public func transformed(by transform: AffineTransform) -> [Element] {
+//        map { $0.transformed(by: transform) }
+//    }
+    
 }
 
 open class ListNode<Collection: NodeCollection, PayloadElement: NodePayload>: PayloadNode<Collection, [PayloadElement]> {

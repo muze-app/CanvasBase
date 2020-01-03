@@ -210,7 +210,6 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         assert(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
-        
         if !force, self.payload(for: key, of: T.self) == payload { return }
         
         if let allocation = payloadMap[key] {

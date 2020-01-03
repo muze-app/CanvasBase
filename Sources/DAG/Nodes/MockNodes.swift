@@ -55,4 +55,8 @@ public struct MockNodePayload: NodePayload, ExpressibleByIntegerLiteral {
     public init(_ value: Int) { int = value }
     public init(integerLiteral value: Int) { int = value }
     
+    public func transformed(by transform: AffineTransform) -> MockNodePayload {
+        self
+    }
+    
 }

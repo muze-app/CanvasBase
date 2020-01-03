@@ -14,17 +14,17 @@ public typealias AffineTransform = MuzePrelude.AffineTransform
 
 public protocol NodePayload: Hashable {
     
-    func transformed(by transform: AffineTransform) -> Self
+//    func transformed(by transform: AffineTransform) -> Self
     
 }
 
-extension NodePayload {
-    
-    public func transformed(by transform: AffineTransform) -> Self {
-        return self
-    }
-    
-}
+//extension NodePayload {
+//    
+//    public func transformed(by transform: AffineTransform) -> Self {
+//        return self
+//    }
+//    
+//}
 
 open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: GenericNode<Collection> {
     

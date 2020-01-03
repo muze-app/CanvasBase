@@ -49,19 +49,19 @@ public class RenderInstance {
             print("PASSES")
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
-                print("        \(pass.inputExtent)")
-                print("        \(pass.inputExtent?.corners)")
-                
-                if let rect = pass.inputExtent?.corners.containingRect,
-                   let goal = RenderInstance.tempRect {
-                    if rect ~= goal {
-                        print("    GOOD!")
-                    } else {
-                        print("    BAD!")
-                        print("    expected \(goal), got \(rect)")
-                        print(" ")
-                    }
-                }
+//                print("        \(pass.inputExtent)")
+//                print("        \(pass.inputExtent?.corners)")
+//
+//                if let rect = pass.inputExtent?.corners.containingRect,
+//                   let goal = RenderInstance.tempRect {
+//                    if rect ~= goal {
+//                        print("    GOOD!")
+//                    } else {
+//                        print("    BAD!")
+//                        print("    expected \(goal), got \(rect)")
+//                        print(" ")
+//                    }
+//                }
             }
         }
         
