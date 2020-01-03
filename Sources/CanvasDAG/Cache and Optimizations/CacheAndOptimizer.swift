@@ -109,8 +109,9 @@ public class CacheAndOptimizer {
                       for cacheNode: CacheNode,
                       extent: RenderExtent) {
         print("STORE")
-        print("node: \(cacheNode)")
-        print("hash: \(cacheNode.payload.originalHash)")
+        print("cache node: \(cacheNode.key)")
+        print("original key: \(cacheNode.payload.originalKey)")
+        print("original hash: \(cacheNode.payload.originalHash)")
         store(payload, for: cacheNode.originalKey,
               hash: cacheNode.payload.originalHash, extent: extent)
     }
@@ -129,8 +130,9 @@ public class CacheAndOptimizer {
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
         print("LOOKUP")
-        print("node: \(cacheNode.key)")
-        print("hash: \(cacheNode.payload.originalHash)")
+        print("cache node: \(cacheNode.key)")
+        print("original key: \(cacheNode.payload.originalKey)")
+        print("original hash: \(cacheNode.payload.originalHash)")
         let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.originalHash)
         
         if let pExtent = payload?.extent {

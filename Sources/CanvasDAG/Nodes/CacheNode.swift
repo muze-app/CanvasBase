@@ -110,17 +110,18 @@ public class CacheNode: InputNode<CachePayload> {
 //    }
 
     override public var debugDescription: String {
-        guard input.exists else { return "CacheNode (no input!?!?)" }
-
-        if let payload = cachedPayload {
-            if payload.isPass {
-                return "CacheNode (with unrendered payload)"
-            } else {
-                return "CacheNode (with rendered payload)"
-            }
-        } else {
-            return "CacheNode (no payload)"
-        }
+        return "CacheNode \(key)"
+//        guard input.exists else { return "CacheNode (no input!?!?)" }
+//
+//        if let payload = cachedPayload {
+//            if payload.isPass {
+//                return "CacheNode (with unrendered payload)"
+//            } else {
+//                return "CacheNode (with rendered payload)"
+//            }
+//        } else {
+//            return "CacheNode (no payload)"
+//        }
     }
 
 }
