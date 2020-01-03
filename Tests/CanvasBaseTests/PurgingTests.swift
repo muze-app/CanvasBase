@@ -29,26 +29,25 @@ final class PurgingTests: XCTestCase, CanvasBaseTestCase {
         return snapshots
     }
     
-    func setupFirstTen(_ store: Store, _ subgraphKey: SubgraphKey) -> [Snapshot] {
-        let initial = InternalSnapshot(store: store)
-        store.commit(initial)
-        
-        var graph: Graph = initial
+    func setupFirstTen(_ store: Store, _ graph: inout Graph, _ subgraphKey: SubgraphKey) -> [Snapshot] {
         return addThreeLayers(to: &graph, subgraph: subgraphKey)
     }
     
-    func setupSecondTen(_ store: Store, _ subgraphKey: SubgraphKey) -> [Snapshot] {
-        var graph: Graph = store.latest
+    func setupSecondTen(_ store: Store, _ graph: inout Graph, _ subgraphKey: SubgraphKey) -> [Snapshot] {
         return addThreeLayers(to: &graph, subgraph: subgraphKey)
     }
     
     // swiftlint:disable:next function_body_length
     func testPurge() {
         let store = Store()
+        let initial = InternalSnapshot(store: store)
+        store.commit(initial)
+        
         let subgraphKey = SubgraphKey()
         
-        var first: [Snapshot] = autoreleasepool { setupFirstTen(store, subgraphKey) }
-        let second: [Snapshot] = autoreleasepool { setupSecondTen(store, subgraphKey) }
+        var graph: Graph = initial
+        var first: [Snapshot] = autoreleasepool { setupFirstTen(store, &graph, subgraphKey) }
+        let second: [Snapshot] = autoreleasepool { setupSecondTen(store, &graph, subgraphKey) }
         
         let commitCount = store.sortedCommits.count
         print("first.count: \(first.count)")
