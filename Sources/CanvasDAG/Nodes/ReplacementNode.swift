@@ -43,7 +43,7 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
                 _ texture: MetalTexture,
                 _ transform: AffineTransform) {
         let payload = ReplacementPayload(texture, transform, contentHash)
-        super.init(key.with("replacement"), graph: graph, payload: payload, nodeType: .replacement)
+        super.init(key, graph: graph, payload: payload, nodeType: .replacement)
     }
     
     init(_ key: NodeKey,

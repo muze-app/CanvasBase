@@ -98,6 +98,8 @@ extension CanvasManager {
             for (key, node) in renderReplacements(graph, oldNodes) {
 //                guard let (texture, transform) = value else { fatalError() }
                 
+                
+                
                 replacements[key] = node //
 
             }
