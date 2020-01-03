@@ -32,6 +32,7 @@ public class DAGStore<Collection: NodeCollection> {
     
     public typealias Snapshot = InternalDirectSnapshot<Collection>
     
+    @available(*, deprecated)
     public var latest: DAGSnapshot<Collection>!
     var commits = WeakDict<CommitKey, Snapshot>()
     
