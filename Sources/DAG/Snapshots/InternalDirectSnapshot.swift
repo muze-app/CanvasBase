@@ -212,7 +212,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         
         if !force, self.payload(for: key, of: T.self) == payload { return }
         
-        if let allocation = payloadMap[key] {
+        if !force, let allocation = payloadMap[key] {
             allocation.pointer.assumingMemoryBound(to: T.self).assign(repeating: payload, count: 1)
             return
         }
