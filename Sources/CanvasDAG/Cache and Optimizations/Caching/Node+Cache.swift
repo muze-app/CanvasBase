@@ -38,6 +38,12 @@ extension CanvasGraph {
                                                  original: original,
                                                  optimized: original)
                 
+                if original.contentHash != entry.originalHash {
+                    print("not a match?")
+                    original.log()
+                    print("")
+                }
+                
                 graph.replace(original.key, with: cache, onlyExcluded: true)
                 
 //                guard let revEdges = graph.reverseEdges(for: original.key) else { continue }
