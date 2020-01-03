@@ -162,45 +162,45 @@ extension CanvasManager {
     private func determineNodesToRemove(_ sortedCommits: HeadAndTail<InternalSnapshot>) -> [NodeKey] {
         let changedNodes = Set( sortedCommits.tail.flatMap { $0.nodesTouchedSincePredecessor } )
         
-        for subgraph in sortedCommits.head.importantSubgraphs {
-            print("SUBGRAPH: \(subgraph.key)")
-            subgraph.finalNode?.log()
-        }
+//        for subgraph in sortedCommits.head.importantSubgraphs {
+//            print("SUBGRAPH: \(subgraph.key)")
+//            subgraph.finalNode?.log()
+//        }
         
-        print("CHANGED NODES")
-        for node in changedNodes {
-            print("- \(node)")
-        }
-        
-        print("UNCHANGED NODES:")
+//        print("CHANGED NODES")
+//        for node in changedNodes {
+//            print("- \(node)")
+//        }
+//
+//        print("UNCHANGED NODES:")
         
         let r = sortedCommits.head.importantSubgraphs.flatMap { $0.finalNode?.nodes(thatDoNotContain: changedNodes) ?? [] }
-        for node in r {
-            print("- \(node)")
-        }
+//        for node in r {
+//            print("- \(node)")
+//        }
         
-        #if DEBUG
-        
-        let nodes = r.map { sortedCommits.head.node(for: $0) }
-        
-        let intersection = changedNodes.intersection(r)
-        if !intersection.isEmpty {
-            print("uh oh")
-        }
-        
-        for a in nodes {
-            for b in nodes where b !== a {
-                if a.contains(b.key) {
-                    print("uh oh")
-                }
-                
-                if b.contains(a.key) {
-                    print("uh oh")
-                }
-            }
-        }
-        
-        #endif
+//        #if DEBUG
+//
+//        let nodes = r.map { sortedCommits.head.node(for: $0) }
+//
+//        let intersection = changedNodes.intersection(r)
+//        if !intersection.isEmpty {
+//            print("uh oh")
+//        }
+//
+//        for a in nodes {
+//            for b in nodes where b !== a {
+//                if a.contains(b.key) {
+//                    print("uh oh")
+//                }
+//
+//                if b.contains(a.key) {
+//                    print("uh oh")
+//                }
+//            }
+//        }
+//
+//        #endif
         
 //        if let first = r.last { return [first] } else { return [] }
         
