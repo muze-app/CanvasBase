@@ -9,7 +9,7 @@ import Foundation
 import DAG
 
 struct CacheEntry: Hashable {
-    let key: NodeKey
+    let originalKey: NodeKey
     let originalHash: Int
 }
 
@@ -34,30 +34,34 @@ public class CacheAndOptimizer {
         var graph = graph
         var map1 = [NodeKey:NodeKey]()
 
-        print("BEFORE:")
-        graph.subgraph(for: subgraphKey).finalNode?.log()
+//        print("BEFORE:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
 
-        graph = insertPreExistingCaches(graph)
-//        graph = optimize(graph, &map1)
+        var added = Set<NodeKey>()
+        graph = insertPreExistingCaches(graph, added: &added)
+        graph = optimize(graph, &map1)
+        
+        let unused = Set(entries.keys).subtracting(added)
+        entries = entries.filter { !unused.contains($0.key) }
 
         let map2 = map1.mapValues { initial.node(for: $0) }
         graph = placeNewCaches(graph, map2, initial)
         pruneOldCaches()
 
-        print("AFTER:")
-        graph.subgraph(for: subgraphKey).finalNode?.log()
+//        print("AFTER:")
+//        graph.subgraph(for: subgraphKey).finalNode?.log()
         
-        let e =  graph.subgraph(for: subgraphKey).finalNode?.calculatedRenderExtent ?? .nothing
-
-        print("extent: \(e)")
+//        let e =  graph.subgraph(for: subgraphKey).finalNode?.calculatedRenderExtent ?? .nothing
+//        print("extent: \(e)")
         
         return graph
     }
     
-    func insertPreExistingCaches(_ graph: Graph) -> Graph {
+    func insertPreExistingCaches(_ graph: Graph, added: inout Set<NodeKey>) -> Graph {
         return graph.addingCacheNodes(to: subgraphKey,
                                       optimizer: self,
-                                      for: Array(entries.values))
+                                      for: Array(entries.values),
+                                      added: &added)
     }
     
     func optimize(_ graph: Graph, _ map: inout [NodeKey:NodeKey]) -> Graph {
@@ -85,7 +89,7 @@ public class CacheAndOptimizer {
 //        print("NEW CACHE NODES:")
         for n in addedNodes {
 //            print("\(n.key)")
-            entries[n.key] = n
+            entries[n.originalKey] = n
         }
         
         return graph

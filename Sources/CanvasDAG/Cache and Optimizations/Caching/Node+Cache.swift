@@ -27,12 +27,13 @@ extension CanvasGraph {
     
     func addingCacheNodes(to subgraph: SubgraphKey,
                           optimizer: CacheAndOptimizer,
-                          for entries: [CacheEntry]) -> CanvasGraph {
+                          for entries: [CacheEntry],
+                          added: inout Set<NodeKey>) -> CanvasGraph {
         modify { graph in
             for entry in entries {
 //                print("ENTRY: \(entry)")
-                guard graph.type(for: entry.key).exists else { continue }
-                let original = graph.node(for: entry.key)
+                guard graph.type(for: entry.originalKey).exists else { continue }
+                let original = graph.node(for: entry.originalKey)
                 let cache: CacheNode = CacheNode(graph,
                                                  optimizer,
                                                  original: original,
@@ -45,6 +46,7 @@ extension CanvasGraph {
                 }
                 
                 graph.replace(original.key, with: cache, onlyExcluded: true)
+                added.insert(entry.originalKey)
                 
 //                guard let revEdges = graph.reverseEdges(for: original.key) else { continue }
 //
@@ -99,7 +101,7 @@ extension CanvasNode {
                                   original: original,
                                   optimized: self)
         
-        let entry = CacheEntry(key: original.key, originalHash: original.contentHash)
+        let entry = CacheEntry(originalKey: original.key, originalHash: original.contentHash)
         addedNodes.insert(entry)
         
         return cacheNode
