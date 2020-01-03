@@ -41,6 +41,8 @@ public class CacheNode: InputNode<CachePayload> {
     var originalKey: NodeKey { payload.originalKey }
     var cache: CacheAndOptimizer { payload.cache }
     var store: DAGStore<CanvasNodeCollection> { graph.store }
+    
+    override public var contentHash: Int { input?.contentHash ?? 0 }
 
     init(_ graph: MutableCanvasGraph,
          _ optimizer: CacheAndOptimizer,
