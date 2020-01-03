@@ -67,6 +67,7 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     //    case caption
     case cache
     case blocker
+    case replacement
     
     case effect
     //    case crop
@@ -101,6 +102,7 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
             
             case .checkerboard: return CheckerboardNode(key, graph: graph)
             
+            case .replacement: return ReplacementNode(key, graph: graph)
             case .blocker: return CacheBlocker(key, graph: graph)
             
             default:

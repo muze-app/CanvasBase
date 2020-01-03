@@ -36,7 +36,7 @@ open class GenericNode<Collection: NodeCollection>: Hashable, CustomDebugStringC
     
     public var type: Collection { graph.type(for: key)! }
     
-    public var contentHash: Int { fatalError() }
+    open var contentHash: Int { fatalError() }
     
     public init(_ key: Key = .init(), graph: DAGBase<Collection>) {
         self.key = key

@@ -13,8 +13,8 @@ public class ImageNode: GeneratorNode<ImagePayload> {
     
     override public var cost: Int { 1 }
     
-    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: ImagePayload? = nil) {
-        super.init(key, graph: graph, payload: payload, nodeType: .image)
+    public init(_ key: NodeKey = NodeKey(), graph: Graph, payload: ImagePayload? = nil, nodeType: CanvasNodeCollection = .image) {
+        super.init(key, graph: graph, payload: payload, nodeType: nodeType)
     }
     
 //    init(_ key: NodeKey = NodeKey(),
@@ -104,7 +104,7 @@ public struct ImagePayload: NodePayload, CustomDebugStringConvertible {
     }
 
     public func transformed(by transform: AffineTransform) -> ImagePayload {
-        return ImagePayload(texture, transform * transform, colorMatrix)
+        return ImagePayload(texture, self.transform * transform, colorMatrix)
     }
     
     public var debugDescription: String {

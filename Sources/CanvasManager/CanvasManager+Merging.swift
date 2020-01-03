@@ -95,10 +95,10 @@ extension CanvasManager {
         var replacements: [NodeKey:Node] = [:]
         
         let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
-            for (key, value) in renderReplacements(sortedCommits.head, oldNodes) {
-                guard let (texture, transform) = value else { fatalError() }
+            for (key, node) in renderReplacements(graph, oldNodes) {
+//                guard let (texture, transform) = value else { fatalError() }
                 
-                replacements[key] = ImageNode(graph: graph, payload: .init(texture, transform, .identity))
+                replacements[key] = node //
 
             }
         }
@@ -231,23 +231,18 @@ extension CanvasManager {
 //        return .init(oldNodes)
     }
     
-    private func renderReplacements(_ graph: Graph, _ keys: [NodeKey]) -> [NodeKey:TextureAndTransform?] {
-//        print("RENDERING REPLACEMENTS")
-//        for key in keys {
-//            let node = graph.node(for: key)
-//            node.log()
-//        }
-        
-//        print("")
-        
-//        for key in keys {
-//            renderReplacement(graph, key)
-//        }
-        
-        return .init(keys) { renderReplacement(graph, $0) }
+    private func renderReplacements(_ graph: Graph, _ keys: [NodeKey]) -> [NodeKey:ReplacementNode] {
+        return .init(keys) { key in
+            let (hash, pair) = renderReplacement(graph, key)
+            guard let (texture, transform) = pair else {
+                fatalError()
+            }
+            
+            return .init(key, hash, graph: graph, texture, transform)
+        }
     }
     
-    private func renderReplacement(_ graph: Graph, _ key: NodeKey) -> TextureAndTransform? {
+    private func renderReplacement(_ graph: Graph, _ key: NodeKey) -> (Int, TextureAndTransform?) {
 //        let graph = graph.optim
         
         #if targetEnvironment(simulator)
@@ -260,9 +255,10 @@ extension CanvasManager {
             return result
        
         #elseif os(macOS)
-        return (.mock, .identity)
+        return (0, (.mock, .identity))
         #else
         let node = graph.node(for: key)
+        let hash = node.contentHash
         let options = RenderOptions("purge", mode: .usingExtent, format: .float16, time: 0)
         if let payload = node.renderPayload(for: options) {
             let result = RenderManager.shared.renderSync(payload, options)
@@ -270,10 +266,10 @@ extension CanvasManager {
             print("rendered: \(result)")
             print(" ")
             
-            return result
+            return (hash, result)
         } else {
             print(" ")
-            return nil
+            return (hash, nil)
         }
         #endif
     }

@@ -130,7 +130,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         //        return data.userExtent!
     }*/
     
-    override public final var contentHash: Int {
+    override open var contentHash: Int {
         return calculatedContentHash
         //        var data = dag.revData(for: key) ?? NodeRevData()
         //        if let h = data.hash { return h }
