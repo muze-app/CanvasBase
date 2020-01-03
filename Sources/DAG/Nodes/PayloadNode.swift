@@ -91,11 +91,34 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
     override public func add(diffTo graph: MutableGraph, parent: Graph) {
         super.add(diffTo: graph, parent: parent)
         
+        let sourceType = self.graph.type(for: key)
+        let parentType = parent.type(for: key)
+        
+        print("sourceType: \(sourceType)")
+        print("parentType: \(parentType)")
+        
         let source = self.graph
         if let sourcePayload = source.payload(for: key, of: PayloadType.self),
             parent.payload(for: key, of: PayloadType.self) != sourcePayload {
             graph.setPayload(sourcePayload, for: key)
         }
+        
+//        super.add(diffTo: graph, parent: parent)
+//
+//        let source = self.graph
+//
+//        let sourceType = source.type(for: key)
+//        let parentType = parent.type(for: key)
+//
+//        guard let sourcePayload = source.payload(for: key, of: PayloadType.self) else { return }
+//
+//        if sourceType == parentType {
+//            if sourcePayload == parent.payload(for: key, of: PayloadType.self) {
+//                return
+//            }
+//        }
+//
+//        graph.setPayload(sourcePayload, for: key)
     }
     
     public subscript(i: Int) -> Node? {

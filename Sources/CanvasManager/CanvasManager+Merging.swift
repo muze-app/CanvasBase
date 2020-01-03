@@ -98,7 +98,7 @@ extension CanvasManager {
             replacements = renderReplacements(graph, oldNodes)
         }
         
-        store.commit(newHead, setLatest: true)
+        store.commit(newHead, setLatest: false)
         
         for commit in store.sortedCommits.reversed() {
             let commit = commit.modify(as: commit.key) { graph in
@@ -112,7 +112,7 @@ extension CanvasManager {
 //                updateCanvasSubgraph(in: graph)
             }
             
-            store.commit(commit, setLatest: true)
+            store.commit(commit, setLatest: false)
         }
         
 //        let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
