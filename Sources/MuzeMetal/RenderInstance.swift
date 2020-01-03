@@ -173,7 +173,8 @@ public class RenderInstance {
                     return r
                 } else if var (intermediate, transform) = intermediateAndTransform,
                     intermediate.tryToSetPixelFormat(options.outputFormat.rawValue),
-                    let i = intermediate.l {
+                    let i = intermediate.l,
+                    !i.isCache {
                     
                     _ = i.normalize(from: transform, for: size)
                     transform = .identity
