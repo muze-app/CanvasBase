@@ -50,12 +50,17 @@ open class Creation {
     public init(canvasSize: CGSize = NewCameraCanvasLayout().canvasSize) {
         canvasManager = CanvasManager(canvasSize: canvasSize)
         
-        let graph = canvasManager.store.latest.modify { graph in
-            setupCanvas(graph)
-        }
+        let graph = canvasManager.current.modify { setupCanvas($0) } .externalReference
         
-        canvasManager.current = graph.externalReference
-        canvasManager.displayCanvas = graph.externalReference
+        canvasManager.current = graph
+        canvasManager.displayCanvas = graph
+        
+//        let graph = canvasManager.store.latest.modify { graph in
+//            setupCanvas(graph)
+//        }
+        
+//        canvasManager.current = graph.externalReference
+//        canvasManager.displayCanvas = graph.externalReference
     }
     
     func setupCanvas(_ graph: MutableGraph) {

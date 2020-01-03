@@ -46,7 +46,7 @@ public class CanvasManager {
         let store = DAGStore()
         let subgraphKey = SubgraphKey()
         
-        let graph = store.latest.modify { (graph) in
+        let graph = InternalSnapshot(store: store).modify { graph in
             let metaNode = CanvasMetaNode(graph: graph, payload: metadata)
             graph.setMetaNode(metaNode, for: subgraphKey)
         }
@@ -62,6 +62,11 @@ public class CanvasManager {
         self.display = ref
         
 //        store.delegate = self
+    }
+    
+    public convenience init(canvasSize: CGSize = CanvasManager.defaultSize) {
+        let metadata = CanvasMetadata(width: Int(round(canvasSize.width)), height: Int(round(canvasSize.height)))
+        self.init(metadata)
     }
     
     // Snapshots and Metadata
@@ -173,11 +178,6 @@ public class CanvasManager {
         #else
         return CGSize(2048)
         #endif
-    }
-    
-    public convenience init(canvasSize: CGSize = CanvasManager.defaultSize) {
-        let metadata = CanvasMetadata(width: Int(round(canvasSize.width)), height: Int(round(canvasSize.height)))
-        self.init(metadata)
     }
     
     var activeNode: NodePath?

@@ -163,7 +163,7 @@ public class CacheAndOptimizer {
             return cache.payload
         }
 
-        print("found hash \(cache.hash), looking for \(hash)")
+        print("found hash \(String(describing: cache.hash)), looking for \(hash)")
         return nil
     }
     

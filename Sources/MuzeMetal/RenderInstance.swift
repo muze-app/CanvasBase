@@ -15,6 +15,7 @@ public class RenderInstance {
     
     typealias CompletionType = RenderManager.CompletionType
     
+    // swiftlint:disable:next function_body_length
     func render(_ payload: RenderPayload,
                 _ options: RenderOptions,
                 _ completion: @escaping CompletionType) {
@@ -49,8 +50,8 @@ public class RenderInstance {
             print("PASSES")
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
-                print("        \(pass.inputExtent)")
-                print("        \(pass.inputExtent?.corners)")
+                print("        \(String(describing: pass.inputExtent))")
+                print("        \(String(describing: pass.inputExtent?.corners))")
                 
                 if let rect = pass.inputExtent?.corners.containingRect,
                    let goal = RenderInstance.tempRect {

@@ -32,8 +32,8 @@ public class DAGStore<Collection: NodeCollection> {
     
     public typealias Snapshot = InternalDirectSnapshot<Collection>
     
-    @available(*, deprecated)
-    public var latest: DAGSnapshot<Collection>!
+//    @available(*, deprecated)
+//    public var latest: DAGSnapshot<Collection>!
     var commits = WeakDict<CommitKey, Snapshot>()
     
     private var internalRetainedCommitsBag = Bag<CommitKey>() {
@@ -217,7 +217,7 @@ public class DAGStore<Collection: NodeCollection> {
             
             self.commits[key] = snapshotToCommit
             self.commitTimes[key] ?= Date()
-            self.latest = DAGSnapshot(store: self, key: key, .externalReference)
+//            self.latest = DAGSnapshot(store: self, key: key, .externalReference)
             
             if self.retainedCommitsSet.contains(key) {
                 self.retainedCommits[key] = snapshotToCommit
