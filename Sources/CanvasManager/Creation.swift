@@ -50,10 +50,12 @@ open class Creation {
     public init(canvasSize: CGSize = NewCameraCanvasLayout().canvasSize) {
         canvasManager = CanvasManager(canvasSize: canvasSize)
         
-        let graph = canvasManager.current.modify { setupCanvas($0) } .externalReference
+        let graph = canvasManager.current.modify { setupCanvas($0) }
+        canvasManager.store.commit(graph)
         
-        canvasManager.current = graph
-        canvasManager.displayCanvas = graph
+        let ref = graph.externalReference
+        canvasManager.current = ref
+        canvasManager.displayCanvas = ref
         
 //        let graph = canvasManager.store.latest.modify { graph in
 //            setupCanvas(graph)
