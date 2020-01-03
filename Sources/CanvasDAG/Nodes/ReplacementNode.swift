@@ -36,6 +36,8 @@ public struct ReplacementPayload: NodePayload, CustomDebugStringConvertible {
 public class ReplacementNode: GeneratorNode<ReplacementPayload> {
     
     override public var contentHash: Int { payload.contentHash }
+    
+    override public var cost: Int { 1 }
 
     public init(_ key: NodeKey,
                 _ contentHash: Int,
@@ -46,6 +48,7 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
         
         graph.setType(.replacement, for: key)
         graph.setPayload(payload, for: key, force: true)
+        graph.setEdgeMap([:], for: key)
         
         super.init(key, graph: graph, payload: nil, nodeType: .replacement)
     }
