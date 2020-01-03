@@ -92,7 +92,7 @@ extension CanvasManager {
         
         let oldNodes = determineNodesToRemove(sortedCommits)
         
-        var replacements: [NodeKey:Node] = [:]
+        var replacements: [NodeKey:ReplacementNode] = [:]
         
         let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
             replacements = renderReplacements(graph, oldNodes)
@@ -102,10 +102,14 @@ extension CanvasManager {
         
         for commit in store.sortedCommits.reversed() {
             let commit = commit.modify(as: commit.key) { graph in
-                for (old, new) in replacements {
-                    graph.replace(old, with: new)
+                for (key, replacement) in replacements {
+//                    graph.replace(old, with: new)
+                    graph.setType(.replacement, for: key)
+                    graph.setPayload(replacement.payload, for: key, force: true)
+                    graph.setEdgeMap([:], for: key)
+                    graph.setReverseEdges(.init(), for: key)
                 }
-                updateCanvasSubgraph(in: graph)
+//                updateCanvasSubgraph(in: graph)
             }
             
             store.commit(commit, setLatest: true)

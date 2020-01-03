@@ -94,7 +94,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 
     public func setType(_ type: Collection, for key: NodeKey) {
         preconditionWriting()
-        assert(isMutable)
+        precondition(isMutable)
         if self.type(for: key) == type { return }
         _typeMap[key] = type
     }
@@ -157,7 +157,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     func updateSubgraph(_ key: SubgraphKey, _ block: (inout SubgraphData)->()) {
 //        die
-        assert(isMutable)
+        precondition(isMutable)
 
         let old = subgraphData(for: key) ?? SubgraphData(key: key)
 //        let alt = subgraphData(for: key) ?? SubgraphData(key: key)
@@ -207,7 +207,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     public func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey, force: Bool = false) {
-        assert(isMutable)
+        precondition(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
         if !force, self.payload(for: key, of: T.self) == payload { return }
@@ -230,8 +230,8 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return reverseEdges[key] ?? predecessor?.reverseEdges(for: key)
     }
     
-    func setReverseEdges(_ bag: Bag<NodeKey>, for key: NodeKey) {
-        assert(isMutable)
+    public func setReverseEdges(_ bag: Bag<NodeKey>, for key: NodeKey) {
+        precondition(isMutable)
         
         if self.reverseEdges(for: key) == bag { return }
         

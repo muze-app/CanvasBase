@@ -49,6 +49,7 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
         graph.setType(.replacement, for: key)
         graph.setPayload(payload, for: key, force: true)
         graph.setEdgeMap([:], for: key)
+        graph.setReverseEdges(.init(), for: key)
         
         super.init(key, graph: graph, payload: nil, nodeType: .replacement)
     }
