@@ -10,8 +10,7 @@ import DAG
 
 struct CacheEntry: Hashable {
     let key: NodeKey
-    let contentHash: Int
-    
+    let originalHash: Int
 }
 
 public class CacheAndOptimizer {
@@ -110,7 +109,7 @@ public class CacheAndOptimizer {
                       for cacheNode: CacheNode,
                       extent: RenderExtent) {
         store(payload, for: cacheNode.originalKey,
-              hash: cacheNode.payload.contentHash, extent: extent)
+              hash: cacheNode.payload.originalHash, extent: extent)
     }
     
     func store(_ payload: RenderPayload,
@@ -125,7 +124,7 @@ public class CacheAndOptimizer {
     }
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
-        let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.contentHash)
+        let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.originalHash)
         
         if let pExtent = payload?.extent {
             let cache = self.cache(for: cacheNode.originalKey)
@@ -145,7 +144,7 @@ public class CacheAndOptimizer {
         if cache.hash == hash {
             return cache.payload
         }
-        
+
         return nil
     }
     

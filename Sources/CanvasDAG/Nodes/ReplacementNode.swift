@@ -79,4 +79,3 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
     }
     
 }
-

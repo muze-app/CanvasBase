@@ -21,7 +21,6 @@ open class INode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadN
 //        return input?.worthCaching ?? false
 //    }
 
-   
 }
 
 open class GeneratorNode<Collection: NodeCollection, PayloadType: NodePayload>: PayloadNode<Collection, PayloadType> {

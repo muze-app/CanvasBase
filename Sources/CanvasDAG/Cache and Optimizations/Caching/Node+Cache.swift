@@ -93,7 +93,7 @@ extension CanvasNode {
                                   original: original,
                                   optimized: self)
         
-        let entry = CacheEntry(key: original.key, contentHash: original.contentHash)
+        let entry = CacheEntry(key: original.key, originalHash: original.contentHash)
         addedNodes.insert(entry)
         
         return cacheNode

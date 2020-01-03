@@ -20,12 +20,14 @@ extension NodeKey {
 public struct CachePayload: NodePayload {
     
     let originalKey: NodeKey
-    let contentHash: Int
+    let originalHash: Int
+    let optimizedHash: Int
     let cache: CacheAndOptimizer
     
-    init(_ key: NodeKey, _ hash: Int, _ cache: CacheAndOptimizer) {
+    init(_ key: NodeKey, _ originalHash: Int, _ optimizedHash: Int, _ cache: CacheAndOptimizer) {
         originalKey = key
-        contentHash = hash
+        self.originalHash = originalHash
+        self.optimizedHash = optimizedHash
         self.cache = cache
     }
     
@@ -44,7 +46,7 @@ public class CacheNode: InputNode<CachePayload> {
          _ optimizer: CacheAndOptimizer,
          original: CanvasNode,
          optimized: CanvasNode) {
-        let payload = CachePayload(original.key, original.contentHash, optimizer)
+        let payload = CachePayload(original.key, original.contentHash, optimized.contentHash, optimizer)
         
         super.init(original.key.cacheKey,
                    graph: graph,
