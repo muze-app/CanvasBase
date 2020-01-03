@@ -126,6 +126,8 @@ public class CacheAndOptimizer {
         cache.hash = hash
         cache.payload = payload
         cache.extent = extent
+        
+        print("stored \(hash) for \(key)")
     }
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
@@ -153,9 +155,11 @@ public class CacheAndOptimizer {
         if !cache.hash.exists { return nil }
         
         if cache.hash == hash {
+            print("found it!")
             return cache.payload
         }
 
+        print("found hash \(cache.hash), looking for \(hash)")
         return nil
     }
     
@@ -179,7 +183,13 @@ class DAGCache {
     
     let key: NodeKey
     
-    var hash: Int?
+    var hash: Int? {
+        didSet {
+            if let old = oldValue, old != hash {
+                print("changed!")
+            }
+        }
+    }
     var payload: RenderPayload?
     
     var extent: RenderExtent = .nothing
