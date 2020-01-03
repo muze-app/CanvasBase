@@ -92,7 +92,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return _typeMap[key] ?? pTypeMap[key]
     }
 
-    func setType(_ type: Collection, for key: NodeKey) {
+    public func setType(_ type: Collection, for key: NodeKey) {
         preconditionWriting()
         assert(isMutable)
         if self.type(for: key) == type { return }
@@ -206,11 +206,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return payloadMap[key] ?? predecessor?.payloadAllocation(for: key)
     }
     
-    func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey) {
+    public func setPayload<T: NodePayload>(_ payload: T, for key: NodeKey, force: Bool = false) {
         assert(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
-        if self.payload(for: key, of: T.self) == payload { return }
+        
+        if !force, self.payload(for: key, of: T.self) == payload { return }
         
         if let allocation = payloadMap[key] {
             allocation.pointer.assumingMemoryBound(to: T.self).assign(repeating: payload, count: 1)

@@ -233,7 +233,7 @@ extension CanvasManager {
 //        return .init(oldNodes)
     }
     
-    private func renderReplacements(_ graph: Graph, _ keys: [NodeKey]) -> [NodeKey:ReplacementNode] {
+    private func renderReplacements(_ graph: MutableGraph, _ keys: [NodeKey]) -> [NodeKey:ReplacementNode] {
         return .init(keys) { key in
             let (hash, pair) = renderReplacement(graph, key)
             guard let (texture, transform) = pair else {

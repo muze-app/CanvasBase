@@ -39,11 +39,15 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
 
     public init(_ key: NodeKey,
                 _ contentHash: Int,
-                _ graph: Graph,
+                _ graph: MutableGraph,
                 _ texture: MetalTexture,
                 _ transform: AffineTransform) {
         let payload = ReplacementPayload(texture, transform, contentHash)
-        super.init(key, graph: graph, payload: payload, nodeType: .replacement)
+        
+        graph.setType(.replacement, for: key)
+        graph.setPayload(payload, for: key, force: true)
+        
+        super.init(key, graph: graph, payload: nil, nodeType: .replacement)
     }
     
     init(_ key: NodeKey,
