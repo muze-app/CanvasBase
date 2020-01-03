@@ -259,7 +259,7 @@ extension CanvasManager {
         #elseif os(macOS)
         return (0, (.mock, .identity))
         #else
-        let node = graph.node(for: originalKey)
+        let node = graph.node(for: key)
         let hash = node.contentHash
         let options = RenderOptions("purge", mode: .usingExtent, format: .float16, time: 0)
         if let payload = node.renderPayload(for: options) {
