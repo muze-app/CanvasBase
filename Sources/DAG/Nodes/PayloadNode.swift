@@ -157,9 +157,8 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         for (i, key) in sortedEdges {
             hasher.combine(i)
             let node = graph.node(for: key)
-            node.hash(into: &hasher, includeKeys: includeKeys)
+            hasher.combine(node.contentHash)
         }
-        
     }
     
 }
