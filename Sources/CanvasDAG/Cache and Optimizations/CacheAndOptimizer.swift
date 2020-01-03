@@ -112,10 +112,10 @@ public class CacheAndOptimizer {
     public func store(_ payload: RenderPayload,
                       for cacheNode: CacheNode,
                       extent: RenderExtent) {
-        print("STORE")
-        print("cache node: \(cacheNode.key)")
-        print("original key: \(cacheNode.payload.originalKey)")
-        print("original hash: \(cacheNode.payload.originalHash)")
+//        print("STORE")
+//        print("cache node: \(cacheNode.key)")
+//        print("original key: \(cacheNode.payload.originalKey)")
+//        print("original hash: \(cacheNode.payload.originalHash)")
         store(payload, for: cacheNode.originalKey,
               hash: cacheNode.payload.originalHash, extent: extent)
     }
@@ -131,24 +131,24 @@ public class CacheAndOptimizer {
         cache.payload = payload
         cache.extent = extent
         
-        print("stored \(hash) for \(key)")
+//        print("stored \(hash) for \(key)")
     }
     
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
-        print("LOOKUP")
-        print("cache node: \(cacheNode.key)")
-        print("original key: \(cacheNode.payload.originalKey)")
-        print("original hash: \(cacheNode.payload.originalHash)")
+//        print("LOOKUP")
+//        print("cache node: \(cacheNode.key)")
+//        print("original key: \(cacheNode.payload.originalKey)")
+//        print("original hash: \(cacheNode.payload.originalHash)")
         let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.originalHash)
         
-        if let pExtent = payload?.extent {
-            let cache = self.cache(for: cacheNode.originalKey)
-            let cExtent = cache.extent
-            
-            print("cExtent: \(cExtent)")
-            print("pExtent: \(pExtent)")
-            print(" ")
-        }
+//        if let pExtent = payload?.extent {
+//            let cache = self.cache(for: cacheNode.originalKey)
+//            let cExtent = cache.extent
+//
+//            print("cExtent: \(cExtent)")
+//            print("pExtent: \(pExtent)")
+//            print(" ")
+//        }
         
         return payload
     }
@@ -156,14 +156,14 @@ public class CacheAndOptimizer {
     func lookup(key: NodeKey, hash: Int) -> RenderPayload? {
         let cache = self.cache(for: key)
         
-        if !cache.hash.exists { return nil }
+//        if !cache.hash.exists { return nil }
         
         if cache.hash == hash {
-            print("found it!")
+//            print("found it!")
             return cache.payload
         }
 
-        print("found hash \(String(describing: cache.hash)), looking for \(hash)")
+//        print("found hash \(String(describing: cache.hash)), looking for \(hash)")
         return nil
     }
     
@@ -187,13 +187,7 @@ class DAGCache {
     
     let key: NodeKey
     
-    var hash: Int? {
-        didSet {
-            if let old = oldValue, old != hash {
-                print("changed!")
-            }
-        }
-    }
+    var hash: Int?
     var payload: RenderPayload?
     
     var extent: RenderExtent = .nothing
