@@ -50,12 +50,6 @@ public class CacheNode: InputNode<CachePayload> {
          optimized: CanvasNode) {
         let payload = CachePayload(original.key, original.contentHash, optimized.contentHash, optimizer)
         
-        print("CREATE CACHE")
-        print("cache node: \(original.key.cacheKey)")
-        print("original key: \(payload.originalKey)")
-        print("original hash: \(payload.originalHash)")
-        original.log()
-        
         super.init(original.key.cacheKey,
                    graph: graph,
                    payload: payload,
@@ -86,13 +80,7 @@ public class CacheNode: InputNode<CachePayload> {
             intermediate.canAlias = false
             intermediate.isCache = true
             
-            let iextent = input!.calculatedRenderExtent
-            let pextent = payload.extent
-            
-            print("iextent: \(iextent)")
-            print("pextent: \(pextent)")
-
-            cache.store(payload, for: self, extent: pextent)
+            cache.store(payload, for: self, extent: payload.extent)
         }
 
         return payload
