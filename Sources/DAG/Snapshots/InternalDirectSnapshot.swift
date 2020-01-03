@@ -308,10 +308,17 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     }
     
     // todo: use rev edges
-    public func replace(_ key: NodeKey, with replacement: Node) {
+    public func replace(_ key: NodeKey, with replacement: Node, onlyExcluded: Bool = false) {
         replacement.add(to: self, useFreshKeys: false)
         
-        for subgraph in allSubgraphs {
+        let subgraphs: [Subgraph<Collection>]
+        if onlyExcluded {
+            subgraphs = store.excludedSubgraphKeys.map { subgraph(for: $0) }
+        } else {
+            subgraphs = allSubgraphs
+        }
+        
+        for subgraph in subgraphs {
             subgraph.finalNode = subgraph.finalNode?.replacing(key, with: replacement)
             
 //            #if DEBUG

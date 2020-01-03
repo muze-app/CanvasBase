@@ -38,7 +38,7 @@ extension CanvasGraph {
                                                  original: original,
                                                  optimized: original)
                 
-                graph.replace(original.key, with: cache)
+                graph.replace(original.key, with: cache, onlyExcluded: true)
                 
 //                guard let revEdges = graph.reverseEdges(for: original.key) else { continue }
 //
