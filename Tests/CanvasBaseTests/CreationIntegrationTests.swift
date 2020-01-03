@@ -47,6 +47,41 @@ final class CreationIntegrationTests: XCTestCase, CanvasBaseTestCase {
         return nodes
     }
     
+//    func testCachingOnBlend() {
+//        let size = CGSize(width: 414, height: 630)
+//        let creation = BlendCreation(canvasSize: size)
+//        let manager = creation.canvasManager
+//        let store = manager.store
+//        let cache = CacheAndOptimizer(manager.subgraphKey)
+//
+//        for _ in 0...100 {
+//            creation.push(.mock, .normal)
+//
+//            store.write {
+//                let graph = manager.displayCanvas
+//                let optimized = cache.march(graph)
+//                let subgraph = optimized.subgraph(for: manager.subgraphKey)
+//                let final = subgraph.finalNode!
+//
+//                let nodes = final.allKeys.map { optimized.node(for: $0) }
+//
+//                for node in nodes {
+//                    print("cost: \(node.cost)")
+//                    XCTAssert(false)
+//                }
+//            }
+//
+//            //            let node = creation.canvasManager.current.subgraph(for: creation.canvasManager.subgraphKey).finalNode!
+//            //
+//            //            guard node.depth < 20 else {
+//            //                fatalError()
+//            //            }
+//
+//        }
+//
+//        XCTAssert(true)
+//    }
+    
 //    func testThatBlendUsesSameKeysConsistently() {
 //        let size = CGSize(width: 414, height: 630)
 //        let creation = BlendCreation(canvasSize: size)

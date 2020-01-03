@@ -148,6 +148,8 @@ public class CacheAndOptimizer {
     func lookup(key: NodeKey, hash: Int) -> RenderPayload? {
         let cache = self.cache(for: key)
         
+        if !cache.hash.exists { return nil }
+        
         if cache.hash == hash {
             return cache.payload
         }
