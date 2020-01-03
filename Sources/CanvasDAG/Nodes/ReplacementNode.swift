@@ -46,12 +46,12 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
                 _ transform: AffineTransform) {
         let payload = ReplacementPayload(texture, transform, contentHash)
         
-        graph.setType(.replacement, for: key)
-        graph.setPayload(payload, for: key, force: true)
-        graph.setEdgeMap([:], for: key)
-        graph.setReverseEdges(.init(), for: key)
+//        graph.setType(.replacement, for: key)
+//        graph.setPayload(payload, for: key, force: true)
+//        graph.setEdgeMap([:], for: key)
+//        graph.setReverseEdges(.init(), for: key)
         
-        super.init(key, graph: graph, payload: nil, nodeType: .replacement)
+        super.init(key, graph: graph, payload: payload, nodeType: .replacement)
     }
     
     init(_ key: NodeKey,

@@ -39,7 +39,7 @@ public class CacheAndOptimizer {
 
         var added = Set<NodeKey>()
         graph = insertPreExistingCaches(graph, added: &added)
-        graph = optimize(graph, &map1)
+//        graph = optimize(graph, &map1)
         
         let unused = Set(entries.keys).subtracting(added)
         entries = entries.filter { !unused.contains($0.key) }

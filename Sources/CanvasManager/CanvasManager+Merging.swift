@@ -98,21 +98,41 @@ extension CanvasManager {
             replacements = renderReplacements(graph, oldNodes)
         }
         
-        store.commit(newHead, setLatest: false)
+        store.commit(newHead, setLatest: true)
         
         for commit in store.sortedCommits.reversed() {
+            print("BEFORE:")
+            for subgraph in commit.allSubgraphs {
+                print("   SUBGRAPH \(subgraph.key)  (\(subgraph.finalKey))")
+                subgraph.finalNode?.log(with: "\t\t")
+            }
+            
             let commit = commit.modify(as: commit.key) { graph in
-                for (key, replacement) in replacements {
-//                    graph.replace(old, with: new)
-                    graph.setType(.replacement, for: key)
-                    graph.setPayload(replacement.payload, for: key, force: true)
-                    graph.setEdgeMap([:], for: key)
-                    graph.setReverseEdges(.init(), for: key)
+                for (old, new) in replacements {
+                    graph.replace(old, with: new)
+//                    graph.setType(.replacement, for: key)
+//                    graph.setPayload(replacement.payload, for: key, force: true)
+//                    graph.setEdgeMap([:], for: key)
+//                    graph.setReverseEdges(.init(), for: key)
                 }
 //                updateCanvasSubgraph(in: graph)
             }
             
-            store.commit(commit, setLatest: false)
+            print("ABOUT TO DIFF")
+            print("HEAD:")
+            for subgraph in newHead.allSubgraphs {
+                print("   SUBGRAPH \(subgraph.key) (\(subgraph.finalKey))")
+                subgraph.finalNode?.log(with: "\t\t")
+            }
+            print("PARENT:")
+            for subgraph in commit.allSubgraphs {
+                print("   SUBGRAPH \(subgraph.key)  (\(subgraph.finalKey))")
+                subgraph.finalNode?.log(with: "\t\t")
+            }
+            
+            let diff = commit.diff(from: newHead.internalReference)
+            
+            store.commit(diff, setLatest: true)
         }
         
 //        let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
@@ -144,7 +164,7 @@ extension CanvasManager {
 //        store.commit(newHead)
         
         store.simplifyHead()
-        store.simplifyTail()
+//        store.simplifyTail()
 //        store.simplifyTail() // to do: we can replace this by making the preds of the tail into snapshots
         
         reducingMemory = false
@@ -237,7 +257,7 @@ extension CanvasManager {
                 fatalError()
             }
             
-            return .init(key, hash, graph, texture, transform)
+            return .init(key.with("r"), hash, graph, texture, transform)
         }
     }
     
