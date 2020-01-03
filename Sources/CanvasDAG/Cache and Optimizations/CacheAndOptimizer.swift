@@ -130,7 +130,7 @@ public class CacheAndOptimizer {
     public func lookup(_ cacheNode: CacheNode) -> RenderPayload? {
         print("LOOKUP")
         print("node: \(cacheNode)")
-        print("hash: \(cacheNode.originalHash)")
+        print("hash: \(cacheNode.payload.originalHash)")
         let payload = lookup(key: cacheNode.originalKey, hash: cacheNode.payload.originalHash)
         
         if let pExtent = payload?.extent {
