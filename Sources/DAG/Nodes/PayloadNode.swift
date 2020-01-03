@@ -97,6 +97,12 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         print("sourceType: \(sourceType)")
         print("parentType: \(parentType)")
         
+        if sourceType != parentType {
+            // not ideal, but currently only occurs when target has a nice replacement node
+            // but source has the original still. ideally shouldn't occur but it does
+            return
+        }
+        
         let source = self.graph
         if let sourcePayload = source.payload(for: key, of: PayloadType.self),
             parent.payload(for: key, of: PayloadType.self) != sourcePayload {
