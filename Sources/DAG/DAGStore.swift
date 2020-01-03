@@ -215,13 +215,19 @@ public class DAGStore<Collection: NodeCollection> {
             
 //            let snapshot = (snapshot.metaNode is CanvasMetaNode) ? snapshot.flattened : snapshot
             
-            self.commits[key] = snapshotToCommit
-            self.commitTimes[key] ?= Date()
+            commits[key] = snapshotToCommit
+            commitTimes[key] ?= Date()
 //            self.latest = DAGSnapshot(store: self, key: key, .externalReference)
             
-            if self.retainedCommitsSet.contains(key) {
-                self.retainedCommits[key] = snapshotToCommit
-            }
+            retain(commitFor: key, mode: .externalReference)
+            writeAsync { self.release(commitFor: key, mode: .externalReference) }
+            
+//            self.retainedCommitsSet.insert(key)
+//            self.retainedCommits[key]
+//
+//            if self.retainedCommitsSet.contains(key) {
+//                self.retainedCommits[key] = snapshotToCommit
+//            }
             
 //            if process, let processed = self.process(commit: snapshot) {
 //                self.commit(processed, setLatest: false, process: false)
