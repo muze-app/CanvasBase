@@ -471,7 +471,12 @@ extension CanvasManager: CanvasTransactionParent {
     
     public var displayCanvas: Snapshot {
         get { return display }
-        set { display = newValue.modify { updateCanvasSubgraph(in: $0) } .externalReference }
+        set {
+            let graph = newValue.modify { updateCanvasSubgraph(in: $0) }
+            store.commit(graph)
+            
+            display = graph.externalReference
+        }
     }
     
     public func commit(transaction: CanvasTransaction) {
