@@ -37,13 +37,18 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
     
     override public var contentHash: Int { payload.contentHash }
 
-    init(_ key: NodeKey,
-         _ contentHash: Int,
-         _ graph: Graph,
-         texture: MetalTexture,
-         transform: AffineTransform) {
+    public init(_ key: NodeKey,
+                _ contentHash: Int,
+                _ graph: Graph,
+                _ texture: MetalTexture,
+                _ transform: AffineTransform) {
         let payload = ReplacementPayload(texture, transform, contentHash)
-        super.init(key, graph: graph, payload: payload, nodeType: .replacement)
+        super.init(key.with("replacement"), graph: graph, payload: payload, nodeType: .replacement)
+    }
+    
+    init(_ key: NodeKey,
+         graph: Graph) {
+        super.init(key, graph: graph, payload: nil, nodeType: .replacement)
     }
     
     var texture: MetalTexture {

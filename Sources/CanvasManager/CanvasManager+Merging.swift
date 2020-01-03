@@ -238,7 +238,7 @@ extension CanvasManager {
                 fatalError()
             }
             
-            return .init(key, hash, graph: graph, texture, transform)
+            return .init(key, hash, graph, texture, transform)
         }
     }
     
