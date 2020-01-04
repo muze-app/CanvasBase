@@ -96,23 +96,25 @@ extension CanvasManager {
         
         let oldNodes = determineNodesToRemove(sortedCommits)
         
-        var replacements: [NodeKey:Node] = [:]
+        var replacements: [NodeKey] = []
         
-        let newHead = sortedCommits.head.alias { graph in
-            for (key, node) in renderReplacements(graph, oldNodes) {
-//                guard let (texture, transform) = value else { fatalError() }
-                  
-                replacements[key] = node //
-                graph.replace(key, with: node)
-            }
-        } .flattened
+        let newHead = autoreleasepool {
+            sortedCommits.head.alias { graph in
+                for (key, node) in renderReplacements(graph, oldNodes) {
+                    //                guard let (texture, transform) = value else { fatalError() }
+                    
+                    replacements.append(node.key)
+                    graph.replace(key, with: node)
+                }
+            } .flattened
+        }
         
 //        newHead.verify()
         
         store.commit(newHead)
         
         for commit in sortedCommits.tail {
-            for (k, _) in replacements {
+            for k in replacements {
                 commit.setReplacementType(.replacement, for: k)
 //                commit.verify()
             }
