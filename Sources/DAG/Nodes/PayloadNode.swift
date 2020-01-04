@@ -104,6 +104,12 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         
         let source = self.graph
         
+        if let sourceType = source.type(for: key),
+            let parentType = parent.type(for: key),
+            sourceType != parentType {
+            return // an old node that got replaced
+        }
+        
 //        guard let sourcePayload = source.payload(for: key, of: PayloadType.self) else {
 //            return
 //        }
