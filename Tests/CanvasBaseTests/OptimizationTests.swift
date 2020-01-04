@@ -29,7 +29,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         store.read {
-            final.subgraph(for: subgraphKey).finalNode!.log()
+//            final.subgraph(for: subgraphKey).finalNode!.log()
             XCTAssert(true)
         }
     }
@@ -47,7 +47,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         store.read {
-        final.subgraph(for: subgraphKey).finalNode!.log()
+//        final.subgraph(for: subgraphKey).finalNode!.log()
         XCTAssert(true)
         }
     }
@@ -65,7 +65,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         store.read {
-            final.subgraph(for: subgraphKey).finalNode!.log()
+//            final.subgraph(for: subgraphKey).finalNode!.log()
             XCTAssert(true)
         }
     }
@@ -85,7 +85,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         let optimized = final.optimizing(subgraph: subgraphKey)
         
         store.read {
-            optimized.subgraph(for: subgraphKey).finalNode!.log()
+//            optimized.subgraph(for: subgraphKey).finalNode!.log()
             
             guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
                 XCTAssert(false)
@@ -116,7 +116,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         let optimized = final.optimizing(subgraph: subgraphKey)
         
         store.read {
-        optimized.subgraph(for: subgraphKey).finalNode!.log()
+//        optimized.subgraph(for: subgraphKey).finalNode!.log()
         
         guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
             XCTAssert(false)
@@ -148,7 +148,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         let optimized = final.optimizing(subgraph: subgraphKey)
         
         store.read {
-        optimized.subgraph(for: subgraphKey).finalNode!.log()
+//        optimized.subgraph(for: subgraphKey).finalNode!.log()
         
         guard let comp = optimized.subgraph(for: subgraphKey).finalNode as? CompositeNode else {
             XCTAssert(false)
@@ -180,7 +180,7 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         let optimized = final.optimizing(subgraph: subgraphKey)
         
         store.read {
-            optimized.subgraph(for: subgraphKey).finalNode!.log()
+//            optimized.subgraph(for: subgraphKey).finalNode!.log()
             
             guard optimized.subgraph(for: subgraphKey).finalNode is CompositeNode else {
                 XCTAssert(false)
@@ -211,11 +211,11 @@ final class OptimizationTests: XCTestCase, CanvasBaseTestCase {
         }
         
         store.write {
-          final.subgraph(for: subgraphKey).finalNode!.log()
+//          final.subgraph(for: subgraphKey).finalNode!.log()
         
         let optimized = final.optimizing(subgraph: subgraphKey)
         
-        optimized.subgraph(for: subgraphKey).finalNode!.log()
+//        optimized.subgraph(for: subgraphKey).finalNode!.log()
         
         guard let mask = optimized.subgraph(for: subgraphKey).finalNode as? MaskNode else {
             XCTAssert(false)

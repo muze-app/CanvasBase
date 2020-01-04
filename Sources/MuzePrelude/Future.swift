@@ -22,7 +22,6 @@ public class Future<Value> {
     
     fileprivate init(on queue: DispatchQueue) {
         let label = queue.label
-        print("queue: \(label)")
         self.queue = queue
     }
     

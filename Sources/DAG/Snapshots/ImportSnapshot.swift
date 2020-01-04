@@ -47,7 +47,7 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         predecessor.typeMap.merging(imported.typeMap) { (a, _) in a }
     }
     
-    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
+    override public func type(for key: NodeKey) -> Collection? {
         predecessor.type(for: key) ?? imported.type(for: key)
     }
     

@@ -68,7 +68,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.typeMap
     }
     
-    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
+    override public func type(for key: NodeKey) -> Collection? {
         internalSnapshot.type(for: key)
     }
     

@@ -26,7 +26,6 @@ public class BlendCreation: SingleLayerCreation {
     public func push(_ texture: MetalTexture, _ mode: BlendMode) {
         modify { subgraph in
             let graph = subgraph.mutableGraph
-            subgraph.finalNode?.log()
             
             let imageNode = ImageNode(texture: texture,
                                       transform: transform(for: texture),
@@ -39,9 +38,6 @@ public class BlendCreation: SingleLayerCreation {
             blend.source = imageNode
             
             subgraph.finalNode = blend
-            
-            print("ABOUT TO PUSHu")
-            blend.log()
         }
     }
     

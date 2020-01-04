@@ -64,7 +64,7 @@ class SomethingTests: XCTestCase, CanvasBaseTestCase {
         store.read {
             let result = store.sortedCommits.head.subgraph(for: subgraphKey).finalNode!.nodes(thatDoNotContain: Set(newNodes))
             
-            store.sortedCommits.head.subgraph(for: subgraphKey).finalNode!.log()
+//            store.sortedCommits.head.subgraph(for: subgraphKey).finalNode!.log()
             
             print("head nodes: \(store.sortedCommits.head.allNodes)")
             print("new nodes: \(newNodes)")

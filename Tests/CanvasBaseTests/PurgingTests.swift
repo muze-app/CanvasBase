@@ -100,7 +100,7 @@ final class PurgingTests: XCTestCase, CanvasBaseTestCase {
                 let containsOld = final.contains(oldKey)
                 let containsNew = final.contains(newKey)
                 
-                final.log()
+//                final.log()
                 
                 print("contains old: \(containsOld)")
                 print("contains new: \(containsNew)")

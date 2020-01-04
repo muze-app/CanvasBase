@@ -57,12 +57,12 @@ final class InternalDirectSnapshotTests: XCTestCase {
         
         let final = initial.modify { (graph: MutableGraph) -> Void in
             let node = MockImageNode(nodeKey, graph: graph, payload: 0, nodeType: .image)
-            print("node: \(node)")
+//            print("node: \(node)")
         }
         
         store.read {
             let node = final.node(for: nodeKey)
-            print("node: \(node)")
+//            print("node: \(node)")
             XCTAssert(node is MockImageNode)
         }
     }

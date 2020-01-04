@@ -57,12 +57,12 @@ extension CanvasManager {
         print("COMMITS: \(store.sortedCommits.count)")
         for commit in store.sortedCommits {
             print(" - \(commit.key)")
-            commit.verify()
+//            commit.verify()
         }
         
         removeUndoStates()
         
-        store.sortedCommits.head.verify()
+//        store.sortedCommits.head.verify()
         
         print("simplifying tail")
         store.simplifyTail()
@@ -91,14 +91,14 @@ extension CanvasManager {
         print("COMMITS: \(sortedCommits.count)")
         for commit in sortedCommits {
             print(" - \(commit.key) \(commit.pointerString)")
-            commit.verify()
+//            commit.verify()
         }
         
         let oldNodes = determineNodesToRemove(sortedCommits)
         
         var replacements: [NodeKey:Node] = [:]
         
-        let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
+        let newHead = sortedCommits.head.alias { graph in
             for (key, node) in renderReplacements(graph, oldNodes) {
 //                guard let (texture, transform) = value else { fatalError() }
                   
@@ -107,9 +107,9 @@ extension CanvasManager {
             }
         } .flattened
         
-        newHead.verify()
+//        newHead.verify()
         
-        store.commit(newHead, setLatest: false)
+        store.commit(newHead)
         
         for commit in sortedCommits.tail {
             for (k, _) in replacements {
@@ -117,27 +117,27 @@ extension CanvasManager {
             }
         }
         
-        for commit in store.sortedCommits {
-            
-            for (k, _) in replacements {
-                if let type = commit.type(for: k, expectingReplacement: true) {
-                    if type != .replacement {
-                        fatalError()
-                    }
-                }
-            }
-            
-//            let patched = commit.modify(as: commit.key) { graph in
-//                for (k, _) in replacements {
-//                graph.setType(.replacement, for: k)
+//        for commit in store.sortedCommits {
+//            
+//            for (k, _) in replacements {
+//                if let type = commit.type(for: k, expectingReplacement: true) {
+//                    if type != .replacement {
+//                        fatalError()
+//                    }
 //                }
 //            }
-            
-//            store.commit(patched)
-//            patched.verify()
-            
-            commit.verify()
-        }
+//            
+////            let patched = commit.modify(as: commit.key) { graph in
+////                for (k, _) in replacements {
+////                graph.setType(.replacement, for: k)
+////                }
+////            }
+//            
+////            store.commit(patched)
+////            patched.verify()
+//            
+////            commit.verify()
+//        }
         
 //        for commit in store.sortedCommits.reversed() {
 //            commit.verify()

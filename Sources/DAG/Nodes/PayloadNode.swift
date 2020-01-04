@@ -104,24 +104,7 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         
         let source = self.graph
         
-        let sourceType = source.type(for: key)
-        let parentType = parent.type(for: key)
-        
-        guard let sourcePayload = source.payload(for: key, of: PayloadType.self) else {
-            return
-        }
-        
-        print("source payload: \(sourcePayload)")
-        
-        let allocation = parent.payloadAllocation(for: key)
-        print("target alloc: \(allocation)")
-        
-        let parentPayload = parent.payload(for: key, of: PayloadType.self)
-        print("parent payload: \(parentPayload)")
-    
-        
-//        if source.type(for: key) != parent.type(for: key) {
-////            graph.setPayload(sourcePayload, for: key)
+//        guard let sourcePayload = source.payload(for: key, of: PayloadType.self) else {
 //            return
 //        }
         

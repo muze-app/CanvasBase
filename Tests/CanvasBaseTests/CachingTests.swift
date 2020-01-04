@@ -49,7 +49,7 @@ final class CachingTests: XCTestCase {
         }
         
         store.read {
-            final.subgraph(for: subgraphKey).finalNode!.log()
+//            final.subgraph(for: subgraphKey).finalNode!.log()
         }
         XCTAssert(true)
     }

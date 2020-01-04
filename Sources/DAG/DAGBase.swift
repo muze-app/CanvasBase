@@ -60,7 +60,7 @@ public class DAGBase<Collection: NodeCollection> {
     var typeMap: [NodeKey:Collection] { die }
     
     //    func node(for key: NodeKey) -> Node { }
-    public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
+    public func type(for key: NodeKey) -> Collection? {
         die
     }
     
@@ -140,20 +140,16 @@ public class DAGBase<Collection: NodeCollection> {
 //        return modify(as: nil, block)
 //    }
     
-    @inlinable
+//    @inlinable
     public final func modify(_ block: (MutableDAG<Collection>)->()) -> Snapshot {
         return modify(as: nil, block)
     }
     
 //    @inlinable
-    public final func modify(as key: CommitKey?,
-                             _ block: (MutableDAG<Collection>)->()) -> Snapshot {
+    final func modify(as key: CommitKey?,
+                      _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         store.write {
             let snapshot = snapshotToModify
-            if !key.exists {
-                snapshot.verify()
-            }
-            
             let result = InternalDirectSnapshot(predecessor: snapshot,
                                                 store: store,
                                                 key: key ?? CommitKey())
@@ -211,6 +207,7 @@ public extension DAGBase {
         return "\(unsafe)"
     }
     
+    @available(*, deprecated) // not really deprecated just super slow
     func verify() {
         let allNodes = self.allNodes
         for key in allNodes where !type(for: key).exists {
@@ -218,14 +215,14 @@ public extension DAGBase {
             fatalError()
         }
         
-        for replaced in store.replacedNodes {
-            if let t = self.type(for: replaced) {
-                if "\(t)" != "replacement" {
-                    print("expected replacement, found \(t)")
-                    fatalError()
-                }
-            }
-        }
+//        for replaced in store.replacedNodes {
+//            if let t = self.type(for: replaced) {
+//                if "\(t)" != "replacement" {
+//                    print("expected replacement, found \(t)")
+//                    fatalError()
+//                }
+//            }
+//        }
     }
     
     var allNodes: Set<NodeKey> {

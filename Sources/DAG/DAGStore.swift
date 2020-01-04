@@ -15,7 +15,7 @@ private let keyKey = DispatchSpecificKey<StoreKey>()
 
 public class DAGStore<Collection: NodeCollection> {
     
-    public var replacedNodes: [NodeKey] = []
+//    public var replacedNodes: [NodeKey] = []
     
     var payloadBuffers = PayloadBufferSet<Collection>()
     
@@ -32,11 +32,11 @@ public class DAGStore<Collection: NodeCollection> {
     
     var tempSubgraphKey: SubgraphKey?
     
-    public typealias Snapshot = InternalDirectSnapshot<Collection>
+    public typealias InternalGraph = InternalDirectSnapshot<Collection>
     
 //    @available(*, deprecated)
 //    public var latest: DAGSnapshot<Collection>!
-    var commits = WeakDict<CommitKey, Snapshot>()
+    var commits = WeakDict<CommitKey, InternalGraph>()
     
     private var internalRetainedCommitsBag = Bag<CommitKey>() {
         willSet { preconditionWriting() }
@@ -47,31 +47,31 @@ public class DAGStore<Collection: NodeCollection> {
     var retainedCommitsSet: Set<CommitKey> {
         return internalRetainedCommitsBag.asSet + externalRetainedCommitsBag.asSet
     }
-    var retainedCommits = ThreadSafeDict<CommitKey, Snapshot>()
+    var retainedCommits = ThreadSafeDict<CommitKey, InternalGraph>()
     public var commitTimes = [CommitKey: Date]() {
         willSet { preconditionWriting() }
     }
 
-    var externalCommits: [Snapshot] {
+    var externalCommits: [InternalGraph] {
         read {
             externalRetainedCommitsBag.asSet.map {
                 let key = $0
                 let commit = commits[key]!
                 
-                if commit.key != key {
-                    // shouldn't happen but we'll just let it slide for now.
-                    // pretty sure keys are going to get removed from the commits themselves
-                    return commit.modify(as: key) { _ in }
-                }
-                
-                assert(commit.key == key)
-                //            commits[$0]!
+//                if commit.key != key {
+//                    // shouldn't happen but we'll just let it slide for now.
+//                    // pretty sure keys are going to get removed from the commits themselves
+//                    return commit
+//                }
+//
+//                assert(commit.key == key)
+//                //            commits[$0]!
                 return commit
             }
         }
     }
     
-    var sortedExternalCommits: [Snapshot] {
+    var sortedExternalCommits: [InternalGraph] {
         read {
         var pairs = externalCommits.map { ($0, commitTimes[$0.key]!) }
         pairs.sort { $0.1 < $1.1 }
@@ -79,13 +79,13 @@ public class DAGStore<Collection: NodeCollection> {
         }
     }
     
-    public var sortedCommits: HeadAndTail<Snapshot> { HeadAndTail(sortedExternalCommits)! }
+    public var sortedCommits: HeadAndTail<InternalGraph> { HeadAndTail(sortedExternalCommits)! }
     
     public func simplifyHead() {
         preconditionWriting()
         autoreleasepool {
             let head = sortedCommits.head.flattened
-            self.commit(head, setLatest: false)
+            self.commit(head)
         }
     }
     
@@ -94,29 +94,29 @@ public class DAGStore<Collection: NodeCollection> {
         autoreleasepool {
             let sorted = sortedCommits
             let head = sorted.head.internalReference
-            print("SIMPLIFY TAIL. HEAD: \(head.key)")
-            for subgraph in head.allSubgraphs {
-                print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
-                subgraph.finalNode?.log(with: "\t\t")
-            }
+//            print("SIMPLIFY TAIL. HEAD: \(head.key)")
+//            for subgraph in head.allSubgraphs {
+//                print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+//                subgraph.finalNode?.log(with: "\t\t")
+//            }
             for commit in sorted.tail {
-                print("SIMPLIFY COMMIT \(commit.key)")
-                for subgraph in commit.allSubgraphs {
-                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
-                    subgraph.finalNode?.log(with: "\t\t")
-                }
+//                print("SIMPLIFY COMMIT \(commit.key)")
+//                for subgraph in commit.allSubgraphs {
+//                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+//                    subgraph.finalNode?.log(with: "\t\t")
+//                }
                 
-                commit.verify()
+//                commit.verify()
                 let diff = commit.diff(from: head)
                 
-                print("DIFF \(diff.key)")
-                for subgraph in diff.allSubgraphs {
-                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
-                    subgraph.finalNode?.log(with: "\t\t")
-                }
+//                print("DIFF \(diff.key)")
+//                for subgraph in diff.allSubgraphs {
+//                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+//                    subgraph.finalNode?.log(with: "\t\t")
+//                }
                 
-                diff.verify()
-                self.commit(diff, setLatest: false)
+//                diff.verify()
+                self.commit(diff)
             }
         }
     }
@@ -128,7 +128,7 @@ public class DAGStore<Collection: NodeCollection> {
         
         queue.setSpecific(key: keyKey, value: key)
         
-        let graph = Snapshot(store: self)
+        let graph = InternalGraph(store: self)
         commit(graph)
     }
     
@@ -208,60 +208,29 @@ public class DAGStore<Collection: NodeCollection> {
     
     // MARK: - Commits
     
-    public func commit(for key: CommitKey) -> Snapshot? {
+    public func commit(for key: CommitKey) -> InternalGraph? {
         read { commits[key] }
     }
     
     @discardableResult
-    public func commit(_ snapshot: Snapshot, process: Bool = true) -> CommitKey {
-        return commit(snapshot, setLatest: true, process: process)
-    }
-    
-    @discardableResult
-    public func commit(_ snapshot: Snapshot, setLatest: Bool, process: Bool = true) -> CommitKey {
+    public func commit(_ snapshot: InternalGraph, process: Bool = true) -> CommitKey {
         let key: CommitKey = snapshot.key
         
         write {
-            snapshot.verify()
-            
             var snapshot = snapshot
             if snapshot.depth > 20 {
                 snapshot = snapshot.flattened
             }
             
             let snapshotToCommit = snapshot
-//            if process, let processed = self.process(commit: snapshot) {
-//                snapshotToCommit = processed
-//            }
-            
             assert(snapshotToCommit.key == key)
-//            let key = snapshotToCommit.key
-            
-//            let snapshot = (snapshot.metaNode is CanvasMetaNode) ? snapshot.flattened : snapshot
             
             commits[key] = snapshotToCommit
             commitTimes[key] ?= Date()
-//            self.latest = DAGSnapshot(store: self, key: key, .externalReference)
             
             retain(commitFor: key, mode: .externalReference)
             writeAsync { self.release(commitFor: key, mode: .externalReference) }
-            
-//            self.retainedCommitsSet.insert(key)
-//            self.retainedCommits[key]
-//
-//            if self.retainedCommitsSet.contains(key) {
-//                self.retainedCommits[key] = snapshotToCommit
-//            }
-            
-//            if process, let processed = self.process(commit: snapshot) {
-//                self.commit(processed, setLatest: false, process: false)
-//            }
         }
-        
-        //        if snapshot.depth > 100 {
-        //        if snapshot.depth > 12 {
-        //            vacuum()
-        //        }
         
         return key
     }

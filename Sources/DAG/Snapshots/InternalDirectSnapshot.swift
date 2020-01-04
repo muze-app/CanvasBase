@@ -88,33 +88,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return pTypeMap.merging(_typeMap) { (a, _) in a }
     }
     
-    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
-        if expectingReplacement {
-            if let type = _typeMap[key], "\(type)" == "replacement" {
-                return _typeMap[key]
-            }
-            
-            print("_typeMap")
-            for (k, v) in _typeMap {
-                print("\(k) : \(v)")
-            }
-            
-            print("pTypeMap")
-            for (k, v) in pTypeMap {
-                print("\(k) : \(v)")
-            }
-            
-            if _typeMap[key].exists { fatalError() }
-            let x = pTypeMap[key]
-            
-            if let x = x, "\(x)" == "replacement" {
-                return x
-            }
-            
-            print("\(x)")
-            fatalError()
-        }
-        
+    override public func type(for key: NodeKey) -> Collection? {
         return _typeMap[key] ?? pTypeMap[key]
     }
 
