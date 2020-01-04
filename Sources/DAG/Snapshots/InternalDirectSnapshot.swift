@@ -287,7 +287,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 //    }
     
     public var nodesTouchedSincePredecessor: Set<NodeKey> {
-        let finals = allSubgraphKeys.compactMap { finalKey(for: $0) }
+        let finals = importantSubgraphs.compactMap { $0.finalKey }
         
         return Set(finals) + Set(edgeMaps.keys) + Set(payloadMap.keys)
     }
