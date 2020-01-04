@@ -41,6 +41,7 @@ class PayloadBuffer<Collection: NodeCollection>: AutoHash {
         let p2 = p1.initializeMemory(as: T.self, repeating: s, count: 1)
         
         return PayloadBufferAllocation(type: type, buffer: self, pointer: p2) {
+            p2.deinitialize(count: 1)
             p2.deallocate()
         }
         
