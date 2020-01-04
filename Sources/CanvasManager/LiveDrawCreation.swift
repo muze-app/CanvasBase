@@ -91,14 +91,14 @@ public class LiveDrawCreation: DrawingCreation {
         pass.commit()
     }
     
-    func strokeWillSucceed() {
+    public func strokeWillSucceed() {
         modify { subgraph in
             let node = ImageNode(imageKey!, graph: subgraph.graph)
             node.status = .doNotCache
         }
     }
     
-    func strokeFinished() {
+    public func strokeFinished() {
         modify { subgraph in
             let node = ImageNode(imageKey!, graph: subgraph.graph)
             node.status = .normal
