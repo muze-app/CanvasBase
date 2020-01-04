@@ -37,6 +37,7 @@ public class LiveDrawCreation: DrawingCreation {
         format = .rgba16Float
         #endif
         
+        imageKey = NodeKey()
         let canvasSize = canvasManager.currentMetadata.size
         
         stroke = BrushStroke(defaultDab: dab, spacing: spacing)
@@ -63,6 +64,7 @@ public class LiveDrawCreation: DrawingCreation {
     public func cleanupStroke() {
         stroke = nil
         texture = nil
+        imageKey = nil
     }
     
     public func draw(texture: MetalTexture?) {
