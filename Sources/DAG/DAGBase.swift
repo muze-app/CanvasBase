@@ -57,6 +57,10 @@ public class DAGBase<Collection: NodeCollection> {
     
     // MARK: - Nodes
     
+    public func node(exists key: NodeKey) -> Bool {
+        type(for: key).exists && payloadAllocation(for: key).exists
+    }
+    
     var typeMap: [NodeKey:Collection] { die }
     
     //    func node(for key: NodeKey) -> Node { }

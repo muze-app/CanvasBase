@@ -31,12 +31,7 @@ extension CanvasGraph {
                           added: inout Set<NodeKey>) -> CanvasGraph {
         modify { graph in
             for entry in entries {
-                graph.subgraph(for: subgraph).finalNode?.log()
-                
-                print("type: \(String(describing: graph.type(for: entry.originalKey)))")
-                
-//                print("ENTRY: \(entry)")
-                guard graph.type(for: entry.originalKey).exists else { continue }
+                guard graph.node(exists: entry.originalKey) else { continue }
                 let original = graph.node(for: entry.originalKey)
                 let cache: CacheNode = CacheNode(graph,
                                                  optimizer,
