@@ -41,7 +41,10 @@ public class CacheAndOptimizer {
         graph = insertPreExistingCaches(graph, added: &added)
         
         let noLonger = Set( cacheDict.values.map { $0.key } ).subtracting(added)
-        entries = entries.filter { !noLonger.contains($0.key) }
+        for key in noLonger {
+            entries[key] = nil
+            cacheDict[key] = nil
+        }
         
         graph = optimize(graph, &map1)
         
