@@ -194,7 +194,10 @@ public class DAGBase<Collection: NodeCollection> {
             assert( store.commit(for: key).exists )
         }
 
-        return DAGSnapshot(store: store, key: key, mode)
+        switch mode {
+            case .externalReference: return ExternalSnapshot(store: store, key: key)
+            case .internalReference: return DAGSnapshot(store: store, key: key)
+        }
     }
     
     public var internalReference: DAGSnapshot<Collection> {

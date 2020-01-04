@@ -35,7 +35,9 @@ open class SingleLayerCreation: Creation {
             transaction.modify(description: "", layer: layerManager, with: block)
         }
         
-        canvasManager.reduceMemory()
+        DispatchQueue.global().async { [weak self] in
+            self?.canvasManager.reduceMemory()
+        }
     }
     
 }

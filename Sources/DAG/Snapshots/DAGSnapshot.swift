@@ -14,6 +14,14 @@ typealias SnapshotKey = CommitKey
 //fileprivate var i = 0
 //fileprivate var allSnapshots: WeakThreadSafeDict<Int, AnyObject> = [:]
 
+public class ExternalSnapshot<Collection: NodeCollection>: DAGSnapshot<Collection> {
+    
+    init(store: DAGStore<Collection>, key: SnapshotKey) {
+        super.init(store: store, key: key, .externalReference)
+    }
+    
+}
+
 public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     
     enum Mode { case internalReference, externalReference }
@@ -22,7 +30,11 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     weak var _store: DAGStore<Collection>?
     override public var store: DAGStore<Collection> { _store! }
     
-    init(store: DAGStore<Collection>, key: SnapshotKey, _ mode: Mode) {
+    convenience init(store: DAGStore<Collection>, key: SnapshotKey) {
+        self.init(store: store, key: key, .internalReference)
+    }
+    
+    fileprivate init(store: DAGStore<Collection>, key: SnapshotKey, _ mode: Mode) {
         self.mode = mode
         self._store = store
         
@@ -31,7 +43,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         store.retain(commitFor: key, mode: mode)
         assert(isCommitted)
         
-        print("snapshot of \(key) - \(pointerString)")
+//        print("snapshot of \(key) - \(pointerString)")
         
 //        allSnapshots[i] = self
 //        i += 1
