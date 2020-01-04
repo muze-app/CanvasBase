@@ -21,7 +21,6 @@ public class Future<Value> {
     public var error: Error? { result?.failure }
     
     fileprivate init(on queue: DispatchQueue) {
-        let label = queue.label
         self.queue = queue
     }
     

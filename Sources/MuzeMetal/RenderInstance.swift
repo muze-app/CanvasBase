@@ -11,11 +11,10 @@ import Metal
 
 public class RenderInstance {
     
-    public static var tempRect: CGRect?
+//    public static var tempRect: CGRect?
     
     typealias CompletionType = RenderManager.CompletionType
     
-    // swiftlint:disable:next function_body_length
     func render(_ payload: RenderPayload,
                 _ options: RenderOptions,
                 _ completion: @escaping CompletionType) {
@@ -51,18 +50,6 @@ public class RenderInstance {
             for pass in passes {
                 print(" - \(pass) \(pass.identifier)")
                 print("        \(String(describing: pass.inputExtent))")
-                print("        \(String(describing: pass.inputExtent?.corners))")
-                
-                if let rect = pass.inputExtent?.corners.containingRect,
-                   let goal = RenderInstance.tempRect {
-                    if rect ~= goal {
-                        print("    GOOD!")
-                    } else {
-                        print("    BAD!")
-                        print("    expected \(goal), got \(rect)")
-                        print(" ")
-                    }
-                }
             }
         }
         

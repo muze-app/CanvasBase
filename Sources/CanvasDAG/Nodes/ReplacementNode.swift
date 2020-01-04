@@ -51,6 +51,8 @@ public class ReplacementNode: GeneratorNode<ReplacementPayload> {
         graph.setEdgeMap([:], for: key)
         
         super.init(key, graph: graph, payload: nil, nodeType: .replacement)
+        
+        graph.store.replacedNodes.append(key)
     }
     
     init(_ key: NodeKey,

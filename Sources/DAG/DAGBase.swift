@@ -150,6 +150,18 @@ public class DAGBase<Collection: NodeCollection> {
                       _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         store.write {
             let snapshot = snapshotToModify
+            
+            let replaced = snapshotToModify.allNodes.intersection(store.replacedNodes)
+            for n in replaced {
+                guard let t = snapshot.type(for: n) else { continue }
+                if "\(t)" == "replacement" { continue }
+                
+                fatalError()
+            }
+//            if !.isEmpty {
+//
+//            }
+            
             let result = InternalDirectSnapshot(predecessor: snapshot,
                                                 store: store,
                                                 key: key ?? CommitKey())

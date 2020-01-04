@@ -15,7 +15,7 @@ private let keyKey = DispatchSpecificKey<StoreKey>()
 
 public class DAGStore<Collection: NodeCollection> {
     
-//    public var replacedNodes: [NodeKey] = []
+    public var replacedNodes: [NodeKey] = []
     
     var payloadBuffers = PayloadBufferSet<Collection>()
     

@@ -73,7 +73,7 @@ class LayerPreviewRenderer {
     }
     
     private func _renderPreview(layer subgraphKey: SubgraphKey,
-                                graph: Graph,
+                                graph: Snapshot,
                                 hash: Int,
                                 date: Date = .now,
                                 canvas manager: CanvasManager) -> Future<LayerPreview> {
@@ -104,7 +104,7 @@ class LayerPreviewRenderer {
                 transform.input = subgraph.finalNode
                 
                 subgraph.finalNode = transform
-            }
+            } .externalReference
         }
         
         return graph.hop(to: queue).flatMap { graph  in
@@ -122,7 +122,7 @@ class LayerPreviewRenderer {
     }
     
     private func _renderImage(layer subgraphKey: SubgraphKey,
-                              graph: Graph,
+                              graph: Snapshot,
                               canvas manager: CanvasManager) -> Future<MetalTexture> {
         let promise = Promise<MetalTexture>(on: queue)
         manager.renderTexture(for: subgraphKey,

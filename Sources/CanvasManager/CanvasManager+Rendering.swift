@@ -14,7 +14,7 @@ extension CanvasManager {
     // MARK: Offscreen Rendering
     
     func renderTexture(for subgraph: SubgraphKey? = nil,
-                       of commit: Graph? = nil,
+                       of commit: Snapshot? = nil,
                        format: RenderOptions.PixelFormat = .sRGB,
                        completion: @escaping (MetalTexture)->()) {
 

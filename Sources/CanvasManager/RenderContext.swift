@@ -49,7 +49,7 @@ open class RenderContext {
     }
     
     // swiftlint:disable:next function_parameter_count
-    public func render(graph: Graph,
+    public func render(graph: Snapshot,
                        subgraph: SubgraphKey,
                        canvasSize: CGSize,
                        time: TimeInterval,
@@ -59,13 +59,13 @@ open class RenderContext {
                        colorSpace: RenderOptions.ColorSpace,
                        completion: @escaping CompletionType) {
         
-        if !RenderInstance.tempRect.exists {
-            if let extent = graph.store.read({ graph.subgraph(for: subgraph).finalNode?.calculatedRenderExtent }), let bounds = extent.basic?.corners.containingRect {
-                RenderInstance.tempRect = bounds
-            } else {
-                print("WTF")
-            }
-        }
+//        if !RenderInstance.tempRect.exists {
+//            if let extent = graph.store.read({ graph.subgraph(for: subgraph).finalNode?.calculatedRenderExtent }), let bounds = extent.basic?.corners.containingRect {
+//                RenderInstance.tempRect = bounds
+//            } else {
+//                print("WTF")
+//            }
+//        }
         
 //        fatalError()
 //        graph1.keysToCache.formUnion(keysToCache)
