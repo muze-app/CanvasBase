@@ -213,26 +213,19 @@ public class DAGStore<Collection: NodeCollection> {
     }
     
     @discardableResult
-    public func commit(_ snapshot: InternalGraph, process: Bool = true) -> CommitKey {
-        let key: CommitKey = snapshot.key
-        
+    public func commit(_ snapshot: InternalGraph) -> DAGSnapshot<Collection> {
         write {
             var snapshot = snapshot
             if snapshot.depth > 20 {
                 snapshot = snapshot.flattened
             }
             
-            let snapshotToCommit = snapshot
-            assert(snapshotToCommit.key == key)
-            
-            commits[key] = snapshotToCommit
+            let key = snapshot.key
+            commits[key] = snapshot
             commitTimes[key] ?= Date()
             
-            retain(commitFor: key, mode: .externalReference)
-            writeAsync { self.release(commitFor: key, mode: .externalReference) }
+            return snapshot.externalReference
         }
-        
-        return key
     }
     
     func retain(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
