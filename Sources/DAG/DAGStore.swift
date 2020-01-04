@@ -38,14 +38,14 @@ public class DAGStore<Collection: NodeCollection> {
 //    public var latest: DAGSnapshot<Collection>!
     var commits = WeakDict<CommitKey, InternalGraph>()
     
-    private var internalRetainedCommitsBag = Bag<CommitKey>() {
+    private var internalRetainedCommitsBag = DAGBag() {
         willSet { preconditionWriting() }
     }
-    private var externalRetainedCommitsBag = Bag<CommitKey>() {
+    private var externalRetainedCommitsBag = DAGBag() {
         willSet { preconditionWriting() }
     }
     var retainedCommitsSet: Set<CommitKey> {
-        return internalRetainedCommitsBag.asSet + externalRetainedCommitsBag.asSet
+        return internalRetainedCommitsBag.keys + externalRetainedCommitsBag.keys
     }
     var retainedCommits = ThreadSafeDict<CommitKey, InternalGraph>()
     public var commitTimes = [CommitKey: Date]() {
@@ -54,7 +54,7 @@ public class DAGStore<Collection: NodeCollection> {
 
     var externalCommits: [InternalGraph] {
         read {
-            externalRetainedCommitsBag.asSet.map {
+            externalRetainedCommitsBag.keys.map {
                 let key = $0
                 let commit = commits[key]!
                 
@@ -230,26 +230,29 @@ public class DAGStore<Collection: NodeCollection> {
         }
     }
     
-    func retain(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
-        write {
-            guard let commit = commits[key] else { fatalError() }
-            guard commitTimes[key].exists else { fatalError() }
-            
-            switch mode {
-                case .externalReference: externalRetainedCommitsBag.insert(key)
-                case .internalReference: internalRetainedCommitsBag.insert(key)
-            }
-            
-            retainedCommits[key] = commit
+    func dagBag(for mode: DAGSnapshot<Collection>.Mode) -> DAGBag {
+        switch mode {
+            case .externalReference: return externalRetainedCommitsBag
+            case .internalReference: return internalRetainedCommitsBag
         }
     }
     
-    func release(commitFor key: CommitKey, mode: DAGSnapshot<Collection>.Mode) {
+    func retain(commitFor key: CommitKey, holder: AnyObject, mode: DAGSnapshot<Collection>.Mode) -> DAGBag.Token {
         write {
-            switch mode {
-                case .externalReference: externalRetainedCommitsBag.remove(key)
-                case .internalReference: internalRetainedCommitsBag.remove(key)
-            }
+            guard let commit = commits[key] else { fatalError() }
+            guard commitTimes[key].exists else { fatalError() }
+            retainedCommits[key] = commit
+            
+            let bag = dagBag(for: mode)
+            return bag.retain(key, holder)
+        }
+    }
+    
+    func release(_ token: DAGBag.Token, mode: DAGSnapshot<Collection>.Mode) {
+        write {
+            let key = token.key
+            let bag = dagBag(for: mode)
+            bag.release(token)
             
             if !retainedCommitsSet.contains(key) {
                 autoreleasepool {

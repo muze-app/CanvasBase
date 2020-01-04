@@ -30,6 +30,8 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
     weak var _store: DAGStore<Collection>?
     override public var store: DAGStore<Collection> { _store! }
     
+    var token: DAGBag.Token?
+    
     convenience init(store: DAGStore<Collection>, key: SnapshotKey) {
         self.init(store: store, key: key, .internalReference)
     }
@@ -40,7 +42,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         
         super.init(key)
 
-        store.retain(commitFor: key, mode: mode)
+        token = store.retain(commitFor: key, holder: self, mode: mode)
         assert(isCommitted)
         
 //        print("snapshot of \(key) - \(pointerString)")
@@ -54,10 +56,9 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 //    }
     
     deinit {
-        if let store = _store {
-            let key = self.key
+        if let store = _store, let token = token {
             let mode = self.mode
-            store.writeAsync { store.release(commitFor: key, mode: mode) }
+            store.writeAsync { store.release(token, mode: mode) }
         }
     }
     
