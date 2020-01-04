@@ -51,14 +51,14 @@ extension CanvasManager {
     // MARK: - THE PURGE ITSELF
     
     private func _purge() {
-//        print("PURGE!!!")
-//
-//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
-//        print("COMMITS: \(store.sortedCommits.count)")
-//        for commit in store.sortedCommits {
-//            print(" - \(commit.key)")
+        print("PURGE!!!")
+
+        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+        print("COMMITS: \(store.sortedCommits.count)")
+        for commit in store.sortedCommits {
+            print(" - \(commit.key)")
 //            commit.verify()
-//        }
+        }
         
         removeUndoStates()
         
@@ -71,23 +71,23 @@ extension CanvasManager {
         
 //        let snapshots = DAGSnapshot<CanvasNodeCollection>.all()
         
-//        let validCommits = Set(undoManager.undoList.flatMap {
-//            [$0.before.key, $0.after.key]
-//        })
+        let validCommits = Set(undoManager.undoList.flatMap {
+            [$0.before.key, $0.after.key]
+        })
         
-//        for commit in sortedCommits {
-//            let time = store.commitTimes[commit.key]!
-//            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
-//            if !validCommits.contains(commit.key) {
-//                print("    INVALID!")
+        for commit in sortedCommits {
+            let time = store.commitTimes[commit.key]!
+            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
+            if !validCommits.contains(commit.key) {
+                print("    INVALID!")
+            }
+//            for snapshot in snapshots where snapshot.key == commit.key {
+//                print("   - \(snapshot.pointerString)")
 //            }
-////            for snapshot in snapshots where snapshot.key == commit.key {
-////                print("   - \(snapshot.pointerString)")
-////            }
-//        }
+        }
         
-//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
-//
+        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+
 //        print("COMMITS: \(sortedCommits.count)")
 //        for commit in sortedCommits {
 //            print(" - \(commit.key) \(commit.pointerString)")
