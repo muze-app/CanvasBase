@@ -106,7 +106,7 @@ public class DAGStore<Collection: NodeCollection> {
 //                    subgraph.finalNode?.log(with: "\t\t")
 //                }
                 
-//                commit.verify()
+                commit.verify()
                 let diff = commit.diff(from: head)
                 
 //                print("DIFF \(diff.key)")
@@ -115,7 +115,7 @@ public class DAGStore<Collection: NodeCollection> {
 //                    subgraph.finalNode?.log(with: "\t\t")
 //                }
                 
-//                diff.verify()
+                diff.verify()
                 self.commit(diff)
             }
         }
@@ -216,6 +216,8 @@ public class DAGStore<Collection: NodeCollection> {
     public func commit(_ snapshot: InternalGraph) -> DAGSnapshot<Collection> {
         write {
             var snapshot = snapshot
+            snapshot.verify()
+            
             if snapshot.depth > 20 {
                 snapshot = snapshot.flattened
             }

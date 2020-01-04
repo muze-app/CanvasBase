@@ -29,9 +29,9 @@ public class CacheAndOptimizer {
     
     // MARK: MARCH
     
-    public func march(_ graph: Graph) -> Graph {
+    public func march(_ graph: DAGSnapshot<CanvasNodeCollection>) -> Graph {
         let initial = graph
-        var graph = graph
+        var graph: Graph = graph
         var map1 = [NodeKey:NodeKey]()
 
 //        print("BEFORE:")

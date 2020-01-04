@@ -57,12 +57,12 @@ extension CanvasManager {
         print("COMMITS: \(store.sortedCommits.count)")
         for commit in store.sortedCommits {
             print(" - \(commit.key)")
-//            commit.verify()
+            commit.verify()
         }
         
         removeUndoStates()
         
-//        store.sortedCommits.head.verify()
+        store.sortedCommits.head.verify()
         
         print("simplifying tail")
         store.simplifyTail()
@@ -91,7 +91,7 @@ extension CanvasManager {
         print("COMMITS: \(sortedCommits.count)")
         for commit in sortedCommits {
             print(" - \(commit.key) \(commit.pointerString)")
-//            commit.verify()
+            commit.verify()
         }
         
         let oldNodes = determineNodesToRemove(sortedCommits)
@@ -107,13 +107,14 @@ extension CanvasManager {
             }
         } .flattened
         
-//        newHead.verify()
+        newHead.verify()
         
         store.commit(newHead)
         
         for commit in sortedCommits.tail {
             for (k, _) in replacements {
                 commit.setReplacementType(.replacement, for: k)
+                commit.verify()
             }
         }
         
