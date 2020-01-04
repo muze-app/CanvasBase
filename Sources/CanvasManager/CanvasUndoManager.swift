@@ -13,32 +13,31 @@ public class CanvasUndoManager {
     
     public typealias ActionType = CanvasAction
     
-    public let undoList = LinkedList<ActionType>()
+    public private(set) var undoList = [CanvasAction]()
     public let redoList = LinkedList<ActionType>()
     
-    public var undoCount: Int { return undoList.nodeCount }
+    public var undoCount: Int { undoList.count }
     public var redoCount: Int { return redoList.nodeCount }
     
-    public var canUndo: Bool { return undoCount > 0 }
-    public var canRedo: Bool { return redoCount > 0 }
+    public var canUndo: Bool { undoCount > 0 }
+    public var canRedo: Bool { redoCount > 0 }
     
     public func push(_ undo: ActionType) {
-        undoList.push(undo)
+        undoList.append(undo)
         redoList.removeAll()
     }
     
     public func pop(keeping count: Int) {
-        while undoCount > count {
-            undoList.poop()
-        }
+        undoList = undoList.suffix(count)
     }
     
-    public func pop(where predicate: (ActionType) -> Bool) {
-        undoList.pop(where: predicate)
-    }
+//    public func pop(where predicate: (ActionType) -> Bool) {
+//        undoList.pop(where: predicate)
+//    }
     
     public func undo() -> (ActionType, Snapshot)? {
-        if let action = undoList.pull() {
+        if let action = undoList.last {
+            undoList.removeLast()
             redoList.push(action)
 //            action.undo(&canvas)
             return (action, action.before)
@@ -49,7 +48,7 @@ public class CanvasUndoManager {
     
     public func redo() -> (ActionType, Snapshot)? {
         if let action = redoList.pull() {
-            undoList.push(action)
+            undoList.append(action)
             return (action, action.after)
         }
         
