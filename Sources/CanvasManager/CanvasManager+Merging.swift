@@ -120,6 +120,14 @@ extension CanvasManager {
             }
         }
         
+        print("NODES TOUCHED")
+        for commit in store.sortedCommits {
+            print("commit \(commit.key)")
+            for node in commit.nodesTouchedSincePredecessor {
+                print(" - \(node)")
+            }
+        }
+        
 //        for commit in store.sortedCommits {
 //            
 //            for (k, _) in replacements {
