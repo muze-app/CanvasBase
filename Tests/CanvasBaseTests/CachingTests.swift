@@ -98,7 +98,9 @@ final class CachingTests: XCTestCase {
 //            current.subgraph(for: subgraphKey).finalNode!.log()
             
             store.write {
-                let optimized = cache.march(current)
+                let x = store.commit(current)
+                
+                let optimized = cache.march(x.externalReference)
             
                 let node = optimized.subgraph(for: subgraphKey).finalNode!
                 let cost: Int = node.cost
