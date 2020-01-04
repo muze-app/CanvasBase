@@ -51,48 +51,48 @@ extension CanvasManager {
     // MARK: - THE PURGE ITSELF
     
     private func _purge() {
-        print("PURGE!!!")
-        
-        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
-        print("COMMITS: \(store.sortedCommits.count)")
-        for commit in store.sortedCommits {
-            print(" - \(commit.key)")
-            commit.verify()
-        }
+//        print("PURGE!!!")
+//
+//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+//        print("COMMITS: \(store.sortedCommits.count)")
+//        for commit in store.sortedCommits {
+//            print(" - \(commit.key)")
+//            commit.verify()
+//        }
         
         removeUndoStates()
         
-        store.sortedCommits.head.verify()
+//        store.sortedCommits.head.verify()
         
-        print("simplifying tail")
+//        print("simplifying tail")
         store.simplifyTail()
         let sortedCommits = store.sortedCommits
-        print("head: \(sortedCommits.head.pointerString)")
+//        print("head: \(sortedCommits.head.pointerString)")
         
 //        let snapshots = DAGSnapshot<CanvasNodeCollection>.all()
         
-        let validCommits = Set(undoManager.undoList.flatMap {
-            [$0.before.key, $0.after.key]
-        })
+//        let validCommits = Set(undoManager.undoList.flatMap {
+//            [$0.before.key, $0.after.key]
+//        })
         
-        for commit in sortedCommits {
-            let time = store.commitTimes[commit.key]!
-            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
-            if !validCommits.contains(commit.key) {
-                print("    INVALID!")
-            }
-//            for snapshot in snapshots where snapshot.key == commit.key {
-//                print("   - \(snapshot.pointerString)")
+//        for commit in sortedCommits {
+//            let time = store.commitTimes[commit.key]!
+//            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
+//            if !validCommits.contains(commit.key) {
+//                print("    INVALID!")
 //            }
-        }
+////            for snapshot in snapshots where snapshot.key == commit.key {
+////                print("   - \(snapshot.pointerString)")
+////            }
+//        }
         
-        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
-        
-        print("COMMITS: \(sortedCommits.count)")
-        for commit in sortedCommits {
-            print(" - \(commit.key) \(commit.pointerString)")
-            commit.verify()
-        }
+//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+//
+//        print("COMMITS: \(sortedCommits.count)")
+//        for commit in sortedCommits {
+//            print(" - \(commit.key) \(commit.pointerString)")
+////            commit.verify()
+//        }
         
         let oldNodes = determineNodesToRemove(sortedCommits)
         
@@ -107,14 +107,14 @@ extension CanvasManager {
             }
         } .flattened
         
-        newHead.verify()
+//        newHead.verify()
         
         store.commit(newHead)
         
         for commit in sortedCommits.tail {
             for (k, _) in replacements {
                 commit.setReplacementType(.replacement, for: k)
-                commit.verify()
+//                commit.verify()
             }
         }
         

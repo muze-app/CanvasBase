@@ -154,7 +154,7 @@ public class DAGBase<Collection: NodeCollection> {
                       _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         store.write {
             let snapshot = snapshotToModify
-            snapshot.verify()
+//            snapshot.verify()
             
             let replaced = snapshotToModify.allNodes.intersection(store.replacedNodes)
             for n in replaced {
