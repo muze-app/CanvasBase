@@ -14,9 +14,9 @@ extension CanvasManager {
     // MARK: Offscreen Rendering
     
     public func renderTexture(for subgraph: SubgraphKey? = nil,
-                       of commit: Snapshot? = nil,
-                       format: RenderOptions.PixelFormat = .sRGB,
-                       completion: @escaping (MetalTexture)->()) {
+                              of commit: Snapshot? = nil,
+                              format: RenderOptions.PixelFormat = .sRGB,
+                              completion: @escaping (MetalTexture)->()) {
 
         let subgraph = subgraph ?? self.subgraphKey
         let commit = commit ?? current //.optimizing(subgraph: subgraph)

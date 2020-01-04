@@ -46,31 +46,33 @@ public class ImageNode: GeneratorNode<ImagePayload> {
 //        set { payload.image = .with(newValue) }
 //    }
     
-    var texture: MetalTexture {
+    public var texture: MetalTexture {
         get { payload.texture }
         set { payload.texture = newValue }
     }
     
-    var transform: AffineTransform {
+    public var transform: AffineTransform {
         get { payload.transform }
         set { payload.transform = newValue }
     }
     
-    var colorMatrix: DMatrix3x3 {
+    public var colorMatrix: DMatrix3x3 {
         get { payload.colorMatrix }
         set { payload.colorMatrix = newValue }
     }
     
-    var colorMatrixIsIdentity: Bool {
+    public var colorMatrixIsIdentity: Bool {
         return colorMatrix ~ .identity
     }
     
+    public var status: ImagePayload.Status {
+        get { payload.status }
+        set { payload.status = newValue }
+    }
+    
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
-        //        colorMatrix.a1 = 2
-        //        colorMatrix.b2 = 2
-        //        colorMatrix.c3 = 2
-        //        colorMatrix
-
+        if isInvisible { return nil }
+        
         texture.identifier = texture.identifier ?? "Image"
 
         let t: RenderPayload = .texture(texture)
@@ -87,6 +89,10 @@ public class ImageNode: GeneratorNode<ImagePayload> {
         return .photo & renderExtent
     }
     
+    override public var isInvisible: Bool { status == .hidden }
+    
+    override public var calculatedCacheable: Bool { status == .normal }
+    
 }
 
 public struct ImagePayload: NodePayload, CustomDebugStringConvertible {
@@ -94,13 +100,20 @@ public struct ImagePayload: NodePayload, CustomDebugStringConvertible {
     public var texture: MetalTexture
     public var transform: AffineTransform
     public var colorMatrix: DMatrix3x3
+    public var status: Status
+    
+    public enum Status {
+        case hidden, doNotCache, normal
+    }
     
     public init(_ a: MetalTexture,
                 _ b: AffineTransform = .identity,
-                _ c: DMatrix3x3 = .identity) {
+                _ c: DMatrix3x3 = .identity,
+                _ d: Status = .normal) {
         self.texture = a
         self.transform = b
         self.colorMatrix = c
+        self.status = d
     }
 
     public func transformed(by transform: AffineTransform) -> ImagePayload {

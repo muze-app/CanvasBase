@@ -12,6 +12,7 @@ import Metal
 
 public class LiveDrawCreation: DrawingCreation {
     
+    public var imageKey: NodeKey?
     public var stroke: BrushStroke?
     public var texture: MetalTexture?
     public var interpolator: DabInterpolator?
@@ -36,11 +37,13 @@ public class LiveDrawCreation: DrawingCreation {
         format = .rgba16Float
         #endif
         
+        let canvasSize = canvasManager.currentMetadata.size
+        
         stroke = BrushStroke(defaultDab: dab, spacing: spacing)
         interpolator = DabInterpolator(stroke: stroke!)
         realizer = DabRealizer(interpolator: interpolator!)
         
-        texture = MetalHeapManager.shared.makeTexture(canvasManager.currentMetadata.size,
+        texture = MetalHeapManager.shared.makeTexture(canvasSize,
                                                       format,
                                                       type: .longTerm)
         
@@ -50,7 +53,7 @@ public class LiveDrawCreation: DrawingCreation {
             let graph = subgraph.graph
             
             let blend = BlendNode(graph: graph, payload: .init(.normal, 1))
-            blend.source = ImageNode(texture: texture!, graph: graph)
+            blend.source = ImageNode(imageKey!, texture: texture!, graph: graph)
             blend.destination = subgraph.finalNode
             
             subgraph.finalNode = blend
@@ -86,6 +89,20 @@ public class LiveDrawCreation: DrawingCreation {
                              fragmentTextures: [t._texture])
         
         pass.commit()
+    }
+    
+    func strokeWillSucceed() {
+        modify { subgraph in
+            let node = ImageNode(imageKey!, graph: subgraph.graph)
+            node.status = .doNotCache
+        }
+    }
+    
+    func strokeFinished() {
+        modify { subgraph in
+            let node = ImageNode(imageKey!, graph: subgraph.graph)
+            node.status = .normal
+        }
     }
     
 }
