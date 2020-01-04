@@ -287,9 +287,9 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 //    }
     
     public var nodesTouchedSincePredecessor: Set<NodeKey> {
-        let finals = importantSubgraphs.compactMap { $0.finalKey }
+//        let finals = importantSubgraphs.compactMap { $0.finalKey }
         
-        return Set(finals) + Set(edgeMaps.keys) + Set(payloadMap.keys)
+        return /*Set(finals) +*/ Set(edgeMaps.keys) + Set(payloadMap.keys)
     }
     
     func haveNodesChanged(_ nodes: Set<NodeKey>, sinceParent parent: SnapshotKey) -> Bool {
