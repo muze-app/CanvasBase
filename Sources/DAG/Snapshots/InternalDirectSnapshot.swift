@@ -31,7 +31,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     override public var store: DAGStore<Collection> { _store! }
     let predecessor: DAGBase<Collection>?
     
-    var payloadBuffers: PayloadBufferSet { store.payloadBuffers }
+    var payloadBuffers: PayloadBufferSet<Collection> { store.payloadBuffers }
     
     public init(predecessor: DAGBase<Collection>? = nil, store: DAGStore<Collection>, key: CommitKey = CommitKey()) {
         self.predecessor = predecessor
@@ -48,12 +48,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return snapshot
     }
     
-    var payloadMap: [NodeKey:PayloadBufferAllocation] = [:]
+    var payloadMap: [NodeKey:PayloadBufferAllocation<Collection>] = [:]
     
 //    var hotSubgraphs = Set<SubgraphKey>() // 'hot' more or less means retained
     var subgraphs: [SubgraphKey:SubgraphData] = [:]
     var _typeMap: [NodeKey:Collection] = [:]
-    let pTypeMap: [NodeKey:Collection] 
+    var pTypeMap: [NodeKey:Collection]
     var edgeMaps: [NodeKey:[Int:NodeKey]] = [:]
     var reverseEdges: [NodeKey:Bag<NodeKey>] = [:]
     var revData: [NodeKey:NodeRevData] = [:]
@@ -88,7 +88,33 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         return pTypeMap.merging(_typeMap) { (a, _) in a }
     }
     
-    override public func type(for key: NodeKey) -> Collection? {
+    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
+        if expectingReplacement {
+            if let type = _typeMap[key], "\(type)" == "replacement" {
+                return _typeMap[key]
+            }
+            
+            print("_typeMap")
+            for (k, v) in _typeMap {
+                print("\(k) : \(v)")
+            }
+            
+            print("pTypeMap")
+            for (k, v) in pTypeMap {
+                print("\(k) : \(v)")
+            }
+            
+            if _typeMap[key].exists { fatalError() }
+            let x = pTypeMap[key]
+            
+            if let x = x, "\(x)" == "replacement" {
+                return x
+            }
+            
+            print("\(x)")
+            fatalError()
+        }
+        
         return _typeMap[key] ?? pTypeMap[key]
     }
 
@@ -97,6 +123,12 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         assert(isMutable)
         if self.type(for: key) == type { return }
         _typeMap[key] = type
+    }
+    
+    public func setReplacementType(_ type: Collection, for key: NodeKey) {
+        preconditionWriting()
+        
+        pTypeMap[key] = type
     }
     
     // MARK: Edges
@@ -202,7 +234,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
     
     // MARK: Payloads
     
-    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation<Collection>? {
         return payloadMap[key] ?? predecessor?.payloadAllocation(for: key)
     }
     
@@ -210,14 +242,22 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
         assert(isMutable)
 //        print("\(address) setPayload \(payload) for \(key)")
         
+        guard let type = self.type(for: key) else {
+            fatalError()
+        }
+        
         if !force, self.payload(for: key, of: T.self) == payload { return }
         
-        if let allocation = payloadMap[key] {
+        if !force, let allocation = payloadMap[key] {
+            guard allocation.type == type else {
+                fatalError("payload type mismatch")
+            }
+            
             allocation.pointer.assumingMemoryBound(to: T.self).assign(repeating: payload, count: 1)
             return
         }
         
-        guard let allocation = payloadBuffers.new(payload) else {
+        guard let allocation = payloadBuffers.new(payload, type: type) else {
             fatalError("out of memory")
         }
         
@@ -273,7 +313,9 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 //    }
     
     public var nodesTouchedSincePredecessor: Set<NodeKey> {
-        return Set(edgeMaps.keys) + Set(payloadMap.keys)
+        let finals = allSubgraphKeys.compactMap { finalKey(for: $0) }
+        
+        return Set(finals) + Set(edgeMaps.keys) + Set(payloadMap.keys)
     }
     
     func haveNodesChanged(_ nodes: Set<NodeKey>, sinceParent parent: SnapshotKey) -> Bool {
@@ -291,7 +333,7 @@ public class InternalDirectSnapshot<Collection: NodeCollection>: DAGBase<Collect
 //        return pred.haveNodesChanged(nodes, sinceParent: parent)
     }
     
-    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+    override public func contains(allocations: Set<PayloadBufferAllocation<Collection>>) -> Bool {
         let mine = Set(payloadMap.values)
 
         let intersection = mine.intersection(allocations)

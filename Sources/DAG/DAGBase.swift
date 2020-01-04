@@ -60,7 +60,7 @@ public class DAGBase<Collection: NodeCollection> {
     var typeMap: [NodeKey:Collection] { die }
     
     //    func node(for key: NodeKey) -> Node { }
-    public func type(for key: NodeKey) -> Collection? {
+    public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
         die
     }
     
@@ -92,16 +92,24 @@ public class DAGBase<Collection: NodeCollection> {
     
     // MARK: - Payloads
 
-    public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+    public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation<Collection>? {
         die
     }
     
+    @available(*, deprecated)
     public final func payloadPointer(for key: NodeKey) -> UnsafeMutableRawPointer? {
         payloadAllocation(for: key)?.pointer
     }
     
     public final func payload<T>(for key: NodeKey, of type: T.Type) -> T? {
-        return payloadPointer(for: key)?.assumingMemoryBound(to: T.self).pointee
+        guard let allocation = payloadAllocation(for: key) else { return nil }
+        guard let type = self.type(for: key) else { fatalError("no type found") }
+        guard allocation.type == type else {
+            print("payload for \(key) (\(type))")
+            fatalError("payload type mismatch")
+        }
+        
+        return allocation.pointer.assumingMemoryBound(to: T.self).pointee
     }
 
     var die: Never { fatalError() }
@@ -142,6 +150,9 @@ public class DAGBase<Collection: NodeCollection> {
                              _ block: (MutableDAG<Collection>)->()) -> Snapshot {
         store.write {
             let snapshot = snapshotToModify
+            if !key.exists {
+                snapshot.verify()
+            }
             
             let result = InternalDirectSnapshot(predecessor: snapshot,
                                                 store: store,
@@ -189,7 +200,7 @@ public class DAGBase<Collection: NodeCollection> {
         ImportSnapshot(predecessor: self, imported: other)
     }
     
-    public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool { die }
+    public func contains(allocations: Set<PayloadBufferAllocation<Collection>>) -> Bool { die }
     
 }
 
@@ -205,6 +216,15 @@ public extension DAGBase {
         for key in allNodes where !type(for: key).exists {
             print("MISSING KEY: \(key)")
             fatalError()
+        }
+        
+        for replaced in store.replacedNodes {
+            if let t = self.type(for: replaced) {
+                if "\(t)" != "replacement" {
+                    print("expected replacement, found \(t)")
+                    fatalError()
+                }
+            }
         }
     }
     

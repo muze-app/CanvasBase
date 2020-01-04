@@ -9,13 +9,15 @@
 import Foundation
 import MuzePrelude
 
-public class PayloadBufferAllocation {
+public class PayloadBufferAllocation<Collection: NodeCollection> {
     
-    let buffer: PayloadBuffer
+    let type: Collection
+    let buffer: PayloadBuffer<Collection>
     let pointer: UnsafeMutableRawPointer
     let deallocate: ()->()
     
-    init(buffer: PayloadBuffer, pointer: UnsafeMutableRawPointer, deallocate: @escaping ()->()) {
+    init(type: Collection, buffer: PayloadBuffer<Collection>, pointer: UnsafeMutableRawPointer, deallocate: @escaping ()->()) {
+        self.type = type
         self.buffer = buffer
         self.pointer = pointer
         self.deallocate = deallocate
@@ -28,26 +30,28 @@ public class PayloadBufferAllocation {
     
 }
 
-class PayloadBufferSet: HeapSet<DAGHeap> {
+// possibly deprecate soon if we continue to use Swift's allocator
+// left in for now in case this has better performance
+class PayloadBufferSet<Collection: NodeCollection>: HeapSet<DAGHeap> {
     
     init() {
         super.init(layout: .init(heapSize: HeapLayout.pageSize * 4,
                                  chunkSize: 64))
     }
     
-    var buffers = WeakSet<PayloadBuffer>()
+    var buffers = WeakSet<PayloadBuffer<Collection>>()
     
-    func new<T>(_ s: T) -> PayloadBufferAllocation? {
+    func new<T>(_ s: T, type: Collection) -> PayloadBufferAllocation<Collection>? {
         for buffer in buffers {
-            if let allocation = buffer.new(s) {
+            if let allocation = buffer.new(s, type: type) {
                 return allocation
             }
         }
         
-        guard let buffer = PayloadBuffer(bufferSet: self) else { return nil }
+        guard let buffer = PayloadBuffer<Collection>(bufferSet: self) else { return nil }
         buffers.insert(buffer)
         
-        guard let allocation = buffer.new(s) else {
+        guard let allocation = buffer.new(s, type: type) else {
             let size = MemoryLayout<T>.size
             if size > buffer.heap.heapSize {
                 fatalError("Massive payload of size \(size) doesn't fit!")

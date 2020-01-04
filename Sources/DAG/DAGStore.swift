@@ -15,7 +15,9 @@ private let keyKey = DispatchSpecificKey<StoreKey>()
 
 public class DAGStore<Collection: NodeCollection> {
     
-    var payloadBuffers = PayloadBufferSet()
+    public var replacedNodes: [NodeKey] = []
+    
+    var payloadBuffers = PayloadBufferSet<Collection>()
     
     let key = StoreKey()
     let queue = DispatchQueue(label: "DAG",
@@ -92,8 +94,28 @@ public class DAGStore<Collection: NodeCollection> {
         autoreleasepool {
             let sorted = sortedCommits
             let head = sorted.head.internalReference
+            print("SIMPLIFY TAIL. HEAD: \(head.key)")
+            for subgraph in head.allSubgraphs {
+                print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+                subgraph.finalNode?.log(with: "\t\t")
+            }
             for commit in sorted.tail {
+                print("SIMPLIFY COMMIT \(commit.key)")
+                for subgraph in commit.allSubgraphs {
+                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+                    subgraph.finalNode?.log(with: "\t\t")
+                }
+                
+                commit.verify()
                 let diff = commit.diff(from: head)
+                
+                print("DIFF \(diff.key)")
+                for subgraph in diff.allSubgraphs {
+                    print("    SUBGRAPH: \(subgraph.key) (\(String(describing: subgraph.finalKey)))")
+                    subgraph.finalNode?.log(with: "\t\t")
+                }
+                
+                diff.verify()
                 self.commit(diff, setLatest: false)
             }
         }
@@ -200,6 +222,8 @@ public class DAGStore<Collection: NodeCollection> {
         let key: CommitKey = snapshot.key
         
         write {
+            snapshot.verify()
+            
             var snapshot = snapshot
             if snapshot.depth > 20 {
                 snapshot = snapshot.flattened

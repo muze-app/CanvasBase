@@ -57,9 +57,12 @@ extension CanvasManager {
         print("COMMITS: \(store.sortedCommits.count)")
         for commit in store.sortedCommits {
             print(" - \(commit.key)")
+            commit.verify()
         }
         
         removeUndoStates()
+        
+        store.sortedCommits.head.verify()
         
         print("simplifying tail")
         store.simplifyTail()
@@ -88,6 +91,7 @@ extension CanvasManager {
         print("COMMITS: \(sortedCommits.count)")
         for commit in sortedCommits {
             print(" - \(commit.key) \(commit.pointerString)")
+            commit.verify()
         }
         
         let oldNodes = determineNodesToRemove(sortedCommits)
@@ -99,22 +103,56 @@ extension CanvasManager {
 //                guard let (texture, transform) = value else { fatalError() }
                   
                 replacements[key] = node //
-
+                graph.replace(key, with: node)
             }
-        }
+        } .flattened
+        
+        newHead.verify()
         
         store.commit(newHead, setLatest: false)
         
-        for commit in store.sortedCommits.reversed() {
-            let commit = commit.modify(as: commit.key) { graph in
-                for (old, new) in replacements {
-                    graph.replace(old, with: new)
+        for commit in sortedCommits.tail {
+            for (k, _) in replacements {
+                commit.setReplacementType(.replacement, for: k)
+            }
+        }
+        
+        for commit in store.sortedCommits {
+            
+            for (k, _) in replacements {
+                if let type = commit.type(for: k, expectingReplacement: true) {
+                    if type != .replacement {
+                        fatalError()
+                    }
                 }
-                updateCanvasSubgraph(in: graph)
             }
             
-            store.commit(commit, setLatest: false)
+//            let patched = commit.modify(as: commit.key) { graph in
+//                for (k, _) in replacements {
+//                graph.setType(.replacement, for: k)
+//                }
+//            }
+            
+//            store.commit(patched)
+//            patched.verify()
+            
+            commit.verify()
         }
+        
+//        for commit in store.sortedCommits.reversed() {
+//            commit.verify()
+//
+//            let commit = commit.modify(as: commit.key) { graph in
+//                for (old, new) in replacements {
+//                    graph.replace(old, with: new)
+//                }
+//                updateCanvasSubgraph(in: graph)
+//            }
+//
+//            commit.verify()
+//
+//            store.commit(commit, setLatest: false)
+//        }
         
 //        let newHead = sortedCommits.head.modify(as: sortedCommits.head.key) { graph in
 ////            print("BEFORE:")
@@ -144,8 +182,8 @@ extension CanvasManager {
 //
 //        store.commit(newHead)
         
-        store.simplifyHead()
-        store.simplifyTail()
+//        store.simplifyHead()
+//        store.simplifyTail()
 //        store.simplifyTail() // to do: we can replace this by making the preds of the tail into snapshots
         
         reducingMemory = false

@@ -120,4 +120,25 @@ final class DiffAndFlattenTests: XCTestCase, CanvasBaseTestCase {
         }
     }
     
+    var mockImagePayload: ImagePayload { .init(.mock, .identity, .identity) }
+    
+    func testThatDiffFromEmptyWorks() {
+        let store = Store()
+        let subgraphKey = SubgraphKey()
+        let initial = InternalSnapshot(store: store)
+        store.commit(initial)
+        
+        let graph = initial.modify { graph in
+            let subgraph = graph.subgraph(for: subgraphKey)
+            subgraph.finalNode = ImageNode(graph: graph, payload: mockImagePayload, nodeType: .image)
+        }
+        
+        store.write {
+            let diff = graph.diff(from: initial)
+            
+            XCTAssert(diff.depth == 1)
+            XCTAssert(self.graph(diff, equals: graph))
+        }
+    }
+    
 }

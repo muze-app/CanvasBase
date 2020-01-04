@@ -47,11 +47,11 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         predecessor.typeMap.merging(imported.typeMap) { (a, _) in a }
     }
     
-    override public func type(for key: NodeKey) -> Collection? {
+    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
         predecessor.type(for: key) ?? imported.type(for: key)
     }
     
-    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation<Collection>? {
         return predecessor.payloadAllocation(for: key)
             ??    imported.payloadAllocation(for: key)
     }
@@ -73,7 +73,7 @@ public class ImportSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
 ////        fatalError()
 //    }
     
-    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+    override public func contains(allocations: Set<PayloadBufferAllocation<Collection>>) -> Bool {
         if predecessor.contains(allocations: allocations) { return true }
         if    imported.contains(allocations: allocations) { return true }
 

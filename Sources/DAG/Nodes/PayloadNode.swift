@@ -45,11 +45,22 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         
         super.init(key, graph: graph)
         
-        assert(graph.payload(for: key, of: PayloadType.self).exists)
+        if !graph.payload(for: key, of: PayloadType.self).exists {
+            if let payload = payload, let graph = graph as? MutableDAG {
+                graph.setPayload(payload, for: key)
+            } else {
+                print("key: \(key)")
+                fatalError("Must provide initial payload when inserting node into graph")
+            }
+        }
     }
     
     override open var debugDescription: String {
-        return String("\(Swift.type(of: self)) (\(key)) = \(payload)")
+        let t = Swift.type(of: self)
+        let k = key
+        let p = payload
+        
+        return String("\(t) (\(k)) = \(p)")
     }
     
     override final func equalPayload(to other: Node) -> Bool {
@@ -92,6 +103,28 @@ open class PayloadNode<Collection: NodeCollection, PayloadType: NodePayload>: Ge
         super.add(diffTo: graph, parent: parent)
         
         let source = self.graph
+        
+        let sourceType = source.type(for: key)
+        let parentType = parent.type(for: key)
+        
+        guard let sourcePayload = source.payload(for: key, of: PayloadType.self) else {
+            return
+        }
+        
+        print("source payload: \(sourcePayload)")
+        
+        let allocation = parent.payloadAllocation(for: key)
+        print("target alloc: \(allocation)")
+        
+        let parentPayload = parent.payload(for: key, of: PayloadType.self)
+        print("parent payload: \(parentPayload)")
+    
+        
+//        if source.type(for: key) != parent.type(for: key) {
+////            graph.setPayload(sourcePayload, for: key)
+//            return
+//        }
+        
         if let sourcePayload = source.payload(for: key, of: PayloadType.self),
             parent.payload(for: key, of: PayloadType.self) != sourcePayload {
             graph.setPayload(sourcePayload, for: key)

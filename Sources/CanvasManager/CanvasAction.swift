@@ -20,7 +20,7 @@ public class CanvasAction {
         self.before = before
         
         let store = before.store
-        let afterInternal = before.internalSnapshot.modify(block)
+        let afterInternal = before.modify(block)
         store.commit(afterInternal)
         
         self.after = afterInternal.externalReference

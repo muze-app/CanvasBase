@@ -68,7 +68,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.typeMap
     }
     
-    override public func type(for key: NodeKey) -> Collection? {
+    override public func type(for key: NodeKey, expectingReplacement: Bool = false) -> Collection? {
         internalSnapshot.type(for: key)
     }
     
@@ -88,7 +88,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.metaKey(for: subgraph)
     }
     
-    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation? {
+    override public func payloadAllocation(for key: NodeKey) -> PayloadBufferAllocation<Collection>? {
         internalSnapshot.payloadAllocation(for: key)
     }
     
@@ -108,7 +108,7 @@ public class DAGSnapshot<Collection: NodeCollection>: DAGBase<Collection> {
         internalSnapshot.setRevData(data, for: key)
     }
     
-    override public func contains(allocations: Set<PayloadBufferAllocation>) -> Bool {
+    override public func contains(allocations: Set<PayloadBufferAllocation<Collection>>) -> Bool {
         internalSnapshot.contains(allocations: allocations)
     }
     
