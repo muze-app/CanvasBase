@@ -151,25 +151,15 @@ public class CanvasTransaction {
         clearRedos()
 //        undoDummy()
         
-//        let oldCanvas = currentCanvas
+        let oldCanvas = currentCanvas
         let newCanvas = action.after
         
-//        print("OLD:")
-//        if let manager = manager as? CanvasManager {
-//            let meta = (oldCanvas.metaNode as! CanvasMetaNode).payload
-//            let smapshot = meta.layerSnapshots[manager.tempLayerManager.key]!
-//            let commit = smapshot.internalSnapshot
-//            commit.finalNode.log()
-//        }
-//
-//        print("NEW:")
-//        if let manager = manager as? CanvasManager {
-//            let meta = (newCanvas.metaNode as! CanvasMetaNode).payload
-//            let key = meta.layerSnapshots[manager.tempLayerManager.key]!
-//            let commit = key.internalSnapshot
-////            commit.finalNode.log()
-//        }
-        
+        print("OLD:")
+        oldCanvas.subgraph(for: actualManager.subgraphKey).finalNode?.log()
+
+        print("NEW:")
+        newCanvas.subgraph(for: actualManager.subgraphKey).finalNode?.log()
+            
         actions.append(action)
         
         currentCanvas = newCanvas

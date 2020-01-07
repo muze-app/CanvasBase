@@ -47,6 +47,7 @@ open class SingleLayerCreation: Creation {
     public func startSubtransaction(_ identifier: String) {
         precondition(!subtransaction.exists)
         subtransaction = canvasManager.newTransaction(identifier: identifier)
+        subtransaction?.setUseSuperAction(withName: identifier)
     }
     
     public func commmitSubtransaction() {
