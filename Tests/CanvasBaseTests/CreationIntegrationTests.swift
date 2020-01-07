@@ -20,7 +20,7 @@ final class CreationIntegrationTests: XCTestCase, CanvasBaseTestCase {
         let creation = BlendCreation()
         
         for _ in 0...100 {
-            creation.push(.mock, .normal)
+            creation.push(.mock, .normal, "test")
             
 //            let node = creation.canvasManager.current.subgraph(for: creation.canvasManager.subgraphKey).finalNode!
 //            

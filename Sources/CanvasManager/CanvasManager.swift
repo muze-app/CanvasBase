@@ -476,10 +476,10 @@ extension CanvasManager: CanvasTransactionParent {
     public var displayCanvas: Snapshot {
         get { return display }
         set {
-            let graph = newValue.modify { updateCanvasSubgraph(in: $0) }
-            store.commit(graph)
-            
-            display = graph.externalReference
+//            let graph = newValue.modify { updateCanvasSubgraph(in: $0) }
+//            store.commit(graph)
+//
+            display = newValue.externalReference
         }
     }
     

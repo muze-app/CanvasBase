@@ -12,9 +12,23 @@ public class CanvasTransaction {
     
     public let identifier: String
     
-    public weak var manager: CanvasTransactionParent! = nil
+    public weak var manager: CanvasTransactionParent!
     public let initialCanvas: Snapshot
     public var currentCanvas: Snapshot
+    
+    var actualManager: CanvasManager {
+        var x = manager
+        
+        while true {
+            if let manager = x as? CanvasManager {
+                return manager
+            } else if let transaction = x as? CanvasTransaction {
+                x = transaction
+            } else {
+                fatalError()
+            }
+        }
+    }
     
     public var currentTransaction: CanvasTransaction?
     
@@ -66,7 +80,7 @@ public class CanvasTransaction {
     }
     
     public func modify(description: String, with block: (MutableGraph)->()) {
-        let action = CanvasAction(description, before: currentCanvas, block)
+        let action = CanvasAction(description, actualManager, before: currentCanvas, block)
         push(action)
     }
     

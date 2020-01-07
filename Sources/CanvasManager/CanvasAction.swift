@@ -15,12 +15,19 @@ public class CanvasAction {
     public let before: Snapshot
     public let after: Snapshot
     
-    public init(_ description: String, before: Snapshot, _ block: (MutableGraph)->()) {
+    public init(_ description: String,
+                _ manager: CanvasManager,
+                before: Snapshot,
+                _ block: (MutableGraph)->()) {
         self.description = description
         self.before = before
         
         let store = before.store
-        let afterInternal = before.modify(block)
+        let afterInternal = before.modify {
+            block($0)
+            manager.updateCanvasSubgraph(in: $0)
+        }
+        
         store.commit(afterInternal)
         
         self.after = afterInternal.externalReference

@@ -14,7 +14,7 @@ public class LayerAction: CanvasAction {
                 before: Snapshot,
                 layerManager: LayerManager,
                 _ block: (Subgraph<CanvasNodeCollection>)->()) {
-        super.init(description, before: before) { (graph) in
+        super.init(description, layerManager.canvasManager!, before: before) { (graph) in
             let subgraph = Subgraph(key: layerManager.subgraphKey, graph: graph)
             block(subgraph)
         }
