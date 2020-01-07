@@ -123,7 +123,7 @@ public struct ImagePayload: NodePayload, CustomDebugStringConvertible {
     public var debugDescription: String {
         let textureString = texture.identifier ?? texture.pointerString
         let transformString = "\(transform.cg.asFloats)"
-        return "ImagePayload(\(textureString), \(transformString))"
+        return "ImagePayload(\(textureString), \(status), \(transformString))"
     }
     
 }
