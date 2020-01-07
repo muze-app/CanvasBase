@@ -50,6 +50,8 @@ public class LiveDrawCreation: DrawingCreation {
         
         texture?.clear()
         
+        startSubtransaction("stroke")
+        
         modify("startStroke") { subgraph in
             let graph = subgraph.graph
             
@@ -100,11 +102,23 @@ public class LiveDrawCreation: DrawingCreation {
         }
     }
     
-    public func strokeFinished() {
+//    public func strokeFinished() {
+//
+//    }
+    
+    public func commitStroke() {
         modify("strokeFinished") { subgraph in
             let node = ImageNode(imageKey!, graph: subgraph.graph)
             node.status = .normal
         }
+        
+        commmitSubtransaction()
+        cleanupStroke()
+    }
+    
+    public func cancelStroke() {
+        cancelSubtransaction()
+        cleanupStroke()
     }
     
 }

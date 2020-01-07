@@ -19,6 +19,8 @@ open class SingleLayerCreation: Creation {
     
     var currentCanvasSubgraph: Subgraph { return canvasManager.current.subgraph(for: canvasManager.subgraphKey) }
     
+    var subtransaction: CanvasTransaction?
+    
     override func setupCanvas(_ graph: MutableGraph) {
         let layerMetaNode = LayerMetaNode(graph: graph, payload: LayerMetadata())
         graph.setMetaNode(layerMetaNode, for: layerSubgraphKey)
@@ -31,13 +33,30 @@ open class SingleLayerCreation: Creation {
     }
     
     public func modify(_ identifier: String, _ block: (Subgraph) -> ()) {
-        canvasManager.newTransaction(identifier: identifier) { transaction in
-            transaction.modify(description: identifier, layer: layerManager, with: block)
-        }
+        let x: CanvasTransactionParent = subtransaction ?? canvasManager
+        
+        let t = x.newTransaction(identifier: identifier)
+        t.modify(description: identifier, layer: layerManager, with: block)
+        t.commit()
         
         DispatchQueue.global().async { [weak self] in
             self?.canvasManager.reduceMemory()
         }
+    }
+    
+    public func startSubtransaction(_ identifier: String) {
+        precondition(!subtransaction.exists)
+        subtransaction = canvasManager.newTransaction(identifier: identifier)
+    }
+    
+    public func commmitSubtransaction() {
+        precondition(subtransaction.exists)
+        subtransaction!.commit()
+    }
+    
+    public func cancelSubtransaction() {
+        precondition(subtransaction.exists)
+        subtransaction!.cancel()
     }
     
 }
