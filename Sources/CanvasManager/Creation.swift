@@ -30,9 +30,9 @@ open class SingleLayerCreation: Creation {
         canvasManager.set(canvasMetadata, in: graph)
     }
     
-    public func modify(_ block: (Subgraph) -> ()) {
-        canvasManager.newTransaction(identifier: "") { transaction in
-            transaction.modify(description: "", layer: layerManager, with: block)
+    public func modify(_ identifier: String, _ block: (Subgraph) -> ()) {
+        canvasManager.newTransaction(identifier: identifier) { transaction in
+            transaction.modify(description: identifier, layer: layerManager, with: block)
         }
         
         DispatchQueue.global().async { [weak self] in

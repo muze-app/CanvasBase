@@ -23,8 +23,8 @@ public class BlendCreation: SingleLayerCreation {
         return colorSpace.matrix(to: .working)
     }
     
-    public func push(_ texture: MetalTexture, _ mode: BlendMode) {
-        modify { subgraph in
+    public func push(_ texture: MetalTexture, _ mode: BlendMode, _ identifier: String) {
+        modify(identifier) { subgraph in
             let graph = subgraph.mutableGraph
             
             let imageNode = ImageNode(texture: texture,

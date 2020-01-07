@@ -50,7 +50,7 @@ public class LiveDrawCreation: DrawingCreation {
         
         texture?.clear()
         
-        modify { subgraph in
+        modify("startStroke") { subgraph in
             let graph = subgraph.graph
             
             let blend = BlendNode(graph: graph, payload: .init(.normal, 1))
@@ -94,14 +94,14 @@ public class LiveDrawCreation: DrawingCreation {
     }
     
     public func strokeWillSucceed() {
-        modify { subgraph in
+        modify("strokeWillSucceed") { subgraph in
             let node = ImageNode(imageKey!, graph: subgraph.graph)
             node.status = .doNotCache
         }
     }
     
     public func strokeFinished() {
-        modify { subgraph in
+        modify("strokeFinished") { subgraph in
             let node = ImageNode(imageKey!, graph: subgraph.graph)
             node.status = .normal
         }

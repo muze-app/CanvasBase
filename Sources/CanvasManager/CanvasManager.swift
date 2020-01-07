@@ -484,19 +484,19 @@ extension CanvasManager: CanvasTransactionParent {
         
         activeNode = nil
         
-//        print("COMMIT TO CANVAS MANAGER")
-//        for action in undoManager.undoList {
-//            print(" - \(action.description)")
-//        }
+        print("COMMIT TO CANVAS MANAGER")
+        for action in undoManager.undoList {
+            print(" - \(action.description)")
+        }
         
-//        print("ADDING \(transaction.actions.count) ACTIONS...")
+        print("ADDING \(transaction.actions.count) ACTIONS...")
         
         for action in transaction.actions {
             if action.before !== action.after {
-//                print(" - \(action.description)")
+                print(" - \(action.description)")
                 undoManager.push(action)
             } else {
-//                print(" - \(action.description) (SKIPPED!)")
+                print(" - \(action.description) (SKIPPED!)")
             }
         }
         
