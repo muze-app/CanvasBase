@@ -98,12 +98,20 @@ open class Creation {
     
     public var undoManager: CanvasUndoManager { return canvasManager.undoManager }
     
+    func log() {
+        canvasManager.store.read {
+            canvasManager.display.subgraph(for: canvasManager.subgraphKey).finalNode?.log()
+        }
+    }
+    
     public func undo() {
         _ = canvasManager.undo()
+        log()
     }
     
     public func redo() {
         _ = canvasManager.redo()
+        log()
     }
     
     public var canUndo: Bool {
