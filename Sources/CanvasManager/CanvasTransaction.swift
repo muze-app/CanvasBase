@@ -152,11 +152,15 @@ public class CanvasTransaction {
         let oldCanvas = currentCanvas
         let newCanvas = action.after
         
-        print("OLD:")
-        oldCanvas.subgraph(for: actualManager.subgraphKey).finalNode?.log()
+        let manager = actualManager
+      
+        manager.store.read {
+            print("OLD:")
+            oldCanvas.subgraph(for: manager.subgraphKey).finalNode?.log()
 
-        print("NEW:")
-        newCanvas.subgraph(for: actualManager.subgraphKey).finalNode?.log()
+            print("NEW:")
+            newCanvas.subgraph(for: manager.subgraphKey).finalNode?.log()
+        }
             
         actions.append(action)
         
