@@ -54,9 +54,12 @@ public class LiveDrawCreation: DrawingCreation {
         
         modify("startStroke") { subgraph in
             let graph = subgraph.graph
+
+            let image = ImageNode(imageKey!, texture: texture!, graph: graph)
+            image.status = .hidden
             
             let blend = BlendNode(graph: graph, payload: .init(.normal, 1))
-            blend.source = ImageNode(imageKey!, texture: texture!, graph: graph)
+            blend.source = image
             blend.destination = subgraph.finalNode
             
             subgraph.finalNode = blend
