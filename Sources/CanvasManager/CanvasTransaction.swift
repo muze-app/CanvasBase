@@ -17,13 +17,11 @@ public class CanvasTransaction {
     public var currentCanvas: Snapshot
     
     var actualManager: CanvasManager {
-        var x = manager
-        
         while true {
-            if let manager = x as? CanvasManager {
+            if let manager = manager as? CanvasManager {
                 return manager
-            } else if let transaction = x as? CanvasTransaction {
-                x = transaction
+            } else if let transaction = manager as? CanvasTransaction {
+                return transaction.actualManager
             } else {
                 fatalError()
             }
