@@ -480,8 +480,7 @@ extension CanvasManager: CanvasTransactionParent {
 //            store.commit(graph)
 //
             
-            
-            display = newValue.externalReference
+            display = newValue//.externalReference
         }
     }
     

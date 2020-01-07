@@ -167,7 +167,7 @@ public class CanvasTransaction {
         currentCanvas = newCanvas
         
         if !disableDisplayUpdates {
-            manager.displayCanvas = newCanvas
+            self.manager.displayCanvas = newCanvas
         }
         
 //        
