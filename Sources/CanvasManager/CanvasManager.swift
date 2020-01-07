@@ -77,15 +77,15 @@ public class CanvasManager {
     public var current: Snapshot
     public internal(set) var display: Snapshot {
         didSet {
-//            print("UPDATE DISPLAY")
-//
-//            for subgraph in display.allSubgraphs {
-//                print("SUBGRAPH \(subgraph.key)")
-//                subgraph.metaNode?.log()
-//                subgraph.finalNode?.log()
-//            }
-            
             store.read {
+                print("UPDATE DISPLAY")
+                
+                for subgraph in display.allSubgraphs {
+                    print("SUBGRAPH \(subgraph.key)")
+                    subgraph.metaNode?.log()
+                    subgraph.finalNode?.log()
+                }
+                
                 informObservers(old: metadata(for: oldValue),
                                 new: metadata(for: display))
             }
@@ -479,6 +479,8 @@ extension CanvasManager: CanvasTransactionParent {
 //            let graph = newValue.modify { updateCanvasSubgraph(in: $0) }
 //            store.commit(graph)
 //
+            
+            
             display = newValue.externalReference
         }
     }
