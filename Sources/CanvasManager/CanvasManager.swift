@@ -194,11 +194,13 @@ public class CanvasManager {
     public func undo() -> CanvasAction? {
         if let action = currentTransaction?.undo() {
             print("UNDO \(action.description)")
+            print("    commit: \(display.key)")
             return action
         } else  if let (action, graph) = undoManager.undo() {
             current = graph
             display = graph
             print("UNDO \(action.description)")
+            print("    commit: \(display.key)")
             return action
         }
         
@@ -211,9 +213,11 @@ public class CanvasManager {
             current = graph
             display = graph
             print("REDO \(action.description)")
+            print("    commit: \(display.key)")
             return action
         } else if let action = currentTransaction?.redo() {
             print("REDO \(action.description)")
+            print("    commit: \(display.key)")
             return action
         }
         
