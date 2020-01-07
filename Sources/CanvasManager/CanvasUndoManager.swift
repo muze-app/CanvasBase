@@ -31,6 +31,11 @@ public class CanvasUndoManager {
         undoList = undoList.suffix(count)
     }
     
+    func removeAll() {
+        undoList.removeAll()
+        redoList.removeAll()
+    }
+    
 //    public func pop(where predicate: (ActionType) -> Bool) {
 //        undoList.pop(where: predicate)
 //    }

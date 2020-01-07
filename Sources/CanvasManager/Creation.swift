@@ -72,6 +72,10 @@ open class Creation {
 //        transaction.canvas.backgroundIsHidden = true
     }
     
+    public func clearAllUndos() {
+        undoManager.removeAll()
+    }
+    
     // MARK: Rendering
     
     public func render(format: RenderOptions.PixelFormat = .float16,
