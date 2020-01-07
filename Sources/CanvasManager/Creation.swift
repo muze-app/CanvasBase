@@ -52,11 +52,13 @@ open class SingleLayerCreation: Creation {
     public func commmitSubtransaction() {
         precondition(subtransaction.exists)
         subtransaction!.commit()
+        subtransaction = nil
     }
     
     public func cancelSubtransaction() {
         precondition(subtransaction.exists)
         subtransaction!.cancel()
+        subtransaction = nil
     }
     
 }
