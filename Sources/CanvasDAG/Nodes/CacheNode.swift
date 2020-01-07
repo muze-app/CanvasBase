@@ -86,11 +86,11 @@ public class CacheNode: InputNode<CachePayload> {
             intermediate.canAlias = false
             intermediate.isCache = true
             
-            let iextent = input!.calculatedRenderExtent
+//            let iextent = input!.calculatedRenderExtent
             let pextent = payload.extent
             
-            print("iextent: \(iextent)")
-            print("pextent: \(pextent)")
+//            print("iextent: \(iextent)")
+//            print("pextent: \(pextent)")
 
             cache.store(payload, for: self, extent: pextent)
         }
