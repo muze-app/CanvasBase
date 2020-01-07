@@ -509,9 +509,13 @@ extension CanvasManager: CanvasTransactionParent {
             
             current = updated
             display = updated
+            
         } else {
             display = current
         }
+        
+        print("DISPLAY: \(display.key)")
+        store.read { display.subgraph(for: subgraphKey).finalNode?.log() }
         
         currentTransaction = nil
         
