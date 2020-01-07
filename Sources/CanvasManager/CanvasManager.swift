@@ -198,7 +198,7 @@ public class CanvasManager {
             return action
         } else  if let (action, graph) = undoManager.undo() {
             current = graph
-            display = graph
+            displayCanvas = graph
             print("UNDO \(action.description)")
             print("    commit: \(display.key)")
             return action
@@ -211,7 +211,7 @@ public class CanvasManager {
         print("REDO")
         if let (action, graph) = undoManager.redo() {
             current = graph
-            display = graph
+            displayCanvas = graph
             print("REDO \(action.description)")
             print("    commit: \(display.key)")
             return action
@@ -511,7 +511,7 @@ extension CanvasManager: CanvasTransactionParent {
             display = updated
             
         } else {
-            display = current
+            displayCanvas = current
         }
         
         print("DISPLAY: \(display.key)")
