@@ -498,6 +498,7 @@ extension CanvasManager: CanvasTransactionParent {
         for action in transaction.actions {
             if action.before !== action.after {
                 print(" - \(action.description)")
+                print("    BEFORE: \(action.before.key). AFTER: \(action.after.key).")
                 undoManager.push(action)
             } else {
                 print(" - \(action.description) (SKIPPED!)")
