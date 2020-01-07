@@ -100,13 +100,13 @@ public class CanvasTransaction {
     public func commit() {
         precondition(!currentTransaction.exists)
         
-        print("COMMIT TRANSACTION")
+//        print("COMMIT TRANSACTION")
         
         if let name = superActionName {
             let superAction = CanvasAction(name: name, actions: actions)
             actions = [superAction]
         } else {
-            print("not a super action...")
+//            print("not a super action...")
         }
         
         manager.commit(transaction: self)

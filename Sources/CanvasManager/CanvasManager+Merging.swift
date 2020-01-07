@@ -44,21 +44,28 @@ extension CanvasManager {
     
     public var shouldReduceMemory: Bool {
 //        return false
-        return (undoManager.undoCount + undoManager.redoCount) > 5
-//        return (undoManager.undoCount > 60) || (memorySize > maxMemorySize)
+//        return (undoManager.undoCount + undoManager.redoCount) > 5
+        
+        #if os(iOS)
+        let trigger = UIDevice.current.isX ? 25 : 15
+        #else
+        let trigger = 25
+        #endif
+        
+        return (undoManager.undoCount > trigger) || (memorySize > maxMemorySize)
     }
     
     // MARK: - THE PURGE ITSELF
     
     private func _purge() {
-        print("PURGE!!!")
+//        print("PURGE!!!")
 
-        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
-        print("COMMITS: \(store.sortedCommits.count)")
-        for commit in store.sortedCommits {
-            print(" - \(commit.key)")
-//            commit.verify()
-        }
+//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+//        print("COMMITS: \(store.sortedCommits.count)")
+//        for commit in store.sortedCommits {
+//            print(" - \(commit.key)")
+////            commit.verify()
+//        }
         
         removeUndoStates()
         
@@ -75,18 +82,18 @@ extension CanvasManager {
             [$0.before.key, $0.after.key]
         })
         
-        for commit in sortedCommits {
-            let time = store.commitTimes[commit.key]!
-            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
-            if !validCommits.contains(commit.key) {
-                print("    INVALID!")
-            }
-//            for snapshot in snapshots where snapshot.key == commit.key {
-//                print("   - \(snapshot.pointerString)")
+//        for commit in sortedCommits {
+//            let time = store.commitTimes[commit.key]!
+//            print("\(commit.key) - \(-time.timeIntervalSinceNow)")
+//            if !validCommits.contains(commit.key) {
+//                print("    INVALID!")
 //            }
-        }
+////            for snapshot in snapshots where snapshot.key == commit.key {
+////                print("   - \(snapshot.pointerString)")
+////            }
+//        }
         
-        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
+//        print("UNDOS/REDOS: \(undoManager.undoCount) / \(undoManager.redoCount)")
 
 //        print("COMMITS: \(sortedCommits.count)")
 //        for commit in sortedCommits {
@@ -120,13 +127,13 @@ extension CanvasManager {
             }
         }
         
-        print("NODES TOUCHED")
-        for commit in store.sortedCommits {
-            print("commit \(commit.key)")
-            for node in commit.nodesTouchedSincePredecessor {
-                print(" - \(node)")
-            }
-        }
+//        print("NODES TOUCHED")
+//        for commit in store.sortedCommits {
+//            print("commit \(commit.key)")
+//            for node in commit.nodesTouchedSincePredecessor {
+//                print(" - \(node)")
+//            }
+//        }
         
 //        for commit in store.sortedCommits {
 //            
@@ -202,7 +209,12 @@ extension CanvasManager {
     
     private func removeUndoStates() {
         autoreleasepool {
-            undoManager.pop(keeping: 3)
+            #if os(iOS)
+            let keep = UIDevice.current.isX ? 20 : 10
+            #else
+            let keep = 20
+            #endif
+            undoManager.pop(keeping: keep)
         }
     }
     
@@ -295,14 +307,14 @@ extension CanvasManager {
 //        let graph = graph.optim
         
         #if targetEnvironment(simulator)
+        let node = graph.node(for: key)
+        let hash = node.contentHash
+        let result = RenderManager.shared.mockRenderSync()
         
-            let result = RenderManager.shared.mockRenderSync()
-            
-            print("rendered: \(result)")
-            print(" ")
-            
-            return result
-       
+//        print("rendered: \(result)")
+//        print(" ")
+        
+        return (hash, result)
         #elseif os(macOS)
         return (0, (.mock, .identity))
         #else
@@ -312,12 +324,12 @@ extension CanvasManager {
         if let payload = node.renderPayload(for: options) {
             let result = RenderManager.shared.renderSync(payload, options)
             
-            print("rendered: \(result)")
-            print(" ")
+//            print("rendered: \(result)")
+//            print(" ")
             
             return (hash, result)
         } else {
-            print(" ")
+//            print(" ")
             return (hash, nil)
         }
         #endif
@@ -471,7 +483,7 @@ extension CanvasManager {
             return
         }
         
-        print("reducing!")
+//        print("reducing!")
         reducingMemory = true
         
         store.write { self._purge() }
