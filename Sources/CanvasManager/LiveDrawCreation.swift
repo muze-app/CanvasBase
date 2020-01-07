@@ -56,7 +56,7 @@ public class LiveDrawCreation: DrawingCreation {
             let graph = subgraph.graph
 
             let image = ImageNode(imageKey!, texture: texture!, graph: graph)
-            image.status = .hidden
+//            image.status = .hidden
             
             let blend = BlendNode(graph: graph, payload: .init(.normal, 1))
             blend.source = image
@@ -99,10 +99,10 @@ public class LiveDrawCreation: DrawingCreation {
     }
     
     public func strokeWillSucceed() {
-        modify("strokeWillSucceed") { subgraph in
-            let node = ImageNode(imageKey!, graph: subgraph.graph)
-            node.status = .doNotCache
-        }
+//        modify("strokeWillSucceed") { subgraph in
+//            let node = ImageNode(imageKey!, graph: subgraph.graph)
+//            node.status = .doNotCache
+//        }
     }
     
 //    public func strokeFinished() {
@@ -110,10 +110,10 @@ public class LiveDrawCreation: DrawingCreation {
 //    }
     
     public func commitStroke() {
-        modify("strokeFinished") { subgraph in
-            let node = ImageNode(imageKey!, graph: subgraph.graph)
-            node.status = .normal
-        }
+//        modify("strokeFinished") { subgraph in
+//            let node = ImageNode(imageKey!, graph: subgraph.graph)
+//            node.status = .normal
+//        }
         
         commmitSubtransaction()
         cleanupStroke()
