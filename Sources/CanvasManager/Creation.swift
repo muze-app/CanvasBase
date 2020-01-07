@@ -98,32 +98,28 @@ open class Creation {
     
     public var undoManager: CanvasUndoManager { return canvasManager.undoManager }
     
-    func log(_ graph: Graph? = nil) {
+    func log(_ name: String, _ graph: Graph? = nil) {
+        
         canvasManager.store.read {
             let graph = graph ?? canvasManager.display
+            print("\(name) (\(graph.key))")
             graph.subgraph(for: canvasManager.subgraphKey).finalNode?.log()
         }
     }
     
     public func undo() {
         if let action = canvasManager.undo() {
-            print("BEFORE!")
-            log(action.before)
-            print("AFTER!")
-            log(action.after)
-            print("DISPLAY!")
-            log()
+            log("BEFORE", action.before)
+            log("AFTER", action.after)
+            log("DISPLAY")
         }
     }
     
     public func redo() {
         if let action = canvasManager.redo() {
-            print("BEFORE!")
-            log(action.before)
-            print("AFTER!")
-            log(action.after)
-            print("DISPLAY!")
-            log()
+            log("BEFORE", action.before)
+            log("AFTER", action.after)
+            log("DISPLAY")
         }
     }
     
