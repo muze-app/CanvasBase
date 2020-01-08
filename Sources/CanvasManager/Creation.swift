@@ -101,14 +101,12 @@ open class Creation {
     // MARK: Rendering
     
     public func render(format: RenderOptions.PixelFormat = .float16,
-                       colorSpace: RenderOptions.ColorSpace = .working,
+                       /*colorSpace: RenderOptions.ColorSpace = .working,*/
                        _ callback: @escaping (MetalTexture)->()) {
         
-//        fatalError()
-        canvasManager.renderTexture(of: canvasManager.display) { texture in
-//            let texture = image.original!.metal.value!
-            callback(texture)
-        }
+        canvasManager.renderTexture(of: canvasManager.display,
+                                    format: format,
+                                    completion: callback)
     }
     
     var activeNode: NodePath? {
