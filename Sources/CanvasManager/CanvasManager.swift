@@ -78,14 +78,6 @@ public class CanvasManager {
     public internal(set) var display: Snapshot {
         didSet {
             store.read {
-                print("UPDATE DISPLAY")
-                
-                for subgraph in display.allSubgraphs {
-                    print("SUBGRAPH \(subgraph.key)")
-                    subgraph.metaNode?.log()
-                    subgraph.finalNode?.log()
-                }
-                
                 informObservers(old: metadata(for: oldValue),
                                 new: metadata(for: display))
             }
@@ -488,20 +480,20 @@ extension CanvasManager: CanvasTransactionParent {
         
         activeNode = nil
         
-        print("COMMIT TO CANVAS MANAGER")
-        for action in undoManager.undoList {
-            print(" - \(action.description)")
-        }
+//        print("COMMIT TO CANVAS MANAGER")
+//        for action in undoManager.undoList {
+//            print(" - \(action.description)")
+//        }
         
-        print("ADDING \(transaction.actions.count) ACTIONS...")
+//        print("ADDING \(transaction.actions.count) ACTIONS...")
         
         for action in transaction.actions {
             if action.before !== action.after {
-                print(" - \(action.description)")
-                print("    BEFORE: \(action.before.key). AFTER: \(action.after.key).")
+//                print(" - \(action.description)")
+//                print("    BEFORE: \(action.before.key). AFTER: \(action.after.key).")
                 undoManager.push(action)
             } else {
-                print(" - \(action.description) (SKIPPED!)")
+//                print(" - \(action.description) (SKIPPED!)")
             }
         }
         
@@ -515,8 +507,8 @@ extension CanvasManager: CanvasTransactionParent {
             displayCanvas = current
         }
         
-        print("DISPLAY: \(display.key)")
-        store.read { display.subgraph(for: subgraphKey).finalNode?.log() }
+//        print("DISPLAY: \(display.key)")
+//        store.read { display.subgraph(for: subgraphKey).finalNode?.log() }
         
         currentTransaction = nil
         
