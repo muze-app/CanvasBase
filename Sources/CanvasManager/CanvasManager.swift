@@ -478,8 +478,7 @@ extension CanvasManager: CanvasTransactionParent {
         set {
 //            let graph = newValue.modify { updateCanvasSubgraph(in: $0) }
 //            store.commit(graph)
-//
-            
+       
             display = newValue//.externalReference
         }
     }

@@ -37,8 +37,6 @@ extension CanvasTransaction: CanvasTransactionParent {
         }
         
         disableDisplayUpdates = false
-        
-        manager.displayCanvas = currentCanvas
     }
     
     public func cancel(transaction: CanvasTransaction) {
