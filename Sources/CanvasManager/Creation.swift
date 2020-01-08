@@ -105,7 +105,7 @@ open class Creation {
                        _ callback: @escaping (MetalTexture)->()) {
         
 //        fatalError()
-        canvasManager.renderTexture { texture in
+        canvasManager.renderTexture(of: canvasManager.display) { texture in
 //            let texture = image.original!.metal.value!
             callback(texture)
         }
