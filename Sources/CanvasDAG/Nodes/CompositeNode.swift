@@ -49,7 +49,9 @@ public class CompositeNode: ListNode<Float> {
                 identifier = "Draw...something"
             }
 
-            if alpha == 1, let intermediate = payload.intermediate, intermediate.canAlias, intermediate.passes.count == 1 {
+            if alpha == 1, let intermediate = payload.intermediate,
+                !intermediate.isCache,
+                intermediate.canAlias, intermediate.passes.count == 1 {
                 let pass = intermediate.passes[0]
                 pass.transform(by: payload.getTransform)
                 composite << pass
