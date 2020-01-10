@@ -7,7 +7,7 @@
 
 import MuzeMetal
 
-struct CanvasOverlayPayload: NodePayload {
+public struct CanvasOverlayPayload: NodePayload {
 
     var canvasSize: CGSize
     var transformFromCanvasToView: AffineTransform
@@ -19,25 +19,25 @@ struct CanvasOverlayPayload: NodePayload {
         self.transformFromCanvasToView = b
     }
 
-    func transformed(by transform: AffineTransform) -> CanvasOverlayPayload {
+    public func transformed(by transform: AffineTransform) -> CanvasOverlayPayload {
         return CanvasOverlayPayload(canvasSize, transformFromCanvasToView * transform)
     }
 
 }
 
-class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
+public class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
 
-    var canvasSize: CGSize {
+    public var canvasSize: CGSize {
         get { return payload.canvasSize }
         set { payload.canvasSize = newValue }
     }
 
-    var transformFromCanvasToView: AffineTransform {
+    public var transformFromCanvasToView: AffineTransform {
         get { return payload.transformFromCanvasToView }
         set { payload.transformFromCanvasToView = newValue }
     }
 
-    var cropMode: Float {
+    public var cropMode: Float {
         get { return payload.cropMode }
         set { payload.cropMode = newValue }
     }
@@ -126,7 +126,7 @@ class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
         return [.white,.white,.white,.white]
     }
 
-    override func renderPayload(for options: RenderOptions) -> RenderPayload? {
+    override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
         let result = RenderIntermediate(identifier: "Canvas Overlay", options: options, extent: renderExtent)
 
         let bounds = .zero & canvasSize
@@ -154,7 +154,7 @@ class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
         return result.payload
     }
 
-    override var calculatedRenderExtent: RenderExtent {
+    override public var calculatedRenderExtent: RenderExtent {
         return .basic(.init(size: UIScreen.main.nativeBounds.size))
     }
 
