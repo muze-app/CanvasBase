@@ -140,9 +140,9 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     
     override public var isInvisible: Bool { status != .hidden }
     
-//    override var cacheable: Bool {
-//        return readyToShow
-//    }
+    override var cacheable: Bool {
+        return readyToShow
+    }
     
 }
 
@@ -161,9 +161,27 @@ class BrushToImageOpt: Optimization {
         let graph = brushNode.graph
         
         if brushNode.status != .hidden {
-            right = ImageNode(texture: brushNode.texture, transform: brushNode.transform, graph: graph)
+            let image = ImageNode(texture: brushNode.texture, transform: brushNode.transform, graph: graph)
+            image.status = brushNode.status.image
+            
+            right = image
         } else {
             right = nil
+        }
+    }
+    
+}
+
+extension BrushNodePayload.Status {
+    
+    var image: ImagePayload.Status {
+        switch self {
+            case .hidden:
+                return .hidden
+            case .visible:
+                return .doNotCache
+            case .done:
+                return .normal
         }
     }
     
