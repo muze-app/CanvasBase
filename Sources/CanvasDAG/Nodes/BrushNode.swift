@@ -140,10 +140,6 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
     
     override public var isInvisible: Bool { status != .hidden }
     
-    override var cacheable: Bool {
-        return readyToShow
-    }
-    
 }
 
 class BrushToImageOpt: Optimization {
