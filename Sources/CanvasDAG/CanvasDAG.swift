@@ -80,7 +80,7 @@ public enum CanvasNodeCollection: NodeCollection, Hashable {
     
     public func node(for key: NodeKey, graph: Graph) -> Node {
         switch self {
-//            case .canvasOverlay: return CanvasOverlayNode(key, graph: graph)
+            case .canvasOverlay: return CanvasOverlayNode(key, graph: graph)
             case .image: return ImageNode(key, graph: graph)
             case .blend: return BlendNode(key, graph: graph)
             case .comp:  return CompositeNode(key, graph: graph)

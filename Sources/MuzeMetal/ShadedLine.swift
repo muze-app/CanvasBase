@@ -130,7 +130,7 @@ extension Array where Element == ShadedLine {
 
 }
 
-extension Data {
+public extension Data {
     
     init<T>(from value: T) {
         var value = value
