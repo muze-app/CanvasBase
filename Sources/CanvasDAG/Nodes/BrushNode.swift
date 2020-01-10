@@ -129,7 +129,7 @@ public class BrushNode: GeneratorNode<BrushNodePayload> {
         
         pass.commit()
         
-        i += 1
+//        i += 1
     }
     
 //    var possibleOptimizations: [OptFunc] {
