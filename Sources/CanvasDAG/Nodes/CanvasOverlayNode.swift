@@ -9,12 +9,12 @@ import MuzeMetal
 
 public struct CanvasOverlayPayload: NodePayload {
 
-    var canvasSize: CGSize
-    var transformFromCanvasToView: AffineTransform
+    public var canvasSize: CGSize
+    public var transformFromCanvasToView: AffineTransform
 
-    var cropMode: Float = 0
+    public var cropMode: Float = 0
 
-    init(_ a: CGSize, _ b: AffineTransform) {
+    public init(_ a: CGSize, _ b: AffineTransform) {
         self.canvasSize = a
         self.transformFromCanvasToView = b
     }
@@ -26,6 +26,15 @@ public struct CanvasOverlayPayload: NodePayload {
 }
 
 public class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
+    
+    public init(_ key: NodeKey = NodeKey(),
+                graph: Graph,
+                payload: CanvasOverlayPayload? = nil) {
+        super.init(key,
+                   graph: graph,
+                   payload: payload,
+                   nodeType: .canvasOverlay)
+    }
 
     public var canvasSize: CGSize {
         get { return payload.canvasSize }
