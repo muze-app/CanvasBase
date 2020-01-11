@@ -80,6 +80,7 @@ public extension MetalPipeline {
     static let liveDrawPipeline = MetalPipeline(vertex: .brush, fragment: .liveDraw)
     
     static let canvasOverlayPipeline = MetalPipeline(vertex: .basic, fragment: .canvasOverlay)
+    static let oldCanvasOverlayPipeline = MetalPipeline(vertex: .basic, fragment: .oldCanvasOverlay)
     static let rectsPipeline = MetalPipeline(vertex: .basic, fragment: .rects)
     static let checkerboardPipeline = MetalPipeline(vertex: .basic, fragment: .checkerboard)
     

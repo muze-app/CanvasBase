@@ -53,6 +53,7 @@ public extension FragmentFunction {
     static let brush            = FragmentFunction(name: "brush_fragment")
     static let liveDraw         = FragmentFunction(name: "livedraw_brush_fragment")
     static let canvasOverlay    = FragmentFunction(name: "canvas_overlay")
+    static let oldCanvasOverlay = FragmentFunction(name: "old_canvas_overlay")
     static let rects            = FragmentFunction(name: "rects")
     static let checkerboard     = FragmentFunction(name: "checkerboard_fragment")
     static let colorMatrix      = FragmentFunction(name: "color_matrix_fragment")
