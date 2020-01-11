@@ -15,7 +15,7 @@ public struct CheckerboardPayload: NodePayload {
     public let a: RenderColor2
     public let b: RenderColor2
     
-    init(_ a: RenderColor2, _ b: RenderColor2) {
+    public init(_ a: RenderColor2, _ b: RenderColor2) {
         self.a = a
         self.b = b
     }

@@ -52,7 +52,8 @@ public class CanvasOverlayNode: GeneratorNode<CanvasOverlayPayload> {
     }
 
     static let transformFromViewToDisplay = AffineTransform.scaling(UIScreen.main.nativeScale)
-    static let grayColor = RenderColor2(UIColor(white: 67/255, alpha: 1.0))
+    static let grayColor = RenderColor2(UIColor(white: 0, alpha: 1.0))
+//    static let grayColor = RenderColor2(UIColor(white: 67/255, alpha: 1.0))
     static let cropColor = RenderColor2(UIColor(white: 0.00, alpha: 0.7))
     static let lineColorUnblended = RenderColor2(UIColor(white: 0.135, alpha: 0.5))
 
