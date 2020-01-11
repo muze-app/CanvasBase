@@ -10,17 +10,34 @@ import MuzeMetal
 
 public enum One { case one } // Not as silly as it might first appear...
 
-public class CheckerboardNode: GeneratorNode<One> {
+public struct CheckerboardPayload: NodePayload {
+    
+    public let a: RenderColor2
+    public let b: RenderColor2
+    
+    init(_ a: RenderColor2, _ b: RenderColor2) {
+        self.a = a
+        self.b = b
+    }
+    
+}
 
-    public init(_ key: NodeKey = NodeKey(), graph: Graph) {
-        super.init(key, graph: graph, payload: .one, nodeType: .checkerboard)
+public class CheckerboardNode: GeneratorNode<CheckerboardPayload> {
+
+    public init(_ key: NodeKey = NodeKey(),
+                graph: Graph,
+                payload: CheckerboardPayload? = nil) {
+        super.init(key, graph: graph, payload: payload, nodeType: .checkerboard)
     }
 
     override public func renderPayload(for options: RenderOptions) -> RenderPayload? {
+        
+        let colors = [payload.a, payload.b]
+        
         let result = RenderIntermediate(identifier: "Checkerboard", options: options, extent: renderExtent)
         result << RenderPassDescriptor(identifier: "Checkerboard",
                                        pipeline: .checkerboardPipeline,
-                                       fragmentBuffers: [])
+                                       fragmentBuffers: [colors])
 
         return result.payload
     }
