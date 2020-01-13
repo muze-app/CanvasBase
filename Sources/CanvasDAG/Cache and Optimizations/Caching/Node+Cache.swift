@@ -93,6 +93,8 @@ extension CanvasNode {
             return self
         }
         
+        guard map[key].exists || og.type(for: key).exists else { return self }
+        
         let original = map[key] ?? og.node(for: key)
         
         let cacheNode = CacheNode(graph,
