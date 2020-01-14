@@ -20,7 +20,7 @@ let package = Package(
                 dependencies: []),
         
         .target(name: "MuzeMetal", 
-                dependencies: []),
+                dependencies: ["MuzePrelude"]),
         
         .target(name: "DAG",
                 dependencies: ["MuzePrelude"]),
