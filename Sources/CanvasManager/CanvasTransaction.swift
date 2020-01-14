@@ -127,10 +127,11 @@ public class CanvasTransaction {
     }
     
     public func cancel() {
-        precondition(!currentTransaction.exists)
+        if let current = currentTransaction {
+            current.cancel()
+        }
         
         manager?.cancel(transaction: self)
-//        manager?.activeNode = nil
         hasCancelled = true
     }
     
